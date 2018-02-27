@@ -114,11 +114,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
         long numberOfRows = DatabaseUtils.queryNumEntries(db, activity);
         Hashtable<String, List<String>> doubles = new Hashtable<String, List<String>>();
         Cursor cur;
+        int x2;
 
         for(int x=0; x < numberOfRows; x++)//runs once per row/entry
         {
+            x2=x+1;
             SQLiteDatabase db = getWritableDatabase();
-            cur = db.rawQuery("SELECT * FROM " + activity+ " WHERE ID = " +x+1, null);
+            cur = db.rawQuery("SELECT * FROM " + activity+ " WHERE ID = " +x2, null);
             if (cur.moveToFirst())
             {
                 String [] yData = new String[columnNames.length];
