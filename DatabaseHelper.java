@@ -119,7 +119,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         for(int x=0; x < numberOfRows; x++)//runs once per row/entry
         {
             x2=x+1;
-            SQLiteDatabase db = getWritableDatabase();
+            //SQLiteDatabase db = getWritableDatabase();
             cur = db.rawQuery("SELECT * FROM " + activity+ " WHERE ID = " +x2, null);
             if (cur.moveToFirst())
             {
