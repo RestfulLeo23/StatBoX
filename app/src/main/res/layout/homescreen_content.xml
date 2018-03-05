@@ -20,7 +20,7 @@
         android:onClick="ActivityManagementMode"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:srcCompat="@android:drawable/ic_menu_add" />
 
 
 </android.support.constraint.ConstraintLayout>

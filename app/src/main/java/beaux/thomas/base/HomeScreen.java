@@ -15,7 +15,7 @@ import android.widget.EditText;
 
 public class HomeScreen extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "beaux.thomas.base.MESSAGE";
-    public DatabaseHelper StatboX_Database = new DatabaseHelper(this);
+    //public DatabaseHelper StatboX_Database = new DatabaseHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
