@@ -1,0 +1,44 @@
+package com.example.owner.mystatbox;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+import java.util.Hashtable;
+import java.util.List;
+
+//this class is called and run when the app starts.
+public class MainActivity extends AppCompatActivity
+{
+    DatabaseHelper myDB_helper;
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        myDB_helper = new DatabaseHelper(this);
+
+        String insertCOLS[] = {"Running", "Time", "Distance", "RedCarsSeen"};
+        String insertCOLS2[] = {"Reading", "Time", "Pages_Read"};
+
+
+        if(!myDB_helper.tablesInfo.containsKey("Running"))
+            myDB_helper.createTable(insertCOLS);
+        if(!myDB_helper.tablesInfo.containsKey("Reading"))
+            myDB_helper.createTable(insertCOLS2);
+
+        if(!myDB_helper.tablesInfo.containsKey("Running"))
+            myDB_helper.createTable(insertCOLS);
+
+
+        String insertDATA[] = {"Running", "1000", "5", "4"};
+        String insertDATA2[] = {"Running", "10.21", "435", "4"};
+        String insertDATA3[] = {"Reading", "10.21", "0"};
+        String insertDATA4[] = {"Reading", "10.21", "4"};
+        myDB_helper.insertData(insertDATA);
+        myDB_helper.insertData(insertDATA2);
+        myDB_helper.insertData(insertDATA3);
+        myDB_helper.insertData(insertDATA4);
+
+        Hashtable<String, List<String>>someActivity =  myDB_helper.grabActivity("Reading");
+    }
+}
