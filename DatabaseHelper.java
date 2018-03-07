@@ -77,6 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     {
         db = getWritableDatabase();
         String tableName = array[0];
+        db.beginTransaction();
         db.execSQL("CREATE TABLE " + tableName+ " (ID INTEGER PRIMARY KEY AUTOINCREMENT)");
         for (int x = 1; x< array.length; x++)
         {
@@ -84,6 +85,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
         List<String> l = Arrays.asList(array); //in java there is no array[1:] but there is if it's a list.
         tablesInfo.put(array[0], l.subList(1, array.length)); //This creates an active list of all tables and their attributes
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
     }
 
     //array[] is an entry that's being entered into a table. array[0] is the table in question. All proceeding indeces are the attributes' data
@@ -95,6 +99,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         String[] columnNames = dbCursor.getColumnNames();
         System.out.print(columnNames);
 
+        db.beginTransaction();
+
         db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         for(int x=1; x<array.length; x++)
@@ -103,6 +109,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
 
         db.insert(array[0], null, values);
+        db.setTransactionSuccessful();
+        db.endTransaction();
         db.close();
     }
 
@@ -140,4 +148,3 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
 }
-
