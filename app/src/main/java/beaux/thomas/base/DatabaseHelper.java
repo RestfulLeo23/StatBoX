@@ -7,7 +7,7 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-//import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
@@ -27,14 +27,15 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     //tablesInfo is not being saved. It's being reset each time the system starts again. This is causing the crash
     public static Hashtable<String, List<String>>tablesInfo;
-            //We don't want activities with the same name,
-            //that'll screw up my hash table, so the front end can
-            //check tablesInfo to see if the desired activity is already a thing.
-            //Then reject the activity name and prompt for a new one if it is.
-            //OR I can use this to check if the activity is already a thing and send back an error code of some kind.
-            //DatabaseHelper_Object.tablesInfo.containsKey(String key)
+    //We don't want activities with the same name,
+    //that'll screw up my hash table, so the front end can
+    //check tablesInfo to see if the desired activity is already a thing.
+    //Then reject the activity name and prompt for a new one if it is.
+    //OR I can use this to check if the activity is already a thing and send back an error code of some kind.
+    //DatabaseHelper_Object.tablesInfo.containsKey(String key)
     SQLiteDatabase db;
 
+    //Singleton design pattern
     private static DatabaseHelper sInstance;
     public static synchronized DatabaseHelper getsInstance(Context context)
     {
@@ -47,29 +48,30 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private DatabaseHelper(Context context)  //whenever this is called, the database will be initialized.
     {
         super(context, DATABASE_NAME, null, DB_VERSION);
-        //tablesInfo = new Hashtable<String, List<String>>();
         db = getWritableDatabase();
+        tablesInfo = restoreDBState();
+
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) //onCreate is called when the database file does not exist or has not been created yet.
     {
-        tablesInfo = new Hashtable<String, List<String>>();
-        String tables_string = "";
-        if(!tablesInfo.isEmpty())
-        {
-            for (String key : tablesInfo.keySet()) //for each key (the tables) in the hashtable, do an execSQL.
-            {
-                tables_string = "";
-                tables_string.concat("CREATE TABLE IF NOT EXISTS " + key + "(ID INTEGER PRIMARY KEY AUTOINCREMENT) ");
-                int valueLength = tablesInfo.get(key).size();
-                for(int x=0; x<valueLength; x++) //for each element in the value:
-                {
-                    tables_string.concat(tablesInfo.get(key).get(x) + " TEXT"); //the string looks something like CREATE TABLE " + TABLE_NAME+ "(ID...) + ATTRIBUTE + "TEXT"
-                }                                                               //and the attribute + "text" part is concatenated for each attribute
-                db.execSQL(tables_string);
-            }
-        }
+//        tablesInfo = new Hashtable<String, List<String>>();
+//        String tables_string = "";
+//        if(!tablesInfo.isEmpty())
+//        {
+//            for (String key : tablesInfo.keySet()) //for each key (the tables) in the hashtable, do an execSQL.
+//            {
+//                tables_string = "";
+//                tables_string.concat("CREATE TABLE IF NOT EXISTS " + key + "(ID INTEGER PRIMARY KEY AUTOINCREMENT) ");
+//                int valueLength = tablesInfo.get(key).size();
+//                for(int x=0; x<valueLength; x++) //for each element in the value:
+//                {
+//                    tables_string.concat(tablesInfo.get(key).get(x) + " TEXT"); //the string looks something like CREATE TABLE " + TABLE_NAME+ "(ID...) + ATTRIBUTE + "TEXT"
+//                }                                                               //and the attribute + "text" part is concatenated for each attribute
+//                db.execSQL(tables_string);
+//            }
+//        }
         String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ICONS (Activity TEXT PRIMARY KEY, Picture TEXT)";//+ attribute + ” TEXT,”
         db.execSQL(CREATE_TABLE);
     }
@@ -80,6 +82,38 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ICONS);
         onCreate(db);
     }
+
+    private Hashtable<String, List<String>> restoreDBState() {
+        return getExistingTables();
+    }
+    private Hashtable<String, List<String>> getExistingTables() {
+        //query master table and return it
+        Hashtable exists = new Hashtable<String, List<String>>();
+
+        db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+        List<String> tableNamesList = new ArrayList<String>();
+        if (c.moveToFirst()) {
+            while ( !c.isAfterLast() ) {
+                tableNamesList.add( c.getString( c.getColumnIndex("name")) );
+                c.moveToNext();
+            }
+        }
+        String tableNames[] = new String[tableNamesList.size()];
+        tableNamesList.toArray(tableNames);
+        //so now, tablesNames is an array of all the table names in the database.
+        //Now we have to extract the attributes for each of them, in order to fully construct the final hashtable
+        for(int x = 0; x< tableNamesList.size(); x++)
+        {
+            Cursor dbCursor = db.query(tableNames[x], null, null, null, null, null, null);
+            String[] columnNames = dbCursor.getColumnNames();
+            List<String> columnsList = Arrays.asList(columnNames);
+            exists.put(tableNames[x], columnsList);
+        }
+        //this hashtable will have a few extra values in it: the ICONS table, and the 2 built-in tables
+        return exists;
+    }
+
 
     //array[0] is the table name, all proceeding indeces are the attributes
     //Attributes MUST be ONE single string. "Pages Read" should be PagesRead or Pages_Read, etc
