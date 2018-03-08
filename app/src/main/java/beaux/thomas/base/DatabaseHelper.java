@@ -26,14 +26,25 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String COL2 = "Picture";
 
     //tablesInfo is not being saved. It's being reset each time the system starts again. This is causing the crash
-    public static Hashtable<String, List<String>>tablesInfo;  //We don't want activities with the same name,
-    //that'll screw up my hash table, so the front end can
-    //check tablesInfo to see if the desired activity is already a thing.
-    //Then reject the activity name and prompt for a new one if it is.
-    //DatabaseHelper_Object.tablesInfo.containsKey(String key)
+    public static Hashtable<String, List<String>>tablesInfo;
+            //We don't want activities with the same name,
+            //that'll screw up my hash table, so the front end can
+            //check tablesInfo to see if the desired activity is already a thing.
+            //Then reject the activity name and prompt for a new one if it is.
+            //OR I can use this to check if the activity is already a thing and send back an error code of some kind.
+            //DatabaseHelper_Object.tablesInfo.containsKey(String key)
     SQLiteDatabase db;
+
+    private static DatabaseHelper sInstance;
+    public static synchronized DatabaseHelper getsInstance(Context context)
+    {
+        if (sInstance == null)
+            sInstance = new DatabaseHelper(context.getApplicationContext());
+        return sInstance;
+    }
+
     //CONSTRUCTOR
-    public DatabaseHelper(Context context)  //whenever this is called, the database will be initialized.
+    private DatabaseHelper(Context context)  //whenever this is called, the database will be initialized.
     {
         super(context, DATABASE_NAME, null, DB_VERSION);
         //tablesInfo = new Hashtable<String, List<String>>();
