@@ -25,14 +25,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String COL1 = "Activity";
     public static final String COL2 = "Picture";
 
-    //tablesInfo is not being saved. It's being reset each time the system starts again. This is causing the crash
+    
     public static Hashtable<String, List<String>>tablesInfo;
     //We don't want activities with the same name,
-    //that'll screw up my hash table, so the front end can
+    //that'll screw up everythnig, so the front end can
     //check tablesInfo to see if the desired activity is already a thing.
     //Then reject the activity name and prompt for a new one if it is.
-    //OR I can use this to check if the activity is already a thing and send back an error code of some kind.
-    //DatabaseHelper_Object.tablesInfo.containsKey(String key)
+    //This is the line to check that: 
+    //if(DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.containsKey("Running") == false)
     SQLiteDatabase db;
 
     //Singleton design pattern
@@ -45,7 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     //CONSTRUCTOR
-    private DatabaseHelper(Context context)  //whenever this is called, the database will be initialized.
+    private DatabaseHelper(Context context) 
     {
         super(context, DATABASE_NAME, null, DB_VERSION);
         db = getWritableDatabase();
@@ -167,10 +167,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db = this.getReadableDatabase();
 
         Cursor dbCursor = db.query(activity, null, null, null, null, null, null);
-        String[] columnNames = dbCursor.getColumnNames();//columnNames is an array with all columns for the activity
+        String[] columnNames = dbCursor.getColumnNames();//columnNames is an array with all attributes for the activity
 
         long numberOfRows = DatabaseUtils.queryNumEntries(db, activity);
-        Hashtable<String, List<String>> doubles = new Hashtable<String, List<String>>();
+        Hashtable<String, List<String>> doubles = new Hashtable<String, List<String>>(); //doubles will be the table that gets returned
         Cursor cur;
         int x2;
 
@@ -184,8 +184,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 String [] yData = new String[columnNames.length];
 
                 for (int y = 1; y < columnNames.length; y++) //starting at y=1 to skip over attribute ID
-                    yData[y-1] = cur.getString(cur.getColumnIndex(columnNames[y]));
-                doubles.put(cur.getString(cur.getColumnIndex(columnNames[0])), Arrays.asList(yData));
+                    yData[y-1] = cur.getString(cur.getColumnIndex(columnNames[y])); //yData is an array with the value of each attribute for 1 entry
+                doubles.put(cur.getString(cur.getColumnIndex(columnNames[0])), Arrays.asList(yData)); 
             }
         }
         db.close();
