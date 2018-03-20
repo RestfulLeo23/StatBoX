@@ -45,5 +45,8 @@ public class MainActivity extends AppCompatActivity
 //        myDB_helper.insertData(insertDATA4);
 
         Hashtable<String, List<String>>someActivity =  DatabaseHelper.getsInstance(getApplicationContext()).grabActivity("Reading");
+        
+        //to get all the activity names
+        Set j =  DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.keySet();
     }
 }
