@@ -25,14 +25,22 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String COL1 = "Activity";
     public static final String COL2 = "Picture";
 
-    
+    public static final String TABLE_METADATA = "StatType Metadata";
+    public static final String COL_Activity = "Activity";
+    public static final String COL_StatType = "StatType";
+    public static final String COL_IsTimer  = "IsTimer";
+    public static final String COL_IsGPS = "IsGPS";
+    public static final String COL_Unit = "Unit";
+    public static final String COL_Description = "Description";
+
+
     public static Hashtable<String, List<String>>tablesInfo;
     //We don't want activities with the same name,
-    //that'll screw up everythnig, so the front end can
+    //that'll screw up my hash table, so the front end can
     //check tablesInfo to see if the desired activity is already a thing.
     //Then reject the activity name and prompt for a new one if it is.
-    //This is the line to check that: 
-    //if(DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.containsKey("Running") == false)
+    //OR I can use this to check if the activity is already a thing and send back an error code of some kind.
+    //DatabaseHelper_Object.tablesInfo.containsKey(String key)
     SQLiteDatabase db;
 
     //Singleton design pattern
@@ -45,7 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     //CONSTRUCTOR
-    private DatabaseHelper(Context context) 
+    private DatabaseHelper(Context context)  //whenever this is called, the database will be initialized.
     {
         super(context, DATABASE_NAME, null, DB_VERSION);
         db = getWritableDatabase();
@@ -72,14 +80,20 @@ public class DatabaseHelper extends SQLiteOpenHelper
 //                db.execSQL(tables_string);
 //            }
 //        }
-        String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ICONS (Activity TEXT PRIMARY KEY, Picture TEXT)";//+ attribute + ” TEXT,”
-        db.execSQL(CREATE_TABLE);
+        String CREATE_TABLE_ICONS = "CREATE TABLE IF NOT EXISTS ICONS (Activity TEXT PRIMARY KEY, Picture TEXT)";//+ attribute + ” TEXT,”
+        db.execSQL(CREATE_TABLE_ICONS);
+
+//        String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_MetaData (Activity NOT NULL TEXT, StatType NOT NULL TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT, PRIMARY KEY(Activity, StatType))";
+//        //String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_MetaData (Activity NOT NULL TEXT PRIMARY KEY, StatType TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT)";
+//
+//        db.execSQL(CREATE_TABLE_METADATA);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ICONS);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_METADATA);
         onCreate(db);
     }
 
@@ -111,6 +125,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
             exists.put(tableNames[x], columnsList);
         }
         //this hashtable will have a few extra values in it: the ICONS table, and the 2 built-in tables
+        exists.remove("ICONS");
+        exists.remove("android_metadata");
         return exists;
     }
 
@@ -134,6 +150,22 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.endTransaction();
         db.close();
     }
+
+    //Activity, StatType, IsTimer, IsGPS, Unit, Description
+    //example_array = {Running, Duration, Yes, No, minutes, Duration}
+//    public void updateMeta(String array[])
+//    {
+//            db.beginTransaction();
+//
+//            db = this.getWritableDatabase();
+//            ContentValues values = new ContentValues();
+//
+//            db.insert("StatType_MetaData", null, values);
+//            db.setTransactionSuccessful();
+//            db.endTransaction();
+//            db.close();
+//    }
+
 
     //array[] is an entry that's being entered into a table. array[0] is the table in question. All proceeding indeces are the attributes' data
     //array[] must ordered the same as the table was created. It is also case sensitive.
@@ -167,10 +199,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db = this.getReadableDatabase();
 
         Cursor dbCursor = db.query(activity, null, null, null, null, null, null);
-        String[] columnNames = dbCursor.getColumnNames();//columnNames is an array with all attributes for the activity
+        String[] columnNames = dbCursor.getColumnNames();//columnNames is an array with all columns for the activity
 
         long numberOfRows = DatabaseUtils.queryNumEntries(db, activity);
-        Hashtable<String, List<String>> doubles = new Hashtable<String, List<String>>(); //doubles will be the table that gets returned
+        Hashtable<String, List<String>> doubles = new Hashtable<String, List<String>>();
         Cursor cur;
         int x2;
 
@@ -184,8 +216,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 String [] yData = new String[columnNames.length];
 
                 for (int y = 1; y < columnNames.length; y++) //starting at y=1 to skip over attribute ID
-                    yData[y-1] = cur.getString(cur.getColumnIndex(columnNames[y])); //yData is an array with the value of each attribute for 1 entry
-                doubles.put(cur.getString(cur.getColumnIndex(columnNames[0])), Arrays.asList(yData)); 
+                    yData[y-1] = cur.getString(cur.getColumnIndex(columnNames[y]));
+                doubles.put(cur.getString(cur.getColumnIndex(columnNames[0])), Arrays.asList(yData));
             }
         }
         db.close();
