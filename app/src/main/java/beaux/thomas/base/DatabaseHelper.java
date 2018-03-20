@@ -25,7 +25,15 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String COL1 = "Activity";
     public static final String COL2 = "Picture";
 
-    //tablesInfo is not being saved. It's being reset each time the system starts again. This is causing the crash
+    public static final String TABLE_METADATA = "StatType Metadata";
+    public static final String COL_Activity = "Activity";
+    public static final String COL_StatType = "StatType";
+    public static final String COL_IsTimer  = "IsTimer";
+    public static final String COL_IsGPS = "IsGPS";
+    public static final String COL_Unit = "Unit";
+    public static final String COL_Description = "Description";
+
+
     public static Hashtable<String, List<String>>tablesInfo;
     //We don't want activities with the same name,
     //that'll screw up my hash table, so the front end can
@@ -72,14 +80,20 @@ public class DatabaseHelper extends SQLiteOpenHelper
 //                db.execSQL(tables_string);
 //            }
 //        }
-        String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ICONS (Activity TEXT PRIMARY KEY, Picture TEXT)";//+ attribute + ” TEXT,”
-        db.execSQL(CREATE_TABLE);
+        String CREATE_TABLE_ICONS = "CREATE TABLE IF NOT EXISTS ICONS (Activity TEXT PRIMARY KEY, Picture TEXT)";//+ attribute + ” TEXT,”
+        db.execSQL(CREATE_TABLE_ICONS);
+
+//        String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_MetaData (Activity NOT NULL TEXT, StatType NOT NULL TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT, PRIMARY KEY(Activity, StatType))";
+//        //String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_MetaData (Activity NOT NULL TEXT PRIMARY KEY, StatType TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT)";
+//
+//        db.execSQL(CREATE_TABLE_METADATA);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ICONS);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_METADATA);
         onCreate(db);
     }
 
@@ -111,6 +125,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
             exists.put(tableNames[x], columnsList);
         }
         //this hashtable will have a few extra values in it: the ICONS table, and the 2 built-in tables
+        exists.remove("ICONS");
+        exists.remove("android_metadata");
         return exists;
     }
 
@@ -134,6 +150,22 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.endTransaction();
         db.close();
     }
+
+    //Activity, StatType, IsTimer, IsGPS, Unit, Description
+    //example_array = {Running, Duration, Yes, No, minutes, Duration}
+//    public void updateMeta(String array[])
+//    {
+//            db.beginTransaction();
+//
+//            db = this.getWritableDatabase();
+//            ContentValues values = new ContentValues();
+//
+//            db.insert("StatType_MetaData", null, values);
+//            db.setTransactionSuccessful();
+//            db.endTransaction();
+//            db.close();
+//    }
+
 
     //array[] is an entry that's being entered into a table. array[0] is the table in question. All proceeding indeces are the attributes' data
     //array[] must ordered the same as the table was created. It is also case sensitive.
