@@ -33,7 +33,7 @@ public class ActivityManagement extends AppCompatActivity {
         String check = ActivityName.getText().toString();
         String[] New_Act = new String[1];
 
-        if(DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.containsKey(check) == false){
+        if(DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.containsKey(check) == true){
             Intent resultIntent = new Intent(this, HomeScreen.class);
             System.out.print("**********Already in DB************");
             // TODO Add extras or a data URI to this intent as appropriate.

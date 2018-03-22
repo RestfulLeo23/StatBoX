@@ -80,6 +80,7 @@ public class HomeScreen extends AppCompatActivity {
                     updateHomeScreen();
                     break;
                 }
+
                 if (resultCode == 666) {
                     System.out.print("ERROR CODE");
                     // TODO Extract the data returned from the child Activity.
@@ -106,6 +107,7 @@ public class HomeScreen extends AppCompatActivity {
         int n = act_set.size();
         String arr[] = new String[n];
         arr = act_set.toArray(arr);
+        int size = arr.length;
         for (String x : arr)
             System.out.println("UPDATE SCREEN"+ x);
 
@@ -115,26 +117,25 @@ public class HomeScreen extends AppCompatActivity {
         Button Act3 = findViewById(R.id.act3);
         Button Act4 = findViewById(R.id.act4);
 
+        if (size == 0) {
+            if (GraphView.getVisibility() == View.VISIBLE) {
+                GraphView.setVisibility(View.GONE);
+                Act1.setVisibility(View.GONE);
+                Act2.setVisibility(View.GONE);
+                Act3.setVisibility(View.GONE);
+                Act4.setVisibility(View.GONE);
+            }
+        }
+        if (size == 2){
+            if (GraphView.getVisibility()==View.VISIBLE){
+                GraphView.setVisibility(View.VISIBLE);
+                Act1.setVisibility(View.VISIBLE);
+                Button act1 = findViewById(R.id.act1);
+                act1.setText(arr[0]);
+            }
 
-        //if (Acts[0] == null){
-          //  if (GraphView.getVisibility()==View.VISIBLE){
-            //    GraphView.setVisibility(View.GONE);
-              //  Act1.setVisibility(View.GONE);
-             //   Act2.setVisibility(View.GONE);
-             //   Act3.setVisibility(View.GONE);
-             //   Act4.setVisibility(View.GONE);
-
-            //}
-        //}
-        //if (Acts[0] != null){
-          //  if (GraphView.getVisibility()==View.GONE){
-            //    GraphView.setVisibility(View.VISIBLE);
-             //   Act1.setVisibility(View.VISIBLE);
-              //  Button act1 = findViewById(R.id.act1);
-               // act1.setText(Acts[0]);
-            //}
-        //}
-    }
+        }
+}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
