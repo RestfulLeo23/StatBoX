@@ -40,6 +40,7 @@ public class ActivityManagement extends AppCompatActivity {
             New_Act[0] = "PRINTING ERROR INTENT CODE ";
             resultIntent.putExtra("ACT", New_Act);
             setResult(666, resultIntent);
+            finish();
         }
 
         New_Act[0] = ActivityName.getText().toString()+ ";"

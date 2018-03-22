@@ -73,7 +73,7 @@ public class HomeScreen extends AppCompatActivity {
                     String a = returnValue[0];
                     String[] act = ParseString(a);
                     for (String W : act){
-                        System.out.println(W);
+                        System.out.println("OK CODE: "+W);
                     }
 
                     DatabaseHelper.getsInstance(getApplicationContext()).createTable(act);
@@ -81,12 +81,13 @@ public class HomeScreen extends AppCompatActivity {
                     break;
                 }
                 if (resultCode == 666) {
+                    System.out.print("ERROR CODE");
                     // TODO Extract the data returned from the child Activity.
                     String[] returnValue = data.getStringArrayExtra("ACT");
                     String a = returnValue[0];
                     String[] act = ParseString(a);
                     for (String W : act){
-                        System.out.println(W);
+                        System.out.println("ERROR CODE" + W);
                     }
                     break;
                 }
@@ -106,7 +107,7 @@ public class HomeScreen extends AppCompatActivity {
         String arr[] = new String[n];
         arr = act_set.toArray(arr);
         for (String x : arr)
-            System.out.println(x);
+            System.out.println("UPDATE SCREEN"+ x);
 
         Button GraphView = findViewById(R.id.Graphview);
         Button Act1 = findViewById(R.id.act1);
