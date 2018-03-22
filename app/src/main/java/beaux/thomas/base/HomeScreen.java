@@ -136,6 +136,15 @@ public class HomeScreen extends AppCompatActivity {
                 Button act1 = findViewById(R.id.act1);
                 act1.setText(arr[0]);
             }
+            if (GraphView.getVisibility() == View.GONE) {
+                GraphView.setVisibility(View.VISIBLE);
+                Act1.setVisibility(View.VISIBLE);
+                Act2.setVisibility(View.GONE);
+                Act3.setVisibility(View.GONE);
+                Act4.setVisibility(View.GONE);
+                Button act1 = findViewById(R.id.act1);
+                act1.setText(arr[0]);
+            }
 
         }
         if (size == 2) {
