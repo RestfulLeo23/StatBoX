@@ -8,6 +8,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.HashSet;
+
+
+
 import android.widget.TextView;
 
 public class HomeScreen extends AppCompatActivity {
@@ -64,18 +70,24 @@ public class HomeScreen extends AppCompatActivity {
                 if (resultCode == OK) {
                     // TODO Extract the data returned from the child Activity.
                     String[] returnValue = data.getStringArrayExtra("ACT");
-                    String aName = returnValue[0];
-                    String sNames = returnValue[1];
-                    String sTypes = returnValue[2];
-                    String[] sNamesSplit = ParseString(sNames);
-                    String[] sTypesSplit = ParseString(sTypes);
-                    Activity activity = new Activity(aName, sNamesSplit, sTypesSplit);
-                    String[] statn = activity.getStatName();
-                    for (int i = 0; i < statn.length; i ++){
-                        System.out.println("-------------- Stat Name: "+statn[i]+"--------------");
+                    String a = returnValue[0];
+                    String[] act = ParseString(a);
+                    for (String W : act){
+                        System.out.println(W);
                     }
-                    Acts[0] = activity.getActivityName();
+
+                    DatabaseHelper.getsInstance(getApplicationContext()).createTable(act);
                     updateHomeScreen();
+                    break;
+                }
+                if (resultCode == 666) {
+                    // TODO Extract the data returned from the child Activity.
+                    String[] returnValue = data.getStringArrayExtra("ACT");
+                    String a = returnValue[0];
+                    String[] act = ParseString(a);
+                    for (String W : act){
+                        System.out.println(W);
+                    }
                     break;
                 }
             }
@@ -88,6 +100,14 @@ public class HomeScreen extends AppCompatActivity {
     }
 
     public void updateHomeScreen(){
+        // very early on
+        Set<String> act_set = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.keySet();
+        int n = act_set.size();
+        String arr[] = new String[n];
+        arr = act_set.toArray(arr);
+        for (String x : arr)
+            System.out.println(x);
+
         Button GraphView = findViewById(R.id.Graphview);
         Button Act1 = findViewById(R.id.act1);
         Button Act2 = findViewById(R.id.act2);
@@ -95,24 +115,24 @@ public class HomeScreen extends AppCompatActivity {
         Button Act4 = findViewById(R.id.act4);
 
 
-        if (Acts[0] == null){
-            if (GraphView.getVisibility()==View.VISIBLE){
-                GraphView.setVisibility(View.GONE);
-                Act1.setVisibility(View.GONE);
-                Act2.setVisibility(View.GONE);
-                Act3.setVisibility(View.GONE);
-                Act4.setVisibility(View.GONE);
+        //if (Acts[0] == null){
+          //  if (GraphView.getVisibility()==View.VISIBLE){
+            //    GraphView.setVisibility(View.GONE);
+              //  Act1.setVisibility(View.GONE);
+             //   Act2.setVisibility(View.GONE);
+             //   Act3.setVisibility(View.GONE);
+             //   Act4.setVisibility(View.GONE);
 
-            }
-        }
-        if (Acts[0] != null){
-            if (GraphView.getVisibility()==View.GONE){
-                GraphView.setVisibility(View.VISIBLE);
-                Act1.setVisibility(View.VISIBLE);
-                Button act1 = findViewById(R.id.act1);
-                act1.setText(Acts[0]);
-            }
-        }
+            //}
+        //}
+        //if (Acts[0] != null){
+          //  if (GraphView.getVisibility()==View.GONE){
+            //    GraphView.setVisibility(View.VISIBLE);
+             //   Act1.setVisibility(View.VISIBLE);
+              //  Button act1 = findViewById(R.id.act1);
+               // act1.setText(Acts[0]);
+            //}
+        //}
     }
 
     @Override

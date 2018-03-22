@@ -30,16 +30,35 @@ public class ActivityManagement extends AppCompatActivity {
         EditText StatType4 = (EditText) findViewById(R.id.StatType4);
         EditText StatType5 = (EditText) findViewById(R.id.StatType5);
 
-        String[] New_Act = new String[3];
+        String check = ActivityName.getText().toString();
+        String[] New_Act = new String[1];
 
-        New_Act[0] = ActivityName.getText().toString();
-        New_Act[1] = StatName1.getText().toString()+ ";" +StatName2.getText().toString()+ ";" +StatName3.getText().toString()+ ";" +StatName4.getText().toString()+ ";" +StatName5.getText().toString();
-        New_Act[2] = StatType1.getText().toString()+ ";" +StatType2.getText().toString()+ ";" +StatType3.getText().toString()+ ";" +StatType4.getText().toString()+ ";" +StatType5.getText().toString();
+        if(DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.containsKey(check) == false){
+            Intent resultIntent = new Intent(this, HomeScreen.class);
+            System.out.print("**********Already in DB************");
+            // TODO Add extras or a data URI to this intent as appropriate.
+            New_Act[0] = "PRINTING ERROR INTENT CODE ";
+            resultIntent.putExtra("ACT", New_Act);
+            setResult(666, resultIntent);
+        }
+
+        New_Act[0] = ActivityName.getText().toString()+ ";"
+                +StatName1.getText().toString()+ ";"
+                +StatName2.getText().toString()+ ";"
+                +StatName3.getText().toString()+ ";"
+                +StatName4.getText().toString()+ ";"
+                +StatName5.getText().toString()+ ";"
+                +StatType1.getText().toString()+ ";"
+                +StatType2.getText().toString()+ ";"
+                +StatType3.getText().toString()+ ";"
+                +StatType4.getText().toString()+ ";"
+                +StatType5.getText().toString();
 
         Intent resultIntent = new Intent(this, HomeScreen.class);
 
         // TODO Add extras or a data URI to this intent as appropriate.
         resultIntent.putExtra("ACT",New_Act);
+
         setResult(1, resultIntent);
         finish();
 
