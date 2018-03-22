@@ -17,7 +17,6 @@ import java.util.List;
 /**
  * Created by Owner on 2/16/2018.
  */
-
 public class DatabaseHelper extends SQLiteOpenHelper
 {
     public static final String DATABASE_NAME = "statboxDB.db";

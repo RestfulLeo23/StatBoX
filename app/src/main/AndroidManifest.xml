@@ -3,58 +3,41 @@
     package="beaux.thomas.base">
 
     <application
+
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".HomeScreen"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ActivityManagement"
-            android:parentActivityName=".HomeScreen">
 
+
+        <activity android:name=".ActivityManagement"
+            android:parentActivityName=".HomeScreen">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".HomeScreen" />
         </activity>
-        <activity
-            android:name=".InputStat"
-            android:parentActivityName=".HomeScreen">
 
+        <activity android:name=".InputStat"
+            android:parentActivityName=".HomeScreen">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".HomeScreen" />
         </activity>
-        <activity
-            android:name=".ViewActivity"
-            android:label="@string/title_activity_view"
-            android:parentActivityName=".HomeScreen"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="beaux.thomas.base.HomeScreen" />
-        </activity>
-        <activity
-            android:name=".GraphView"
-            android:label="@string/title_activity_graph_view"
-            android:parentActivityName=".HomeScreen"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="beaux.thomas.base.HomeScreen" />
-        </activity>
+
     </application>
 
 </manifest>
