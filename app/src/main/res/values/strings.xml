@@ -1,6 +1,13 @@
 <resources>
-    <string name="app_name">Base</string>
+    <string name="app_name">StatboX</string>
     <string name="action_settings">Settings</string>
-    <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
+    <string name="title_activity_stat_input_fob">StatInputFOB</string>
+    <string name="title_activity_fob">FOB</string>
+    <string name="activity_name">Enter Activity Name</string>
+    <string name="stat_name">Enter Stat Name</string>
+    <string name="send_stat">Create</string>
+    <string name="stat_type">Stat Type</string>
+    <string name="title_activity_view">ViewActivity</string>
+    <string name="title_activity_graph_view">GraphView</string>
 </resources>
