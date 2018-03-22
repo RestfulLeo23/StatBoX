@@ -17,7 +17,9 @@ import java.util.List;
 /**
  * Created by Owner on 2/16/2018.
  */
-public class DatabaseHelper extends SQLiteOpenHelper {
+
+public class DatabaseHelper extends SQLiteOpenHelper
+{
     public static final String DATABASE_NAME = "statboxDB.db";
     public static final int DB_VERSION = 1;
     public static final String TABLE_ICONS = "ICONS";
@@ -27,25 +29,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_METADATA = "StatType Metadata";
     public static final String COL_Activity = "Activity";
     public static final String COL_StatType = "StatType";
-    public static final String COL_IsTimer = "IsTimer";
+    public static final String COL_IsTimer  = "IsTimer";
     public static final String COL_IsGPS = "IsGPS";
     public static final String COL_Unit = "Unit";
     public static final String COL_Description = "Description";
 
 
-    public static Hashtable<String, List<String>> tablesInfo;
+    public static Hashtable<String, List<String>>tablesInfo;
     //We don't want activities with the same name,
     //that'll screw up my hash table, so the front end can
     //check tablesInfo to see if the desired activity is already a thing.
     //Then reject the activity name and prompt for a new one if it is.
     //OR I can use this to check if the activity is already a thing and send back an error code of some kind.
     //DatabaseHelper_Object.tablesInfo.containsKey(String key)
+
+    //To get a list of all Activity names:
+    //Set j =  DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.keySet();
     SQLiteDatabase db;
 
     //Singleton design pattern
     private static DatabaseHelper sInstance;
-
-    public static synchronized DatabaseHelper getsInstance(Context context) {
+    public static synchronized DatabaseHelper getsInstance(Context context)
+    {
         if (sInstance == null)
             sInstance = new DatabaseHelper(context.getApplicationContext());
         return sInstance;
@@ -82,23 +87,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String CREATE_TABLE_ICONS = "CREATE TABLE IF NOT EXISTS ICONS (Activity TEXT PRIMARY KEY, Picture TEXT)";//+ attribute + ” TEXT,”
         db.execSQL(CREATE_TABLE_ICONS);
 
-//        String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_MetaData (Activity NOT NULL TEXT, StatType NOT NULL TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT, PRIMARY KEY(Activity, StatType))";
-//        //String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_MetaData (Activity NOT NULL TEXT PRIMARY KEY, StatType TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT)";
-//
+        //String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_MetaData (Activity NOT NULL TEXT, StatType NOT NULL TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT, PRIMARY KEY(Activity, StatType))";
+//        String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_MetaData (Activity NOT NULL TEXT PRIMARY KEY, StatType TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT)";
 //        db.execSQL(CREATE_TABLE_METADATA);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
+    {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ICONS);
-        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_METADATA);
+//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_METADATA);
         onCreate(db);
     }
 
     private Hashtable<String, List<String>> restoreDBState() {
         return getExistingTables();
     }
-
     private Hashtable<String, List<String>> getExistingTables() {
         //query master table and return it
         Hashtable exists = new Hashtable<String, List<String>>();
@@ -107,8 +111,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
         List<String> tableNamesList = new ArrayList<String>();
         if (c.moveToFirst()) {
-            while (!c.isAfterLast()) {
-                tableNamesList.add(c.getString(c.getColumnIndex("name")));
+            while ( !c.isAfterLast() ) {
+                tableNamesList.add( c.getString( c.getColumnIndex("name")) );
                 c.moveToNext();
             }
         }
@@ -116,15 +120,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         tableNamesList.toArray(tableNames);
         //so now, tablesNames is an array of all the table names in the database.
         //Now we have to extract the attributes for each of them, in order to fully construct the final hashtable
-        for (int x = 0; x < tableNamesList.size(); x++) {
+        for(int x = 0; x< tableNamesList.size(); x++)
+        {
             Cursor dbCursor = db.query(tableNames[x], null, null, null, null, null, null);
             String[] columnNames = dbCursor.getColumnNames();
             List<String> columnsList = Arrays.asList(columnNames);
             exists.put(tableNames[x], columnsList);
         }
-        //this hashtable will have a few extra values in it: the ICONS table, and the 2 built-in tables
+        //this hashtable will have a few extra values in it: the ICONS table, the metadata table, & a built-in table which we need to remove
         exists.remove("ICONS");
         exists.remove("android_metadata");
+//        exists.remove("TABLE_METADATA");
         return exists;
     }
 
@@ -137,9 +143,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db = getWritableDatabase();
         String tableName = array[0];
         db.beginTransaction();
-        db.execSQL("CREATE TABLE " + tableName + " (ID INTEGER PRIMARY KEY AUTOINCREMENT)");
-        for (int x = 1; x < array.length; x++) {
-            db.execSQL("ALTER TABLE " + tableName + " ADD COLUMN " + array[x] + " STRING");
+        db.execSQL("CREATE TABLE " + tableName+ " (ID INTEGER PRIMARY KEY AUTOINCREMENT)");
+        for (int x = 1; x< array.length; x++)
+        {
+            db.execSQL("ALTER TABLE " + tableName +  " ADD COLUMN " +array[x]+ " STRING");
         }
         List<String> l = Arrays.asList(array); //in java there is no array[1:] but there is if it's a list.
         tablesInfo.put(array[0], l.subList(1, array.length)); //This creates an active list of all tables and their attributes
@@ -148,19 +155,63 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    //Activity, Picture
+    //DatabaseHelper.getsInstance(getApplicationContext()).updateIcons("Running", "some_address string");
+    public void updateIcons(String activity, String address)
+    {
+        db = this.getWritableDatabase();
+        db.beginTransaction();
+
+        ContentValues values = new ContentValues();
+        values.put("Activity", activity);
+        values.put("Picture", address);
+
+
+        db.insert("ICONS", null, values);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
+
     //Activity, StatType, IsTimer, IsGPS, Unit, Description
-    //example_array = {Running, Duration, Yes, No, minutes, Duration}
+    //example_array = {"Running", "Duration", "Yes", "No", "minutes", "The duration"}
 //    public void updateMeta(String array[])
 //    {
+//            db = this.getWritableDatabase();
 //            db.beginTransaction();
 //
-//            db = this.getWritableDatabase();
 //            ContentValues values = new ContentValues();
+//            values.put("Activity", array[0]);
+//            values.put("StatType", array[1]);
+//            values.put("IsTimer", array[2]);
+//            values.put("IsGPS", array[3]);
+//            values.put("Unit", array[4]);
+//            values.put("Description", array[5]);
 //
 //            db.insert("StatType_MetaData", null, values);
 //            db.setTransactionSuccessful();
 //            db.endTransaction();
 //            db.close();
+//    }
+//
+//    public List<String> pullStatTypeMetadata(String activity, String stattype)
+//    {
+//        db = getReadableDatabase();
+//        String [] columns = {"IsTimer", "IsGPS", "Unit", "Description"}; //these are the columns to be returned. We don't need Activity or StatType
+//                                                                        //because those are known (they're what's being passed into this whole function).
+//        Cursor cur = db.query("TABLE_METADATA", columns, "Activity = "+activity + " AND StatType = " + stattype, null, null, null, null, null);
+//        List<String> theRow = new ArrayList<String>();
+//        if (cur.moveToFirst())
+//        {
+//            while ( !cur.isAfterLast() )
+//            {
+//                theRow.add( cur.getString( cur.getColumnIndex("name")) );
+//                cur.moveToNext();
+//            }
+//        }
+//        db.close();
+//        return theRow;
 //    }
 
 
@@ -177,7 +228,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        for (int x = 1; x < array.length; x++) {
+        for(int x=1; x<array.length; x++)
+        {
             values.put(columnNames[x], array[x]);    //arg1 is column name, arg2 is data
         }
 
@@ -190,7 +242,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //grabActivity queries the database and returns all entries as a Hashtable
     //activity is the activity you want to query. It is case sensitive.
     //The returned Hashtable, the key is the ID primary key for each index.
-    public Hashtable<String, List<String>> grabActivity(String activity) {
+    public Hashtable<String, List<String>> grabActivity(String activity)
+    {
         db = this.getReadableDatabase();
 
         Cursor dbCursor = db.query(activity, null, null, null, null, null, null);
@@ -201,20 +254,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cur;
         int x2;
 
-        for (int x = 0; x < numberOfRows; x++)//runs once per row/entry
+        for(int x=0; x < numberOfRows; x++)//runs once per row/entry
         {
-            x2 = x + 1;
+            x2=x+1;
             //SQLiteDatabase db = getWritableDatabase();
-            cur = db.rawQuery("SELECT * FROM " + activity + " WHERE ID = " + x2, null);
-            if (cur.moveToFirst()) {
-                String[] yData = new String[columnNames.length];
+            cur = db.rawQuery("SELECT * FROM " + activity+ " WHERE ID = " +x2, null);
+            if (cur.moveToFirst())
+            {
+                String [] yData = new String[columnNames.length];
 
                 for (int y = 1; y < columnNames.length; y++) //starting at y=1 to skip over attribute ID
-                    yData[y - 1] = cur.getString(cur.getColumnIndex(columnNames[y]));
+                    yData[y-1] = cur.getString(cur.getColumnIndex(columnNames[y]));
                 doubles.put(cur.getString(cur.getColumnIndex(columnNames[0])), Arrays.asList(yData));
             }
         }
         db.close();
         return doubles;
     }
+
 }
