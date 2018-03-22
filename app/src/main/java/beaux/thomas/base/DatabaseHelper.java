@@ -127,9 +127,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
             List<String> columnsList = Arrays.asList(columnNames);
             exists.put(tableNames[x], columnsList);
         }
-        //this hashtable will have a few extra values in it: the ICONS table, the metadata table, & a built-in table which we need to remove
+        //this hashtable will have a few extra values in it: the ICONS table, the metadata table, & 2 built-in tables which we need to remove
         exists.remove("ICONS");
         exists.remove("android_metadata");
+        exists.remove("sqlite_sequence");
 //        exists.remove("TABLE_METADATA");
         return exists;
     }
@@ -174,7 +175,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
 
-    //Activity, StatType, IsTimer, IsGPS, Unit, Description
+    //Activity, StatType, IsTimer, IsGPS, Unit, Description             ***TO EVERYONE ELSE, STAT TYPE IS STAT NAME AND UNIT IS STAT TYPE**
     //example_array = {"Running", "Duration", "Yes", "No", "minutes", "The duration"}
 //    public void updateMeta(String array[])
 //    {

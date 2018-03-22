@@ -101,7 +101,7 @@ public class HomeScreen extends AppCompatActivity {
         return result;
     }
 
-    public void updateHomeScreen(){
+    public void updateHomeScreen() {
         // very early on
         Set<String> act_set = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.keySet();
         int n = act_set.size();
@@ -109,7 +109,7 @@ public class HomeScreen extends AppCompatActivity {
         arr = act_set.toArray(arr);
         int size = arr.length;
         for (String x : arr)
-            System.out.println("UPDATE SCREEN"+ x);
+            System.out.println("UPDATE SCREEN" + x);
 
         Button GraphView = findViewById(R.id.Graphview);
         Button Act1 = findViewById(R.id.act1);
@@ -126,16 +126,71 @@ public class HomeScreen extends AppCompatActivity {
                 Act4.setVisibility(View.GONE);
             }
         }
-        if (size == 2){
-            if (GraphView.getVisibility()==View.VISIBLE){
+        if (size == 1) {
+            if (GraphView.getVisibility() == View.VISIBLE) {
                 GraphView.setVisibility(View.VISIBLE);
                 Act1.setVisibility(View.VISIBLE);
+                Act2.setVisibility(View.GONE);
+                Act3.setVisibility(View.GONE);
+                Act4.setVisibility(View.GONE);
                 Button act1 = findViewById(R.id.act1);
                 act1.setText(arr[0]);
             }
 
         }
-}
+        if (size == 2) {
+            if (GraphView.getVisibility() == View.VISIBLE) {
+                GraphView.setVisibility(View.VISIBLE);
+                Act1.setVisibility(View.VISIBLE);
+                Act2.setVisibility(View.VISIBLE);
+                Act3.setVisibility(View.GONE);
+                Act4.setVisibility(View.GONE);
+
+                Button act2 = findViewById(R.id.act2);
+                act2.setText(arr[0]);
+
+                Button act1 = findViewById(R.id.act1);
+                act1.setText(arr[1]);
+            }
+        }
+
+        if (size == 3) {
+            if (GraphView.getVisibility() == View.VISIBLE) {
+                GraphView.setVisibility(View.VISIBLE);
+                Act1.setVisibility(View.VISIBLE);
+                Act2.setVisibility(View.VISIBLE);
+                Act3.setVisibility(View.VISIBLE);
+                Act4.setVisibility(View.GONE);
+
+                Button act3 = findViewById(R.id.act3);
+                act3.setText(arr[2]);
+
+                Button act2 = findViewById(R.id.act2);
+                act2.setText(arr[1]);
+
+                Button act1 = findViewById(R.id.act1);
+                act1.setText(arr[0]);
+            }
+        }
+        if (size == 4) {
+            if (GraphView.getVisibility() == View.VISIBLE) {
+                GraphView.setVisibility(View.VISIBLE);
+                Act1.setVisibility(View.VISIBLE);
+                Act2.setVisibility(View.VISIBLE);
+                Act3.setVisibility(View.VISIBLE);
+                Act4.setVisibility(View.VISIBLE);
+                Button act4 = findViewById(R.id.act4);
+                act4.setText(arr[3]);
+                Button act3 = findViewById(R.id.act3);
+                act3.setText(arr[2]);
+                Button act2 = findViewById(R.id.act2);
+                act2.setText(arr[1]);
+                Button act1 = findViewById(R.id.act1);
+                act1.setText(arr[0]);
+            }
+        }
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
