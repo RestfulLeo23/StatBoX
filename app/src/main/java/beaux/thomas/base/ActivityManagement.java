@@ -16,6 +16,7 @@ public class ActivityManagement extends AppCompatActivity {
     }
 
     public void GatherStatInfo(View view){
+        System.out.println("ACTIVITY CREATION");
         EditText ActivityName = (EditText) findViewById(R.id.ActivityName);
 
         EditText StatName1 = (EditText) findViewById(R.id.StatName);
@@ -31,8 +32,8 @@ public class ActivityManagement extends AppCompatActivity {
         EditText StatType5 = (EditText) findViewById(R.id.StatType5);
 
         String check = ActivityName.getText().toString();
-        String[] New_Act = new String[1];
-
+        String[] New_Act = new String[3];
+/**
         if(DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.containsKey(check) == true){
             Intent resultIntent = new Intent(this, HomeScreen.class);
             System.out.print("**********Already in DB************");
@@ -42,14 +43,14 @@ public class ActivityManagement extends AppCompatActivity {
             setResult(666, resultIntent);
             finish();
         }
-
-        New_Act[0] = ActivityName.getText().toString()+ ";"
-                +StatName1.getText().toString()+ ";"
+**/
+        New_Act[0] = ActivityName.getText().toString();
+        New_Act[1] = StatName1.getText().toString()+ ";"
                 +StatName2.getText().toString()+ ";"
                 +StatName3.getText().toString()+ ";"
                 +StatName4.getText().toString()+ ";"
-                +StatName5.getText().toString()+ ";"
-                +StatType1.getText().toString()+ ";"
+                +StatName5.getText().toString();
+        New_Act[2] = StatType1.getText().toString()+ ";"
                 +StatType2.getText().toString()+ ";"
                 +StatType3.getText().toString()+ ";"
                 +StatType4.getText().toString()+ ";"

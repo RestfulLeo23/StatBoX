@@ -15,7 +15,7 @@ import java.util.List;
 //import static java.lang.Math.toIntExact;
 
 /**
- * Created by Owner on 2/16/2018.
+ * Created by David on 2/16/2018.
  */
 
 public class DatabaseHelper extends SQLiteOpenHelper
@@ -40,7 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     //that'll screw up my hash table, so the front end can
     //check tablesInfo to see if the desired activity is already a thing.
     //Then reject the activity name and prompt for a new one if it is.
-    //OR I can use this to check if the activity is already a thing and send back an error code of some kind.
+
     //DatabaseHelper_Object.tablesInfo.containsKey(String key)
 
     //To get a list of all Activity names:
@@ -84,21 +84,22 @@ public class DatabaseHelper extends SQLiteOpenHelper
 //                db.execSQL(tables_string);
 //            }
 //        }
-        String CREATE_TABLE_ICONS = "CREATE TABLE IF NOT EXISTS ICONS (Activity TEXT PRIMARY KEY, Picture TEXT)";//+ attribute + ” TEXT,”
+        String CREATE_TABLE_ICONS = "CREATE TABLE IF NOT EXISTS ICONS (\"Activity TEXT PRIMARY KEY, Picture TEXT\");";//+ attribute + ” TEXT,”
         db.execSQL(CREATE_TABLE_ICONS);
 
-        //String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_MetaData (Activity NOT NULL TEXT, StatType NOT NULL TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT, PRIMARY KEY(Activity, StatType))";
-//        String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_MetaData (Activity NOT NULL TEXT PRIMARY KEY, StatType TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT)";
-//        db.execSQL(CREATE_TABLE_METADATA);
+        String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_MetaData (\"Activity NOT NULL TEXT, StatType NOT NULL TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT, PRIMARY KEY(Activity, StatType)\");";
+        //String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_MetaData (\"Activity NOT NULL TEXT PRIMARY KEY, StatType TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT\");";
+        db.execSQL(CREATE_TABLE_METADATA);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ICONS);
-//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_METADATA);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_METADATA);
         onCreate(db);
     }
+
 
     private Hashtable<String, List<String>> restoreDBState() {
         return getExistingTables();
@@ -131,7 +132,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         exists.remove("ICONS");
         exists.remove("android_metadata");
         exists.remove("sqlite_sequence");
-//        exists.remove("TABLE_METADATA");
+        exists.remove("TABLE_METADATA");
         return exists;
     }
 
@@ -151,6 +152,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
         List<String> l = Arrays.asList(array); //in java there is no array[1:] but there is if it's a list.
         tablesInfo.put(array[0], l.subList(1, array.length)); //This creates an active list of all tables and their attributes
+        //System.out.println("TFEHDSHNJKXIUGFVGBHJUREDSXDCFVGBHYTRFDCVBNJMKIUYGBNMJKIUYTGFBHNJMUGFVGB"+l.subList(1,array.length));
         db.setTransactionSuccessful();
         db.endTransaction();
         db.close();
@@ -177,43 +179,43 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     //Activity, StatType, IsTimer, IsGPS, Unit, Description             ***TO EVERYONE ELSE, STAT TYPE IS STAT NAME AND UNIT IS STAT TYPE**
     //example_array = {"Running", "Duration", "Yes", "No", "minutes", "The duration"}
-//    public void updateMeta(String array[])
-//    {
-//            db = this.getWritableDatabase();
-//            db.beginTransaction();
-//
-//            ContentValues values = new ContentValues();
-//            values.put("Activity", array[0]);
-//            values.put("StatType", array[1]);
-//            values.put("IsTimer", array[2]);
-//            values.put("IsGPS", array[3]);
-//            values.put("Unit", array[4]);
-//            values.put("Description", array[5]);
-//
-//            db.insert("StatType_MetaData", null, values);
-//            db.setTransactionSuccessful();
-//            db.endTransaction();
-//            db.close();
-//    }
-//
-//    public List<String> pullStatTypeMetadata(String activity, String stattype)
-//    {
-//        db = getReadableDatabase();
-//        String [] columns = {"IsTimer", "IsGPS", "Unit", "Description"}; //these are the columns to be returned. We don't need Activity or StatType
-//                                                                        //because those are known (they're what's being passed into this whole function).
-//        Cursor cur = db.query("TABLE_METADATA", columns, "Activity = "+activity + " AND StatType = " + stattype, null, null, null, null, null);
-//        List<String> theRow = new ArrayList<String>();
-//        if (cur.moveToFirst())
-//        {
-//            while ( !cur.isAfterLast() )
-//            {
-//                theRow.add( cur.getString( cur.getColumnIndex("name")) );
-//                cur.moveToNext();
-//            }
-//        }
-//        db.close();
-//        return theRow;
-//    }
+    public void updateMeta(String array[])
+    {
+        db = this.getWritableDatabase();
+        db.beginTransaction();
+
+        ContentValues values = new ContentValues();
+        values.put("Activity", array[0]);
+        values.put("StatType", array[1]);
+        values.put("IsTimer", array[2]);
+        values.put("IsGPS", array[3]);
+        values.put("Unit", array[4]);
+        values.put("Description", array[5]);
+
+        db.insert("StatType_MetaData", null, values);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
+    public List<String> pullStatTypeMetadata(String activity, String stattype)
+    {
+        db = getReadableDatabase();
+        String [] columns = {"IsTimer", "IsGPS", "Unit", "Description"}; //these are the columns to be returned. We don't need Activity or StatType
+        //because those are known (they're what's being passed into this whole function).
+        Cursor cur = db.query("TABLE_METADATA", columns, "Activity = "+activity + " AND StatType = " + stattype, null, null, null, null, null);
+        List<String> theRow = new ArrayList<String>();
+        if (cur.moveToFirst())
+        {
+            while ( !cur.isAfterLast() )
+            {
+                theRow.add( cur.getString( cur.getColumnIndex("name")) );
+                cur.moveToNext();
+            }
+        }
+        db.close();
+        return theRow;
+    }
 
 
     //array[] is an entry that's being entered into a table. array[0] is the table in question. All proceeding indeces are the attributes' data
@@ -273,4 +275,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return doubles;
     }
 
+
+    //for testing purposes
+    //DatabaseHelper.getsInstance(getApplicationContext()).death();
+    public void death(Context context)
+    {
+        context.deleteDatabase(DATABASE_NAME);
+    }
 }

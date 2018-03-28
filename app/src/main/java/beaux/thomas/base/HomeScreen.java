@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -50,8 +51,6 @@ public class HomeScreen extends AppCompatActivity {
     /** Called when the user taps the Send button */
     public void ViewActivityMode(View view) {
         Intent intent = new Intent(this, ViewActivity.class);
-        String message = Acts[0];
-        intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
 
@@ -59,7 +58,7 @@ public class HomeScreen extends AppCompatActivity {
     public void ActivityManagementMode(View view) {
         Intent intent = new Intent(this, ActivityManagement.class);
         startActivityForResult(intent,GET_NEW_ACT);
-        updateHomeScreen();
+        //updateHomeScreen();
     }
 
     @Override
@@ -68,19 +67,34 @@ public class HomeScreen extends AppCompatActivity {
         switch (requestCode) {
             case (GET_NEW_ACT): {
                 if (resultCode == OK) {
+                    System.out.println("OK RESULT CODE");
                     // TODO Extract the data returned from the child Activity.
                     String[] returnValue = data.getStringArrayExtra("ACT");
-                    String a = returnValue[0];
-                    String[] act = ParseString(a);
-                    for (String W : act){
-                        System.out.println("OK CODE: "+W);
-                    }
+                    String[] aName = {returnValue[0]};
+                    String[] sName = ParseString(returnValue[1]);
+                    String[] sType = ParseString(returnValue[2]);
 
-                    DatabaseHelper.getsInstance(getApplicationContext()).createTable(act);
+                    System.out.println("BEFORE DATABASE INSERTION");
+                    DatabaseHelper.getsInstance(getApplicationContext());
+                    System.out.println("AFTER NULL CHECK");
+                    DatabaseHelper.getsInstance(getApplicationContext()).createTable(aName);
+                    System.out.println("AFTER DATABASE INSERTYION");
+                    for (int i = 0; i<sName.length; i++){
+                        String[] ACTDB = new String[6];
+                        ACTDB[0]= aName[0];
+                        ACTDB[1]= sName[i];
+                        ACTDB[2]= "1";
+                        ACTDB[3]= "1";
+                        ACTDB[4]= sType[i];
+                        ACTDB[5]= "SAMPLE DESPT";
+                        System.out.println(Arrays.toString(ACTDB));
+                        DatabaseHelper.getsInstance(getApplicationContext()).updateMeta(ACTDB);
+                    }
+                    List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(aName[0]);
+                    System.out.println(Pull);
                     updateHomeScreen();
                     break;
                 }
-
                 if (resultCode == 666) {
                     System.out.print("ERROR CODE");
                     // TODO Extract the data returned from the child Activity.
@@ -103,20 +117,23 @@ public class HomeScreen extends AppCompatActivity {
 
     public void updateHomeScreen() {
         // very early on
+        System.out.println("UPDATE HOME SCREEN");
         Set<String> act_set = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.keySet();
         int n = act_set.size();
         String arr[] = new String[n];
         arr = act_set.toArray(arr);
         int size = arr.length;
+        System.out.println("NUMBER OF ACTS: "+size);
         for (String x : arr)
-            System.out.println("UPDATE SCREEN" + x);
-
+            System.out.println("UPDATE SCREEN: " + x);
         Button GraphView = findViewById(R.id.Graphview);
         Button Act1 = findViewById(R.id.act1);
         Button Act2 = findViewById(R.id.act2);
         Button Act3 = findViewById(R.id.act3);
         Button Act4 = findViewById(R.id.act4);
-
+        if (act_set == null){
+            System.out.println("NULL DATABASE");
+        }
         if (size == 0) {
             if (GraphView.getVisibility() == View.VISIBLE) {
                 GraphView.setVisibility(View.GONE);
@@ -127,6 +144,7 @@ public class HomeScreen extends AppCompatActivity {
             }
         }
         if (size == 1) {
+            //System.out.print("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
             if (GraphView.getVisibility() == View.VISIBLE) {
                 GraphView.setVisibility(View.VISIBLE);
                 Act1.setVisibility(View.VISIBLE);
@@ -154,12 +172,10 @@ public class HomeScreen extends AppCompatActivity {
                 Act2.setVisibility(View.VISIBLE);
                 Act3.setVisibility(View.GONE);
                 Act4.setVisibility(View.GONE);
-
                 Button act2 = findViewById(R.id.act2);
-                act2.setText(arr[0]);
-
+                act2.setText(arr[1]);
                 Button act1 = findViewById(R.id.act1);
-                act1.setText(arr[1]);
+                act1.setText(arr[0]);
             }
         }
 
@@ -170,13 +186,10 @@ public class HomeScreen extends AppCompatActivity {
                 Act2.setVisibility(View.VISIBLE);
                 Act3.setVisibility(View.VISIBLE);
                 Act4.setVisibility(View.GONE);
-
                 Button act3 = findViewById(R.id.act3);
                 act3.setText(arr[2]);
-
                 Button act2 = findViewById(R.id.act2);
                 act2.setText(arr[1]);
-
                 Button act1 = findViewById(R.id.act1);
                 act1.setText(arr[0]);
             }
@@ -198,7 +211,12 @@ public class HomeScreen extends AppCompatActivity {
                 act1.setText(arr[0]);
             }
         }
+    }
 
+    public void deleteDB(View view){
+        System.out.println("DELETING DB");
+        DatabaseHelper.getsInstance(getApplicationContext()).death(this);
+        updateHomeScreen();
     }
 
     @Override
