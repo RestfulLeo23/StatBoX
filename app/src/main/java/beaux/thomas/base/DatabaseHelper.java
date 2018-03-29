@@ -168,7 +168,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.endTransaction();
         db.close();
  //       System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFF full tablesInfo: " + tablesInfo);
- //       System.out.println("keyset test: " + tablesInfo.keySet() + "\nget test with "+tableName+": " + tablesInfo.get(array[0]));
+        System.out.println("keyset test: " + tablesInfo.keySet() + "\nget test with "+tableName+": " + tablesInfo.get(array[0]));
     }
 
     //Activity, Picture
@@ -205,7 +205,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             values.put("Unit", array[4]);
             values.put("Description", array[5]);
 
-//System.out.println("RRRRREEEEEEEEEEEEEEEEEEEEE\narray = " + array.toString() + "\nvalues = " + values);
+//System.out.println("RRRRREEEEEEEEEEEEEEEEEEEEEE\narray = " + array.toString() + "\nvalues = " + values);
 
             db.insert(TABLE_METADATA, null, values);
             db.setTransactionSuccessful();
