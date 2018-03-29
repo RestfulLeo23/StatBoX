@@ -32,7 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String TABLE_METADATA = "StatType_Metadata";
     public static final String COL_Activity = "Activity";
     public static final String COL_StatType = "StatType";
-    public static final String COL_IsTimer  = "IsTimer";
+    public static final String COL_IsTimer  = "IsTimer";//IsTimer TEXT
     public static final String COL_IsGPS = "IsGPS";
     public static final String COL_Unit = "Unit";
     public static final String COL_Description = "Description";
@@ -162,11 +162,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
         List<String> temp = Arrays.asList(array); //in java there is no array[1:] but there is if it's a list.
         tablesInfo.put(tableName, temp.subList(1, array.length)); //This creates an active list of all tables and their attributes
 //        System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG temp.sublist(1, array.length): " + temp.subList(1, array.length));
-//        System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFF full tablesInfo: " + tablesInfo);
+ //      System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFF full tablesInfo: " + tablesInfo);
 //        System.out.println("keyset test: " + tablesInfo.keySet() + "\nget test with "+tableName+": " + tablesInfo.get(array[0]));
         db.setTransactionSuccessful();
         db.endTransaction();
         db.close();
+ //       System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFF full tablesInfo: " + tablesInfo);
+ //       System.out.println("keyset test: " + tablesInfo.keySet() + "\nget test with "+tableName+": " + tablesInfo.get(array[0]));
     }
 
     //Activity, Picture
@@ -203,6 +205,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
             values.put("Unit", array[4]);
             values.put("Description", array[5]);
 
+//System.out.println("RRRRREEEEEEEEEEEEEEEEEEEEE\narray = " + array.toString() + "\nvalues = " + values);
+
             db.insert(TABLE_METADATA, null, values);
             db.setTransactionSuccessful();
             db.endTransaction();
@@ -212,9 +216,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public List<String> pullStatTypeMetadata(String activity, String stattype)
     {
         db = getReadableDatabase();
-        String [] columns = {"IsTimer", "IsGPS", "Unit", "Description"}; //these are the columns to be returned. We don't need Activity or StatType
+        String [] columns = {COL_IsTimer, COL_IsGPS, COL_Unit, COL_Description}; //these are the columns to be returned. We don't need Activity or StatType
                                                                         //because those are known (they're what's being passed into this whole function).
-        Cursor cur = db.query(TABLE_METADATA, columns, "Activity = "+activity + " AND StatType = " + stattype, null, null, null, null, null);
+        Cursor cur = db.query(TABLE_METADATA, columns, "Activity = "+activity + " AND "+ COL_StatType+" = " + stattype, null, null, null, null, null);
         List<String> theRow = new ArrayList<String>();
         if (cur.moveToFirst())
         {
@@ -225,6 +229,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             }
         }
         db.close();
+        cur.close();
         return theRow;
     }
 
