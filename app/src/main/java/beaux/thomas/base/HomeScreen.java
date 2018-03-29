@@ -70,19 +70,18 @@ public class HomeScreen extends AppCompatActivity {
                     System.out.println("OK RESULT CODE");
                     // TODO Extract the data returned from the child Activity.
                     String[] returnValue = data.getStringArrayExtra("ACT");
-                    String[] aName = {returnValue[0]};
-                    String[] sName = ParseString(returnValue[1]);
-                    String[] sType = ParseString(returnValue[2]);
+                    String[] ACTS = ParseString(returnValue[0]);
+                    String[] sType = ParseString(returnValue[1]);
 
                     System.out.println("BEFORE DATABASE INSERTION");
                     DatabaseHelper.getsInstance(getApplicationContext());
                     System.out.println("AFTER NULL CHECK");
-                    DatabaseHelper.getsInstance(getApplicationContext()).createTable(aName);
+                    DatabaseHelper.getsInstance(getApplicationContext()).createTable(ACTS);
                     System.out.println("AFTER DATABASE INSERTYION");
-                    for (int i = 0; i<sName.length; i++){
+                    for (int i = 0; i<sType.length; i++){
                         String[] ACTDB = new String[6];
-                        ACTDB[0]= aName[0];
-                        ACTDB[1]= sName[i];
+                        ACTDB[0]= ACTS[0];
+                        ACTDB[1]= ACTS[i+1];
                         ACTDB[2]= "1";
                         ACTDB[3]= "1";
                         ACTDB[4]= sType[i];
@@ -90,8 +89,8 @@ public class HomeScreen extends AppCompatActivity {
                         System.out.println(Arrays.toString(ACTDB));
                         DatabaseHelper.getsInstance(getApplicationContext()).updateMeta(ACTDB);
                     }
-                    List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(aName[0]);
-                    System.out.println(Pull);
+                    List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(ACTS[0]);
+                    System.out.println("^^^^^^^^^^^^^^^^^^^^^STAT NAMES:"+Pull);
                     updateHomeScreen();
                     break;
                 }

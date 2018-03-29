@@ -44,13 +44,13 @@ public class ActivityManagement extends AppCompatActivity {
             finish();
         }
 **/
-        New_Act[0] = ActivityName.getText().toString();
-        New_Act[1] = StatName1.getText().toString()+ ";"
+        New_Act[0] = ActivityName.getText().toString()+ ";"
+                +StatName1.getText().toString()+ ";"
                 +StatName2.getText().toString()+ ";"
                 +StatName3.getText().toString()+ ";"
                 +StatName4.getText().toString()+ ";"
                 +StatName5.getText().toString();
-        New_Act[2] = StatType1.getText().toString()+ ";"
+        New_Act[1] = StatType1.getText().toString()+ ";"
                 +StatType2.getText().toString()+ ";"
                 +StatType3.getText().toString()+ ";"
                 +StatType4.getText().toString()+ ";"
