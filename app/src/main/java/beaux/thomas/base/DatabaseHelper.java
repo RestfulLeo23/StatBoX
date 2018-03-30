@@ -87,10 +87,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
 //                db.execSQL(tables_string);
 //            }
 //        }
-        String CREATE_TABLE_ICONS = "CREATE TABLE IF NOT EXISTS ICONS (\"Activity TEXT PRIMARY KEY, Picture TEXT\");";//+ attribute + ” TEXT,”
+        String CREATE_TABLE_ICONS = "CREATE TABLE IF NOT EXISTS ICONS (Activity TEXT PRIMARY KEY, Picture TEXT);";//+ attribute + ” TEXT,”
         db.execSQL(CREATE_TABLE_ICONS);
 
-        String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS " + TABLE_METADATA +" (\"Activity NOT NULL TEXT, StatType NOT NULL TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT, PRIMARY KEY(Activity, StatType)\");";
+        String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_Metadata (Activity TEXT, StatType TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT, PRIMARY KEY(Activity, StatType));";
         //String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_MetaData (\"Activity NOT NULL TEXT PRIMARY KEY, StatType TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT\");";
         db.execSQL(CREATE_TABLE_METADATA);
     }
@@ -149,6 +149,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
     //array[0] is the table name, all proceeding indeces are the attributes
     //Attributes MUST be ONE single string. "Pages Read" should be PagesRead or Pages_Read, etc
     //array[0] MUST NOT be a duplicate activity name. This will crash the app.
+    //array[0] MUST follow standard java variable naming conventions, or this will crash the app. ie, Can't begin with a number or special character, etc.
+    //String [] example_array = {"Running", "Duration",
+    //DatabaseHelper.getsInstance(getApplicationContext()).createTable(example_array);
     public void createTable(String array[])     //@('u'@)
     {
         db = getWritableDatabase();
@@ -192,6 +195,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     //Activity, StatType, IsTimer, IsGPS, Unit, Description             ***TO EVERYONE ELSE, STAT TYPE IS STAT NAME AND UNIT IS STAT TYPE**
     //example_array = {"Running", "Duration", "Yes", "No", "minutes", "The duration"}
+    //DatabaseHelper.getsInstance(getApplicationContext()).updateMeta(example_array);
     public void updateMeta(String array[])
     {
             db = this.getWritableDatabase();
@@ -199,7 +203,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
             ContentValues values = new ContentValues();
             values.put("Activity", array[0]);
-            values.put("StatType", array[1]);
+            values.put(COL_StatType, array[1]);
             values.put("IsTimer", array[2]);
             values.put("IsGPS", array[3]);
             values.put("Unit", array[4]);
@@ -213,6 +217,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
             db.close();
     }
 
+    //Given 2 strings: an activity and a statName, pullStatTypeMetadata() returns a List<String> object with the rest of that stat's metadata.
+    //String act = "Running";
+    //String stat = "Duration";
+    //List<String> aStatData = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(act, stat);
     public List<String> pullStatTypeMetadata(String activity, String stattype)
     {
         db = getReadableDatabase();
@@ -234,8 +242,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
 
-    //array[] is an entry that's being entered into a table. array[0] is the table in question. All proceeding indeces are the attributes' data
+    //array[] is an entry that's being entered into its activity table. array[0] is the table in question. All proceeding indeces are the attributes' data.
     //array[] must ordered the same as the table was created. It is also case sensitive.
+    //DatabaseHelper.getsInstance(getApplicationContext()).insertData(array);
     public void insertData(String array[])      //@('u')@
     {
         db = getReadableDatabase();
