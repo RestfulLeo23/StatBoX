@@ -175,8 +175,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     //Activity, Picture
-    //DatabaseHelper.getsInstance(getApplicationContext()).updateIcons("Running", "some_address string");
-    public void updateIcons(String activity, String address)
+    //DatabaseHelper.getsInstance(getApplicationContext()).addIcon("Running", "some_address string");
+    public void addIcon(String activity, String address)
     {
         db = this.getWritableDatabase();
         db.beginTransaction();
@@ -230,10 +230,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
         List<String> theRow = new ArrayList<String>();
         if (cur.moveToFirst())
         {
+            int x = 0;
             while ( !cur.isAfterLast() )
             {
-                theRow.add( cur.getString( cur.getColumnIndex("name")) );
+                theRow.add( cur.getString( cur.getColumnIndex(columns[x])) );
                 cur.moveToNext();
+                x++;
             }
         }
         db.close();
@@ -276,7 +278,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         Cursor dbCursor = db.query(activity, null, null, null, null, null, null);
         String[] columnNames = dbCursor.getColumnNames();//columnNames is an array with all columns for the activity
-
+        dbCursor.close();
         long numberOfRows = DatabaseUtils.queryNumEntries(db, activity);
         Hashtable<String, List<String>> doubles = new Hashtable<String, List<String>>();
         Cursor cur;
@@ -298,6 +300,31 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
         db.close();
         return doubles;
+    }
+
+
+    //Given 2 strings: an activity and a statName, grabActivity_Stat() returns a List<String> object with the all entries of that attribute.
+    //String act = "Running";
+    //String stat = "Duration";
+    //List<String> aStatData = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity_Stat(act, stat);
+    public List<String> grabActivity_Stat(String activity, String statname)
+    {
+        db = getReadableDatabase();
+        String [] columns = {statname}; //these are the columns to be returned.
+
+        Cursor cur = db.query(activity, columns, null, null, null, null, null, null);
+        List<String> theRow = new ArrayList<String>();
+        if (cur.moveToFirst())
+        {
+            while ( !cur.isAfterLast() )
+            {
+                theRow.add( cur.getString( cur.getColumnIndex(statname)) );
+                cur.moveToNext();
+            }
+        }
+        db.close();
+        cur.close();
+        return theRow;
     }
 
 
