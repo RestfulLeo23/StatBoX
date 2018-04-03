@@ -23,9 +23,8 @@ public class HomeScreen extends AppCompatActivity {
 
     public static final int GET_NEW_ACT = 2;
     public static final int OK = 1;
-
     public String[] Acts = new String[20];
-
+    public boolean clicked = false;
 
 
     @Override
@@ -50,15 +49,18 @@ public class HomeScreen extends AppCompatActivity {
 
     /** Called when the user taps the Send button */
     public void ViewActivityMode(View view) {
+        Button b = (Button) view;
+        String message = b.getText().toString();
         Intent intent = new Intent(this, ViewActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
 
     /** Called when the user taps the Send button */
     public void ActivityManagementMode(View view) {
         Intent intent = new Intent(this, ActivityManagement.class);
-        startActivityForResult(intent,GET_NEW_ACT);
-        //updateHomeScreen();
+         startActivityForResult(intent,GET_NEW_ACT);
+
     }
 
     @Override
@@ -72,25 +74,21 @@ public class HomeScreen extends AppCompatActivity {
                     String[] returnValue = data.getStringArrayExtra("ACT");
                     String[] ACTS = ParseString(returnValue[0]);
                     String[] sType = ParseString(returnValue[1]);
+                    String[] meta = ParseString(returnValue[2]);
 
-                    System.out.println("BEFORE DATABASE INSERTION");
-                    DatabaseHelper.getsInstance(getApplicationContext());
-                    System.out.println("AFTER NULL CHECK");
                     DatabaseHelper.getsInstance(getApplicationContext()).createTable(ACTS);
-                    System.out.println("AFTER DATABASE INSERTYION");
+
                     for (int i = 0; i<sType.length; i++){
                         String[] ACTDB = new String[6];
                         ACTDB[0]= ACTS[0];
                         ACTDB[1]= ACTS[i+1];
-                        ACTDB[2]= "1";
-                        ACTDB[3]= "1";
+                        ACTDB[2]= meta[1];
+                        ACTDB[3]= meta[0];
                         ACTDB[4]= sType[i];
                         ACTDB[5]= "SAMPLE DESPT";
-                        System.out.println(Arrays.toString(ACTDB));
                         DatabaseHelper.getsInstance(getApplicationContext()).updateMeta(ACTDB);
                     }
                     List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(ACTS[0]);
-                    System.out.println("^^^^^^^^^^^^^^^^^^^^^STAT NAMES:"+Pull);
                     updateHomeScreen();
                     break;
                 }
@@ -109,113 +107,62 @@ public class HomeScreen extends AppCompatActivity {
         }
     }
 
+
+
     public String[] ParseString(String s){
         String[] result = s.split(";+");
         return result;
     }
 
     public void updateHomeScreen() {
-        // very early on
-        System.out.println("UPDATE HOME SCREEN");
+
         Set<String> act_set = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.keySet();
         int n = act_set.size();
         String arr[] = new String[n];
         arr = act_set.toArray(arr);
         int size = arr.length;
-        System.out.println("NUMBER OF ACTS: "+size);
-        for (String x : arr)
-            System.out.println("UPDATE SCREEN: " + x);
+
         Button GraphView = findViewById(R.id.Graphview);
+
         Button Act1 = findViewById(R.id.act1);
         Button Act2 = findViewById(R.id.act2);
         Button Act3 = findViewById(R.id.act3);
         Button Act4 = findViewById(R.id.act4);
+
+        Button[] BUTTS = new Button[4];
+        BUTTS[0] = Act1;
+        BUTTS[1] = Act2;
+        BUTTS[2] = Act3;
+        BUTTS[3] = Act4;
+
         if (act_set == null){
             System.out.println("NULL DATABASE");
         }
+
         if (size == 0) {
-            if (GraphView.getVisibility() == View.VISIBLE) {
-                GraphView.setVisibility(View.GONE);
-                Act1.setVisibility(View.GONE);
-                Act2.setVisibility(View.GONE);
-                Act3.setVisibility(View.GONE);
-                Act4.setVisibility(View.GONE);
+            GraphView.setVisibility(View.GONE);
+            for (int i = 0; i<4 ; i++){
+                BUTTS[i].setVisibility(View.GONE);
             }
         }
-        if (size == 1) {
-            //System.out.print("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
-            if (GraphView.getVisibility() == View.VISIBLE) {
-                GraphView.setVisibility(View.VISIBLE);
-                Act1.setVisibility(View.VISIBLE);
-                Act2.setVisibility(View.GONE);
-                Act3.setVisibility(View.GONE);
-                Act4.setVisibility(View.GONE);
-                Button act1 = findViewById(R.id.act1);
-                act1.setText(arr[0]);
+        else{
+            GraphView.setVisibility(View.VISIBLE);
+            for (int i = 0; i<size ; i++){
+                BUTTS[i].setVisibility(View.VISIBLE);
+                BUTTS[i].setText(arr[i]);
             }
-            if (GraphView.getVisibility() == View.GONE) {
-                GraphView.setVisibility(View.VISIBLE);
-                Act1.setVisibility(View.VISIBLE);
-                Act2.setVisibility(View.GONE);
-                Act3.setVisibility(View.GONE);
-                Act4.setVisibility(View.GONE);
-                Button act1 = findViewById(R.id.act1);
-                act1.setText(arr[0]);
-            }
-
-        }
-        if (size == 2) {
-            if (GraphView.getVisibility() == View.VISIBLE) {
-                GraphView.setVisibility(View.VISIBLE);
-                Act1.setVisibility(View.VISIBLE);
-                Act2.setVisibility(View.VISIBLE);
-                Act3.setVisibility(View.GONE);
-                Act4.setVisibility(View.GONE);
-                Button act2 = findViewById(R.id.act2);
-                act2.setText(arr[1]);
-                Button act1 = findViewById(R.id.act1);
-                act1.setText(arr[0]);
+            for (int j =size; j < 4 ; j++){
+                BUTTS[j].setVisibility(View.GONE);
             }
         }
 
-        if (size == 3) {
-            if (GraphView.getVisibility() == View.VISIBLE) {
-                GraphView.setVisibility(View.VISIBLE);
-                Act1.setVisibility(View.VISIBLE);
-                Act2.setVisibility(View.VISIBLE);
-                Act3.setVisibility(View.VISIBLE);
-                Act4.setVisibility(View.GONE);
-                Button act3 = findViewById(R.id.act3);
-                act3.setText(arr[2]);
-                Button act2 = findViewById(R.id.act2);
-                act2.setText(arr[1]);
-                Button act1 = findViewById(R.id.act1);
-                act1.setText(arr[0]);
-            }
-        }
-        if (size == 4) {
-            if (GraphView.getVisibility() == View.VISIBLE) {
-                GraphView.setVisibility(View.VISIBLE);
-                Act1.setVisibility(View.VISIBLE);
-                Act2.setVisibility(View.VISIBLE);
-                Act3.setVisibility(View.VISIBLE);
-                Act4.setVisibility(View.VISIBLE);
-                Button act4 = findViewById(R.id.act4);
-                act4.setText(arr[3]);
-                Button act3 = findViewById(R.id.act3);
-                act3.setText(arr[2]);
-                Button act2 = findViewById(R.id.act2);
-                act2.setText(arr[1]);
-                Button act1 = findViewById(R.id.act1);
-                act1.setText(arr[0]);
-            }
-        }
     }
 
     public void deleteDB(View view){
         System.out.println("DELETING DB");
         DatabaseHelper.getsInstance(getApplicationContext()).death(this);
         updateHomeScreen();
+        finish();
     }
 
     @Override

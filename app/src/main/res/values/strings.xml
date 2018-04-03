@@ -7,7 +7,9 @@
     <string name="activity_name">Enter Activity Name</string>
     <string name="stat_name">Enter Stat Name</string>
     <string name="send_stat">Create</string>
-    <string name="stat_type">Stat Type</string>
-    <string name="title_activity_view">ViewActivity</string>
-    <string name="title_activity_graph_view">GraphView</string>
+    <string name="stat_type">Unit</string>
+    <string name="unit">Unit</string>
+    <string name="title_activity_view">View Activity</string>
+    <string name="title_activity_graph_view">Graph View</string>
+    <string name="create_act">Create New Activity</string>
 </resources>
