@@ -341,7 +341,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             {
                 indeces.add(cur.getString(x));
                 cur.moveToNext();
-                x++; 
+                x++;
             }
         }
         db.close();
