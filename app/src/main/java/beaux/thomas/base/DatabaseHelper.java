@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import static android.support.v4.content.ContextCompat.startActivity;
 
@@ -325,6 +326,27 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.close();
         cur.close();
         return theRow;
+    }
+
+    //String [] ex_array = DatabaseHelper.getsInstance(getApplicationContext()).returnLastEntry("Running")
+    public String [] returnLastEntry(String act)
+    {
+        db = getReadableDatabase();
+        Cursor cur = db.rawQuery("SELECT * FROM "+  act + " WHERE ID = (SELECT MAX(ID) FROM " +act+ ");", null);
+        ArrayList<String> indeces = new ArrayList<String>();
+        int x =1;
+        if (cur.moveToFirst())
+        {
+            while(!cur.isAfterLast())
+            {
+                indeces.add(cur.getString(x));
+                cur.moveToNext();
+                x++;
+            }
+        }
+        db.close();
+        cur.close();
+        return indeces.toArray(new String[indeces.size()]);
     }
 
 
