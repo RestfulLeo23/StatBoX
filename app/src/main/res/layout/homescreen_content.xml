@@ -26,9 +26,8 @@
         android:id="@+id/act1"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:elevation="0dp"
         android:onClick="ViewActivityMode"
         android:text="Sample"
@@ -36,27 +35,27 @@
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Graphview" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/act2"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:elevation="0dp"
         android:onClick="ViewActivityMode"
         android:textAlignment="center"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Graphview" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/act3"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:elevation="0dp"
         android:onClick="ViewActivityMode"
         android:textAlignment="center"
@@ -69,7 +68,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:elevation="0dp"
         android:onClick="ViewActivityMode"
         android:textAlignment="center"
@@ -78,20 +77,30 @@
         app:layout_constraintTop_toBottomOf="@+id/act2" />
 
     <Button
-        android:id="@+id/Graphview"
-        android:layout_width="400dp"
-        android:layout_height="200dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:id="@+id/act5"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="32dp"
         android:elevation="0dp"
-        android:onClick="GraphViewMode"
-        android:text="Graph View Launcher"
-        android:textSize="12sp"
+        android:onClick="ViewActivityMode"
+        android:textAlignment="center"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/act4" />
+
+    <Button
+        android:id="@+id/act6"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:elevation="0dp"
+        android:onClick="ViewActivityMode"
+        android:textAlignment="center"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/act3" />
 
     <Button
         android:id="@+id/Ddb"
@@ -103,6 +112,17 @@
         android:onClick="deleteDB"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="36dp"
+        android:onClick="TimerMode"
+        android:text="Timer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/fab" />
 
 
 </android.support.constraint.ConstraintLayout>

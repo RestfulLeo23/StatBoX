@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import static android.support.v4.content.ContextCompat.startActivity;
 
@@ -87,10 +88,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
 //                db.execSQL(tables_string);
 //            }
 //        }
-        String CREATE_TABLE_ICONS = "CREATE TABLE IF NOT EXISTS ICONS (\"Activity TEXT PRIMARY KEY, Picture TEXT\");";//+ attribute + ” TEXT,”
+        String CREATE_TABLE_ICONS = "CREATE TABLE IF NOT EXISTS ICONS (Activity TEXT PRIMARY KEY, Picture TEXT);";//+ attribute + ” TEXT,”
         db.execSQL(CREATE_TABLE_ICONS);
 
-        String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS " + TABLE_METADATA +" (\"Activity NOT NULL TEXT, StatType NOT NULL TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT, PRIMARY KEY(Activity, StatType)\");";
+        String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_Metadata (Activity TEXT, StatType TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT, PRIMARY KEY(Activity, StatType));";
         //String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_MetaData (\"Activity NOT NULL TEXT PRIMARY KEY, StatType TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT\");";
         db.execSQL(CREATE_TABLE_METADATA);
     }
@@ -149,6 +150,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
     //array[0] is the table name, all proceeding indeces are the attributes
     //Attributes MUST be ONE single string. "Pages Read" should be PagesRead or Pages_Read, etc
     //array[0] MUST NOT be a duplicate activity name. This will crash the app.
+    //array[0] MUST follow standard java variable naming conventions, or this will crash the app. ie, Can't begin with a number or special character, etc.
+    //String [] example_array = {"Running", "Duration",
+    //DatabaseHelper.getsInstance(getApplicationContext()).createTable(example_array);
     public void createTable(String array[])     //@('u'@)
     {
         db = getWritableDatabase();
@@ -162,18 +166,18 @@ public class DatabaseHelper extends SQLiteOpenHelper
         List<String> temp = Arrays.asList(array); //in java there is no array[1:] but there is if it's a list.
         tablesInfo.put(tableName, temp.subList(1, array.length)); //This creates an active list of all tables and their attributes
 //        System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG temp.sublist(1, array.length): " + temp.subList(1, array.length));
- //      System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFF full tablesInfo: " + tablesInfo);
+        //      System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFF full tablesInfo: " + tablesInfo);
 //        System.out.println("keyset test: " + tablesInfo.keySet() + "\nget test with "+tableName+": " + tablesInfo.get(array[0]));
         db.setTransactionSuccessful();
         db.endTransaction();
         db.close();
- //       System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFF full tablesInfo: " + tablesInfo);
+        //       System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFF full tablesInfo: " + tablesInfo);
         System.out.println("keyset test: " + tablesInfo.keySet() + "\nget test with "+tableName+": " + tablesInfo.get(array[0]));
     }
 
     //Activity, Picture
-    //DatabaseHelper.getsInstance(getApplicationContext()).updateIcons("Running", "some_address string");
-    public void updateIcons(String activity, String address)
+    //DatabaseHelper.getsInstance(getApplicationContext()).addIcon("Running", "some_address string");
+    public void addIcon(String activity, String address)
     {
         db = this.getWritableDatabase();
         db.beginTransaction();
@@ -192,40 +196,48 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     //Activity, StatType, IsTimer, IsGPS, Unit, Description             ***TO EVERYONE ELSE, STAT TYPE IS STAT NAME AND UNIT IS STAT TYPE**
     //example_array = {"Running", "Duration", "Yes", "No", "minutes", "The duration"}
+    //DatabaseHelper.getsInstance(getApplicationContext()).updateMeta(example_array);
     public void updateMeta(String array[])
     {
-            db = this.getWritableDatabase();
-            db.beginTransaction();
+        db = this.getWritableDatabase();
+        db.beginTransaction();
 
-            ContentValues values = new ContentValues();
-            values.put("Activity", array[0]);
-            values.put("StatType", array[1]);
-            values.put("IsTimer", array[2]);
-            values.put("IsGPS", array[3]);
-            values.put("Unit", array[4]);
-            values.put("Description", array[5]);
+        ContentValues values = new ContentValues();
+        values.put("Activity", array[0]);
+        values.put(COL_StatType, array[1]);
+        values.put("IsTimer", array[2]);
+        values.put("IsGPS", array[3]);
+        values.put("Unit", array[4]);
+        values.put("Description", array[5]);
 
 //System.out.println("RRRRREEEEEEEEEEEEEEEEEEEEEE\narray = " + array.toString() + "\nvalues = " + values);
 
-            db.insert(TABLE_METADATA, null, values);
-            db.setTransactionSuccessful();
-            db.endTransaction();
-            db.close();
+        db.insert(TABLE_METADATA, null, values);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
     }
 
+    //Given 2 strings: an activity and a statName, pullStatTypeMetadata() returns a List<String> object with the rest of that stat's metadata.
+    //String act = "Running";
+    //String stat = "Duration";
+    //List<String> aStatData = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(act, stat);
     public List<String> pullStatTypeMetadata(String activity, String stattype)
     {
+        System.out.println("ENTER PULL STAT META DATA SUCESSFULLY");
         db = getReadableDatabase();
         String [] columns = {COL_IsTimer, COL_IsGPS, COL_Unit, COL_Description}; //these are the columns to be returned. We don't need Activity or StatType
-                                                                        //because those are known (they're what's being passed into this whole function).
+        //because those are known (they're what's being passed into this whole function).
         Cursor cur = db.query(TABLE_METADATA, columns, "Activity = "+activity + " AND "+ COL_StatType+" = " + stattype, null, null, null, null, null);
         List<String> theRow = new ArrayList<String>();
         if (cur.moveToFirst())
         {
+            int x = 0;
             while ( !cur.isAfterLast() )
             {
-                theRow.add( cur.getString( cur.getColumnIndex("name")) );
+                theRow.add( cur.getString( cur.getColumnIndex(columns[x])) );
                 cur.moveToNext();
+                x++;
             }
         }
         db.close();
@@ -234,8 +246,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
 
-    //array[] is an entry that's being entered into a table. array[0] is the table in question. All proceeding indeces are the attributes' data
+    //array[] is an entry that's being entered into its activity table. array[0] is the table in question. All proceeding indeces are the attributes' data.
     //array[] must ordered the same as the table was created. It is also case sensitive.
+    //DatabaseHelper.getsInstance(getApplicationContext()).insertData(array);
     public void insertData(String array[])      //@('u')@
     {
         db = getReadableDatabase();
@@ -267,7 +280,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         Cursor dbCursor = db.query(activity, null, null, null, null, null, null);
         String[] columnNames = dbCursor.getColumnNames();//columnNames is an array with all columns for the activity
-
+        dbCursor.close();
         long numberOfRows = DatabaseUtils.queryNumEntries(db, activity);
         Hashtable<String, List<String>> doubles = new Hashtable<String, List<String>>();
         Cursor cur;
@@ -289,6 +302,52 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
         db.close();
         return doubles;
+    }
+
+
+    //Given 2 strings: an activity and a statName, grabActivity_Stat() returns a List<String> object with the all entries of that attribute.
+    //String act = "Running";
+    //String stat = "Duration";
+    //List<String> aStatData = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity_Stat(act, stat);
+    public List<String> grabActivity_Stat(String activity, String statname)
+    {
+        db = getReadableDatabase();
+        String [] columns = {statname}; //these are the columns to be returned.
+
+        Cursor cur = db.query(activity, columns, null, null, null, null, null, null);
+        List<String> theRow = new ArrayList<String>();
+        if (cur.moveToFirst())
+        {
+            while ( !cur.isAfterLast() )
+            {
+                theRow.add( cur.getString( cur.getColumnIndex(statname)) );
+                cur.moveToNext();
+            }
+        }
+        db.close();
+        cur.close();
+        return theRow;
+    }
+
+    //String [] ex_array = DatabaseHelper.getsInstance(getApplicationContext()).returnLastEntry("Running")
+    public String [] returnLastEntry(String act)
+    {
+        db = getReadableDatabase();
+        Cursor cur = db.rawQuery("SELECT * FROM "+  act + " WHERE ID = (SELECT MAX(ID) FROM " +act+ ");", null);
+        ArrayList<String> indeces = new ArrayList<String>();
+        int x =1;
+        if (cur.moveToFirst())
+        {
+            while(!cur.isAfterLast())
+            {
+                indeces.add(cur.getString(x));
+                cur.moveToNext();
+                x++;
+            }
+        }
+        db.close();
+        cur.close();
+        return indeces.toArray(new String[indeces.size()]);
     }
 
 
