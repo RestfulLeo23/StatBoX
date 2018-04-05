@@ -1,21 +1,14 @@
 package beaux.thomas.base;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import java.util.List;
-import java.util.Set;
 
 import static beaux.thomas.base.HomeScreen.EXTRA_MESSAGE;
 
@@ -52,9 +45,9 @@ public class ViewActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_MESSAGE, StatNAME);
         startActivityForResult(intent,GET_NEW_STAT);
     }
-    public void Graphview(View view){
+    public void DataAnalytics(View view){
         System.out.println("I HAVE CLICKED ON THE TABLE");
-        Intent intent = new Intent(this, GraphView.class);
+        Intent intent = new Intent(this, DataAnalytics.class);
         startActivity(intent);
     }
     @Override

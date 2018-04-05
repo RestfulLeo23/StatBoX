@@ -8,17 +8,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import java.util.Arrays;
+
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
+
 import android.widget.Toast;
-
-
-
-import android.widget.TextView;
-
-import static beaux.thomas.base.ViewActivity.GET_NEW_STAT;
 
 public class HomeScreen extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "beaux.thomas.base.MESSAGE";
@@ -50,7 +44,7 @@ public class HomeScreen extends AppCompatActivity {
     }
 
     public void GraphViewMode(View view) {
-        Intent intent = new Intent(this, GraphView.class);
+        Intent intent = new Intent(this, DataAnalytics.class);
         startActivity(intent);
     }
 

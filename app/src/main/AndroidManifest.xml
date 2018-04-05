@@ -49,7 +49,7 @@
                 android:value="beaux.thomas.base.HomeScreen" />
         </activity>
         <activity
-            android:name=".GraphView"
+            android:name=".DataAnalytics"
             android:label="@string/title_activity_graph_view"
             android:parentActivityName=".HomeScreen"
             android:theme="@style/AppTheme.NoActionBar">

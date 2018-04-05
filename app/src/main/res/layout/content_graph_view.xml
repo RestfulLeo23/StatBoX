@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="beaux.thomas.base.GraphView"
+    tools:context="beaux.thomas.base.DataAnalytics"
     tools:showIn="@layout/activity_graph_view">
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="200dip"
+        android:id="@+id/graph" />
 
 </android.support.constraint.ConstraintLayout>
