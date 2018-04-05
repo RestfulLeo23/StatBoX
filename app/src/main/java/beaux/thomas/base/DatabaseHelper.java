@@ -94,7 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         String CREATE_TABLE_ICONS = "CREATE TABLE IF NOT EXISTS ICONS (Activity TEXT PRIMARY KEY, Picture TEXT);";//+ attribute + ” TEXT,”
         db.execSQL(CREATE_TABLE_ICONS);
 
-        String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_Metadata (Activity TEXT, StatType TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT, PRIMARY KEY(Activity, StatType));";
+        String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS "+TABLE_METADATA+" (Activity TEXT, StatType TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT, PRIMARY KEY(Activity, StatType));";
         //String CREATE_TABLE_METADATA = "CREATE TABLE IF NOT EXISTS StatType_MetaData (\"Activity NOT NULL TEXT PRIMARY KEY, StatType TEXT, IsTimer TEXT, IsGPS TEXT, Unit TEXT, Description TEXT\");";
         db.execSQL(CREATE_TABLE_METADATA);
     }
@@ -177,8 +177,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.setTransactionSuccessful();
         db.endTransaction();
         db.close();
-        //       System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFF full tablesInfo: " + tablesInfo);
-        System.out.println("keyset test: " + tablesInfo.keySet() + "\nget test with "+tableName+": " + tablesInfo.get(array[0]));
+        //       System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFF full tablesInfo: " +tablesInfo);
+        //System.out.println("keyset test: " + tablesInfo.keySet() + "\nget test with "+tableName+": " + tablesInfo.get(array[0]));
     }
 
     //Activity, Picture
@@ -189,8 +189,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.beginTransaction();
 
         ContentValues values = new ContentValues();
-        values.put("Activity", activity);
-        values.put("Picture", address);
+        values.put(COL1, activity);
+        values.put(COL2, address);
 
 
         db.insert("ICONS", null, values);
@@ -230,11 +230,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
     //List<String> aStatData = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(act, stat);
     public List<String> pullStatTypeMetadata(String activity, String stattype)
     {
-        System.out.println("ENTER PULL STAT META DATA SUCESSFULLY");
         db = getReadableDatabase();
         String [] columns = {COL_IsTimer, COL_IsGPS, COL_Unit, COL_Description}; //these are the columns to be returned. We don't need Activity or StatType
         //because those are known (they're what's being passed into this whole function).
-        Cursor cur = db.query(TABLE_METADATA, columns, "Activity = "+activity + " AND "+ COL_StatType+" = " + stattype, null, null, null, null, null);
+        Cursor cur = db.query(TABLE_METADATA, columns, COL_Activity+ " = \""+activity + "\" AND "+ COL_StatType+" = \"" + stattype + "\"", null, null, null, null, null);
         List<String> theRow = new ArrayList<String>();
         if (cur.moveToFirst())
         {
@@ -258,21 +257,25 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public void insertData(String array[])      //@('u')@
     {
         db = getReadableDatabase();
+        String [] columns = {};
         Cursor dbCursor = db.query(array[0], null, null, null, null, null, null);
         String[] columnNames = dbCursor.getColumnNames();
-        System.out.print(columnNames);
+        //System.out.print("RRRRREEEE4 " + Arrays.asList(columnNames));
 
         db.beginTransaction();
 
         db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        // System.out.println("fffffffffffffffffffffffffffffff");
         for(int x=1; x<array.length; x++)
         {
+            // System.out.println("stuff" + columnNames[x] + ", " + array[x]);
             values.put(columnNames[x], array[x]);    //arg1 is column name, arg2 is data
+            //System.out.println("stuff2 " + values);
         }
 
-        values.put(columnNames[array.length], getDateTime());
-
+        values.put("Date", getDateTime());
+        //System.out.println("values = " + values);
         db.insert(array[0], null, values);
         db.setTransactionSuccessful();
         db.endTransaction();
@@ -349,22 +352,35 @@ public class DatabaseHelper extends SQLiteOpenHelper
     {
         db = getReadableDatabase();
         Cursor cur = db.rawQuery("SELECT * FROM "+  act + " WHERE ID = (SELECT MAX(ID) FROM " +act+ ");", null);
+        String[] columnNames = cur.getColumnNames();
         ArrayList<String> indeces = new ArrayList<String>();
         int x =1;
+//        if (cur.moveToFirst())
+//        {
+//            while(!cur.isAfterLast())
+//            {
+//                indeces.add(cur.getString(x));
+//                cur.moveToNext();
+//                x++;
+//            }
+//        }
         if (cur.moveToFirst())
         {
-            while(!cur.isAfterLast())
+            String temp;
+            do
             {
-                indeces.add(cur.getString(x));
-                cur.moveToNext();
-                x++;
-            }
+                for (int i = 1; i < columnNames.length; i++)
+                {
+                    temp = cur.getString(i);
+                    indeces.add(temp);
+                }
+                //questions.add(indeces);
+            } while (cur.moveToNext());
         }
         db.close();
         cur.close();
         return indeces.toArray(new String[indeces.size()]);
     }
-
 
     //Given 2 strings: an activity and a statName, grabActivity_Stat_withDate() returns an array of lists with the all entries of that attribute
     //in the index 0 list and their dates in the index 1 list of the returned object.
