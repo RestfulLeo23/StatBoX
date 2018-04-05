@@ -8,10 +8,13 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import static android.support.v4.content.ContextCompat.startActivity;
@@ -163,8 +166,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
         {
             db.execSQL("ALTER TABLE " + tableName +  " ADD COLUMN " +array[x]+ " STRING");
         }
+
+        db.execSQL("ALTER TABLE " + tableName +  " ADD COLUMN " + "Date STRING");
+
         List<String> temp = Arrays.asList(array); //in java there is no array[1:] but there is if it's a list.
-        tablesInfo.put(tableName, temp.subList(1, array.length)); //This creates an active list of all tables and their attributes
+        tablesInfo.put(tableName, temp.subList(1, array.length)); //This creates an active list of all tables and their attributes, besides ID and Date_Time
 //        System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG temp.sublist(1, array.length): " + temp.subList(1, array.length));
         //      System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFF full tablesInfo: " + tablesInfo);
 //        System.out.println("keyset test: " + tablesInfo.keySet() + "\nget test with "+tableName+": " + tablesInfo.get(array[0]));
@@ -265,10 +271,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
             values.put(columnNames[x], array[x]);    //arg1 is column name, arg2 is data
         }
 
+        values.put(columnNames[array.length], getDateTime());
+
         db.insert(array[0], null, values);
         db.setTransactionSuccessful();
         db.endTransaction();
         db.close();
+    }
+    private String getDateTime()
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd", Locale.getDefault());
+        Date date = new Date();
+        return dateFormat.format(date);
     }
 
     //grabActivity queries the database and returns all entries as a Hashtable
@@ -350,6 +365,34 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return indeces.toArray(new String[indeces.size()]);
     }
 
+
+    //Given 2 strings: an activity and a statName, grabActivity_Stat_withDate() returns an array of lists with the all entries of that attribute
+    //in the index 0 list and their dates in the index 1 list of the returned object.
+    //String act = "Running";
+    //String stat = "Duration";
+    //List aStatData_withDate = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity_Stat(act, stat);
+    public List [] grabActivity_Stat_withDate(String activity, String statname)
+    {
+        db = getReadableDatabase();
+        String [] columns = {statname, "Date"}; //these are the columns to be returned.
+
+        Cursor cur = db.query(activity, columns, null, null, null, null, null, null);
+        List<String> theRow = new ArrayList<String>();
+        List<String> theRow2 = new ArrayList<String>();
+        if (cur.moveToFirst())
+        {
+            while ( !cur.isAfterLast() )
+            {
+                theRow.add( cur.getString( cur.getColumnIndex(statname)) );
+                theRow2.add( cur.getString( cur.getColumnIndex("Date")) );
+                cur.moveToNext();
+            }
+        }
+        db.close();
+        cur.close();
+        List [] theArray = {theRow, theRow2};
+        return theArray;
+    }
 
     //for testing purposes
     //DatabaseHelper.getsInstance(getApplicationContext()).death();
