@@ -161,6 +161,7 @@ public class HomeScreen extends AppCompatActivity {
         System.out.println("DELETING DB");
         DatabaseHelper.getsInstance(getApplicationContext()).death(this);
         updateHomeScreen();
+        android.os.Process.killProcess(android.os.Process.myPid());
         finish();
     }
 
