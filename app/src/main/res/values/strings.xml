@@ -10,7 +10,7 @@
     <string name="stat_type">Unit</string>
     <string name="unit">Unit</string>
     <string name="title_activity_view">View Activity</string>
-    <string name="title_activity_graph_view">Graph View</string>
+    <string name="title_activity_graph_view">Trends</string>
     <string name="create_act">Create New Activity</string>
     <string name="title_activity_timer">Timer</string>
 </resources>
