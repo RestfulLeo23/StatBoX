@@ -168,9 +168,10 @@ public class ViewActivity extends AppCompatActivity {
                 Stats[i].setVisibility(View.VISIBLE);
                 Stats[i].setText(arr[i]);
                 Types[i].setVisibility(View.VISIBLE);
-
-                Rs[i].setVisibility(View.VISIBLE);
-                Rs[i].setText(ex_array[i]);
+                if (ex_array.length != 0) {
+                    Rs[i].setVisibility(View.VISIBLE);
+                    Rs[i].setText(ex_array[i]);
+                }
 
             }
             for (int j =size; j < 5 ; j++){
