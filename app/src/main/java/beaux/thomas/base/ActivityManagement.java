@@ -127,7 +127,7 @@ public class ActivityManagement extends AppCompatActivity {
         String check = ActivityName.getText().toString();
         String[] New_Act = new String[3];
 
-        if (!DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.containsKey(check)) {
+        if (DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.containsKey(check)!=true) {
             New_Act[0] = ActivityName.getText().toString() + ";"
                     + StatName1.getText().toString() + ";"
                     + StatName2.getText().toString() + ";"

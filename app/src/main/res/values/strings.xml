@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">StatboX</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Setting</string>
+    <string name="deletedb">Delete Database</string>
     <string name="button_send">Send</string>
     <string name="title_activity_stat_input_fob">StatInputFOB</string>
     <string name="title_activity_fob">FOB</string>

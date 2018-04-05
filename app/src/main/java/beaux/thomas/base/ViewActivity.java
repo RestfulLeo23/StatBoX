@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.List;
 
@@ -40,15 +41,17 @@ public class ViewActivity extends AppCompatActivity {
     }
     /** Called when the user taps the Send button */
     public void InputStatMode(View view) {
-
         Intent intent = new Intent(this, InputStat.class);
         intent.putExtra(EXTRA_MESSAGE, StatNAME);
         startActivityForResult(intent,GET_NEW_STAT);
     }
     public void DataAnalytics(View view){
         System.out.println("I HAVE CLICKED ON THE TABLE");
+        TextView tv = (TextView)((LinearLayout )view).getChildAt(0);
         Intent intent = new Intent(this, DataAnalytics.class);
-        startActivity(intent);
+        intent.putExtra("Activity", StatNAME);
+        intent.putExtra("Stat", tv.getText().toString());
+        context.startActivity(intent);
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
