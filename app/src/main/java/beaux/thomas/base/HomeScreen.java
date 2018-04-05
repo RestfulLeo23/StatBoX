@@ -8,19 +8,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import java.util.Arrays;
+
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
-
-
-import android.widget.TextView;
+import android.widget.Toast;
 
 public class HomeScreen extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "beaux.thomas.base.MESSAGE";
     //public DatabaseHelper StatboX_Database;
-
     public static final int GET_NEW_ACT = 2;
     public static final int OK = 1;
     public String[] Acts = new String[20];
@@ -42,8 +38,13 @@ public class HomeScreen extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void TimerMode(View view) {
+        Intent intent = new Intent(this, Timer.class);
+        startActivity(intent);
+    }
+
     public void GraphViewMode(View view) {
-        Intent intent = new Intent(this, GraphView.class);
+        Intent intent = new Intent(this, DataAnalytics.class);
         startActivity(intent);
     }
 
@@ -58,9 +59,15 @@ public class HomeScreen extends AppCompatActivity {
 
     /** Called when the user taps the Send button */
     public void ActivityManagementMode(View view) {
-        Intent intent = new Intent(this, ActivityManagement.class);
-         startActivityForResult(intent,GET_NEW_ACT);
-
+        Set<String> act_set = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.keySet();
+        int n = act_set.size();
+        if (n >=6){
+            Toast.makeText(getApplicationContext(),"Max Number of Activities",Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Intent intent = new Intent(this, ActivityManagement.class);
+            startActivityForResult(intent, GET_NEW_ACT);
+        }
     }
 
     @Override
@@ -69,7 +76,7 @@ public class HomeScreen extends AppCompatActivity {
         switch (requestCode) {
             case (GET_NEW_ACT): {
                 if (resultCode == OK) {
-                    System.out.println("OK RESULT CODE");
+                    //System.out.println("OK RESULT CODE");
                     // TODO Extract the data returned from the child Activity.
                     String[] returnValue = data.getStringArrayExtra("ACT");
                     String[] ACTS = ParseString(returnValue[0]);
@@ -77,7 +84,6 @@ public class HomeScreen extends AppCompatActivity {
                     String[] meta = ParseString(returnValue[2]);
 
                     DatabaseHelper.getsInstance(getApplicationContext()).createTable(ACTS);
-
                     for (int i = 0; i<sType.length; i++){
                         String[] ACTDB = new String[6];
                         ACTDB[0]= ACTS[0];
@@ -85,10 +91,11 @@ public class HomeScreen extends AppCompatActivity {
                         ACTDB[2]= meta[1];
                         ACTDB[3]= meta[0];
                         ACTDB[4]= sType[i];
-                        ACTDB[5]= "SAMPLE DESPT";
+                        ACTDB[5]= meta[2];
                         DatabaseHelper.getsInstance(getApplicationContext()).updateMeta(ACTDB);
                     }
                     List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(ACTS[0]);
+                    System.out.println(Pull.toString());
                     updateHomeScreen();
                     break;
                 }
@@ -107,61 +114,54 @@ public class HomeScreen extends AppCompatActivity {
         }
     }
 
-
-
     public String[] ParseString(String s){
         String[] result = s.split(";+");
         return result;
     }
 
     public void updateHomeScreen() {
-
         Set<String> act_set = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.keySet();
         int n = act_set.size();
         String arr[] = new String[n];
         arr = act_set.toArray(arr);
         int size = arr.length;
 
-        Button GraphView = findViewById(R.id.Graphview);
-
         Button Act1 = findViewById(R.id.act1);
         Button Act2 = findViewById(R.id.act2);
         Button Act3 = findViewById(R.id.act3);
         Button Act4 = findViewById(R.id.act4);
-
-        Button[] BUTTS = new Button[4];
+        Button Act5 = findViewById(R.id.act5);
+        Button Act6 = findViewById(R.id.act6);
+        Button[] BUTTS = new Button[6];
         BUTTS[0] = Act1;
         BUTTS[1] = Act2;
         BUTTS[2] = Act3;
         BUTTS[3] = Act4;
+        BUTTS[4] = Act5;
+        BUTTS[5] = Act6;
 
-        if (act_set == null){
-            System.out.println("NULL DATABASE");
-        }
-
-        if (size == 0) {
-            GraphView.setVisibility(View.GONE);
-            for (int i = 0; i<4 ; i++){
+        if (size == 0 || size > 6)
+        {
+            for (int i = 0; i<6 ; i++){
                 BUTTS[i].setVisibility(View.GONE);
             }
         }
-        else{
-            GraphView.setVisibility(View.VISIBLE);
+        else {
             for (int i = 0; i<size ; i++){
                 BUTTS[i].setVisibility(View.VISIBLE);
                 BUTTS[i].setText(arr[i]);
             }
-            for (int j =size; j < 4 ; j++){
+            for (int j =size; j < 6 ; j++){
                 BUTTS[j].setVisibility(View.GONE);
             }
         }
-
     }
 
     public void deleteDB(View view){
         System.out.println("DELETING DB");
         DatabaseHelper.getsInstance(getApplicationContext()).death(this);
         updateHomeScreen();
+        android.os.Process.killProcess(android.os.Process.myPid());
         finish();
     }
 

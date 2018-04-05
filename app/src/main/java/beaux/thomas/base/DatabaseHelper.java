@@ -230,6 +230,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     //List<String> aStatData = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(act, stat);
     public List<String> pullStatTypeMetadata(String activity, String stattype)
     {
+        System.out.println("ENTER PULL STAT META DATA SUCESSFULLY");
         db = getReadableDatabase();
         String [] columns = {COL_IsTimer, COL_IsGPS, COL_Unit, COL_Description}; //these are the columns to be returned. We don't need Activity or StatType
         //because those are known (they're what's being passed into this whole function).
@@ -363,6 +364,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         cur.close();
         return indeces.toArray(new String[indeces.size()]);
     }
+
 
     //Given 2 strings: an activity and a statName, grabActivity_Stat_withDate() returns an array of lists with the all entries of that attribute
     //in the index 0 list and their dates in the index 1 list of the returned object.

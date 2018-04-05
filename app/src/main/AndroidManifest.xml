@@ -21,8 +21,8 @@
         </activity>
         <activity
             android:name=".ActivityManagement"
-            android:parentActivityName=".HomeScreen"
             android:label="@string/create_act"
+            android:parentActivityName=".HomeScreen"
             android:theme="@style/AppTheme.NoActionBar">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
@@ -49,8 +49,17 @@
                 android:value="beaux.thomas.base.HomeScreen" />
         </activity>
         <activity
-            android:name=".GraphView"
+            android:name=".DataAnalytics"
             android:label="@string/title_activity_graph_view"
+            android:parentActivityName=".HomeScreen"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="beaux.thomas.base.HomeScreen" />
+        </activity>
+        <activity
+            android:name=".Timer"
+            android:label="@string/title_activity_timer"
             android:parentActivityName=".HomeScreen"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

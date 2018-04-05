@@ -20,52 +20,33 @@ public class ActivityManagement extends AppCompatActivity {
 
 
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("ON CREATE : ACTIVITY MANAGMENT");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creation_view);
-
-        System.out.println("FIND TOOLBAR : ACTIVITY MANAGMENT");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        System.out.println("SET SUPPORT TOOL BAR : ACTIVITY MANAGMENT");
         setSupportActionBar(toolbar);
-
-        System.out.println("AFTER TOOL BAR : ACTIVITY MANAGMENT");
 
         Switch switch1 = (Switch)findViewById(R.id.timer);
         Switch switch2 = (Switch)findViewById(R.id.GPS);
 
         switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO Auto-generated method stub
                 if(isChecked){
                    istimer=1;
-                    System.out.println("^^%$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$#################### Flip SWITP IS TRUE istimes = 1");
-                    System.out.println(istimer);
-
                 }else{
                     istimer=0;
-                    System.out.println("^^%$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$#################### Flip SWITP IS flase istimer = 0");
-                    System.out.println(istimer);
                 }
             }
         });
         switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO Auto-generated method stub
                 if(isChecked){
                     isGPS=1;
-                    System.out.println("^^%$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$#################### Flip SWITP IS TRUE istimes = 1");
-                    System.out.println(isGPS);
+
 
                 }else{
                     isGPS=0;
-                    System.out.println("^^%$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$#################### Flip SWITP IS flase istimer = 0");
-                    System.out.println(isGPS);
                 }
             }
         });
@@ -73,7 +54,6 @@ public class ActivityManagement extends AppCompatActivity {
     }
 
     public void addMorestat(View view){
-
         if (statCount<5) {
             statCount += 1;
             EditText StatName1 = (EditText) findViewById(R.id.StatName);
@@ -125,10 +105,9 @@ public class ActivityManagement extends AppCompatActivity {
         }
     }
 
-
     public void GatherStatInfo(View view) {
 
-        System.out.println("ACTIVITY CREATION");
+        //System.out.println("ACTIVITY CREATION");
         EditText ActivityName = (EditText) findViewById(R.id.ActivityName);
 
         EditText StatName1 = (EditText) findViewById(R.id.StatName);
@@ -143,10 +122,12 @@ public class ActivityManagement extends AppCompatActivity {
         EditText StatType4 = (EditText) findViewById(R.id.StatType4);
         EditText StatType5 = (EditText) findViewById(R.id.StatType5);
 
+        EditText Descript = (EditText) findViewById(R.id.des);
+
         String check = ActivityName.getText().toString();
         String[] New_Act = new String[3];
 
-        if (DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.containsKey(check) != true) {
+        if (!DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.containsKey(check)) {
             New_Act[0] = ActivityName.getText().toString() + ";"
                     + StatName1.getText().toString() + ";"
                     + StatName2.getText().toString() + ";"
@@ -159,13 +140,15 @@ public class ActivityManagement extends AppCompatActivity {
                     + StatType3.getText().toString() + ";"
                     + StatType4.getText().toString() + ";"
                     + StatType5.getText().toString();
+
             New_Act[2] = Integer.toString(istimer) + ";"
-                    + Integer.toString(isGPS);
+                    + Integer.toString(isGPS)+ ";"
+                    + Descript.getText().toString();
+
             Intent resultIntent = new Intent(this, HomeScreen.class);
 
             // TODO Add extras or a data URI to this intent as appropriate.
             resultIntent.putExtra("ACT", New_Act);
-
             setResult(1, resultIntent);
             finish();
         }

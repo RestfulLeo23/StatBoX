@@ -7,7 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-public class GraphView extends AppCompatActivity {
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.BarGraphSeries;
+import com.jjoe64.graphview.series.DataPoint;
+
+public class DataAnalytics extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +28,17 @@ public class GraphView extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {
+                                            new DataPoint(0, 1),
+                                            new DataPoint(1, 5),
+                                            new DataPoint(2, 3),
+                                            new DataPoint(3, 2),
+                                            new DataPoint(4, 6)
+                                            });
+                graph.addSeries(series);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
