@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import java.util.List;
 import java.util.Set;
 
@@ -46,15 +45,13 @@ public class ViewActivity extends AppCompatActivity {
         updateStatScreen();
 
     }
-
     /** Called when the user taps the Send button */
     public void InputStatMode(View view) {
+
         Intent intent = new Intent(this, InputStat.class);
         intent.putExtra(EXTRA_MESSAGE, StatNAME);
         startActivityForResult(intent,GET_NEW_STAT);
     }
-
-
     public void Graphview(View view){
         System.out.println("I HAVE CLICKED ON THE TABLE");
         Intent intent = new Intent(this, GraphView.class);
@@ -66,14 +63,32 @@ public class ViewActivity extends AppCompatActivity {
         switch (requestCode) {
             case (GET_NEW_STAT): {
                 if (resultCode == OK) {
+                    List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(StatNAME);
+                    int n = Pull.size();
                     System.out.println("OK ACTIVITY RESULT");
                     // TODO Extract the data returned from the child Activity.
                     String[] returnValue = ParseString(data.getStringArrayExtra("STAT")[0]);
                     System.out.println(returnValue.length);
+                    String[] newstat = new String[n+1];
+                    int o = 1;
+                    newstat[0]= StatNAME;
+                    for (String i : returnValue){
+                        System.out.println("Retrun Valuses: "+i);
+                        newstat[o]= i;
+                        System.out.println("NEW STATS AT BEGINING"+newstat[o]+" INDEX:"+o);
+                        o= o+1;
+                    }
 
-                   // DatabaseHelper.getsInstance(getApplicationContext()).insertData(insertDATA);
+                    for (String i: newstat ){
+                        System.out.println("NEW STAT: "+i);
+                    }
+                    DatabaseHelper.getsInstance(getApplicationContext()).insertData(newstat);
                     // Ideally here is where ill add the stat to the activity and then store it in
                     // the DB.
+                    //System.out.println("before stat pull");
+
+                    //System.out.println(DatabaseHelper.getsInstance(getApplicationContext())
+                    updateStatScreen();
                     break;
                 }
             }
@@ -88,6 +103,7 @@ public class ViewActivity extends AppCompatActivity {
         String arr[] = new String[n];
         arr = Pull.toArray(arr);
         int size = arr.length;
+
         TextView[] Stats = new TextView[5];
         TextView stat1 = findViewById(R.id.Stat1);
         TextView stat2 = findViewById(R.id.Stat2);
@@ -99,6 +115,7 @@ public class ViewActivity extends AppCompatActivity {
         Stats[2] = stat3;
         Stats[3] = stat4;
         Stats[4] = stat5;
+
         TextView[] Types = new TextView[5];
         TextView T1 = findViewById(R.id.type1);
         TextView T2 = findViewById(R.id.type2);
@@ -110,18 +127,36 @@ public class ViewActivity extends AppCompatActivity {
         Types[2] = T3;
         Types[3] = T4;
         Types[4] = T5;
-        System.out.println(DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(StatNAME));
-        System.out.println(arr[0]);
-        System.out.println(StatNAME);
-        System.out.println("BEFORE DB PULL");
-        List<String> TEST = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata("Thomas", "Coding");
-        System.out.println("After DB PULL");
-        int k = TEST.size();
-        String testt[] = new String[k];
-        testt = TEST.toArray(testt);
-        int s = arr.length;
-        System.out.println(testt);
 
+        TextView[] Rs = new TextView[5];
+        TextView R1 = findViewById(R.id.recent1);
+        TextView R2 = findViewById(R.id.recent2);
+        TextView R3 = findViewById(R.id.recent3);
+        TextView R4 = findViewById(R.id.recent4);
+        TextView R5 = findViewById(R.id.recent5);
+        Rs[0] = R1;
+        Rs[1] = R2;
+        Rs[2] = R3;
+        Rs[3] = R4;
+        Rs[4] = R5;
+
+        //System.out.println(DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(StatNAME));
+        //System.out.println(arr[0]);
+        //System.out.println(StatNAME);
+        //System.out.println("BEFORE DB PULL");
+        //List<String> TEST = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata("Thomas", "Coding");
+        //System.out.println("After DB PULL");
+        //int k = TEST.size();
+        //String testt[] = new String[k];
+        //testt = TEST.toArray(testt);
+        //int s = arr.length;
+        //System.out.println("testt****************************************");
+        String[] ex_array = DatabaseHelper.getsInstance(getApplicationContext()).returnLastEntry(StatNAME);
+        System.out.println(ex_array.length);
+
+        for (String i:ex_array){
+            System.out.println("THIS IS THE RECENT ENTRY :"+i);
+        }
         //System.out.println(DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[0]));
         if (size == 0) {
             for (int i = 0; i<5 ; i++){
@@ -132,9 +167,27 @@ public class ViewActivity extends AppCompatActivity {
             for (int i = 0; i<size ; i++){
                 Stats[i].setVisibility(View.VISIBLE);
                 Stats[i].setText(arr[i]);
+                Types[i].setVisibility(View.VISIBLE);
+
+                Rs[i].setVisibility(View.VISIBLE);
+                Rs[i].setText(ex_array[i]);
+
             }
             for (int j =size; j < 5 ; j++){
                 Stats[j].setVisibility(View.GONE);
+                Types[j].setVisibility(View.GONE);
+                Rs[j].setVisibility(View.GONE);
+            }
+        }
+        for (int i = 0; i<size; i++) {
+            List<String> P = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity_Stat(StatNAME, arr[i]);
+            int c = P.size();
+            String a[] = new String[c];
+            a = P.toArray(a);
+            int l = a.length;
+            System.out.println(l);
+            for (String j : a) {
+                System.out.println("Stat Name:"+arr[i]+" Value:"+j);
             }
         }
 

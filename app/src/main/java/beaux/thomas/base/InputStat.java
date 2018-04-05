@@ -20,8 +20,7 @@ public class InputStat extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stat);
         Intent intent = getIntent();
-        String message = intent.getStringExtra(EXTRA_MESSAGE);
-        StatNAME = message;
+        StatNAME = intent.getStringExtra(EXTRA_MESSAGE);
         UpdateInputStat();
 
     }
@@ -39,13 +38,13 @@ public class InputStat extends AppCompatActivity {
                 Statv3.getText().toString()+";"+
                 Statv4.getText().toString()+";"+
                 Statv5.getText().toString();
-         System.out.println("INPUT STAT MIDDLE");
+        System.out.println("INPUT STAT MIDDLE");
         //New_Stat[1]= StatV.getText().toString();
         Intent resultIntent = new Intent(this, ViewActivity.class);
 
         resultIntent.putExtra("STAT",New_Stat);
         setResult(1,resultIntent);
-         System.out.println("INPUT STAT END");
+        System.out.println("INPUT STAT END");
         finish();
 
      }

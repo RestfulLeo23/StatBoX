@@ -74,7 +74,8 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:onClick="Graphview">
 
                 <TextView
                     android:id="@+id/Stat2"
@@ -113,7 +114,8 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:onClick="Graphview">
 
                 <TextView
                     android:id="@+id/Stat3"
@@ -152,7 +154,8 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:onClick="Graphview">
 
                 <TextView
                     android:id="@+id/Stat4"
@@ -192,7 +195,8 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:onClick="Graphview">
 
                 <TextView
                     android:id="@+id/Stat5"
