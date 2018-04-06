@@ -53,6 +53,16 @@ public class InputStat extends AppCompatActivity {
         String arr[] = new String[n];
         arr = Pull.toArray(arr);
         int size = arr.length;
+        String dcheck = Pull.get(Pull.size() - 1);
+        System.out.println("****THIS IS THE LAST ENTRY IN PULL BEFORE toARRAY:  "+dcheck+"   ****");
+
+
+        if (dcheck.equals("Date")){
+
+            size = Pull.size()-1;
+            System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY this is reallt a good line so greattttttttttttt:  "+size+"   ****");
+
+        }
         TextView Stat1 = (TextView) findViewById(R.id.StatName1);
         TextView Stat2 = (TextView) findViewById(R.id.StatName2);
         TextView Stat3 = (TextView) findViewById(R.id.StatName3);

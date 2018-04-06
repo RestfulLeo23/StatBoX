@@ -379,8 +379,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
         db.close();
         cur.close();
-        
-        return indeces.subList(0, indeces.size()-1).toArray(new String[indeces.size()]);
+        List<String> indeces2 = indeces.subList(0, indeces.size());
+        return indeces2.toArray(new String [indeces2.size()]);
     }
 
     //Given 2 strings: an activity and a statName, grabActivity_Stat_withDate() returns an array of lists with the all entries of that attribute

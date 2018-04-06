@@ -27,7 +27,6 @@ public class ViewActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         String message = intent.getStringExtra(EXTRA_MESSAGE);
@@ -35,7 +34,6 @@ public class ViewActivity extends AppCompatActivity {
         // Capture the layout's TextView and set the string as its text
         TextView textView = findViewById(R.id.StatName);
         textView.setText(message);
-
         updateStatScreen();
 
     }
@@ -100,7 +98,22 @@ public class ViewActivity extends AppCompatActivity {
         arr = Pull.toArray(arr);
         int size = arr.length;
 
+        System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL:  "+n+"   ****");
+        System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY:  "+size+"   ****");
+
+        String dcheck = Pull.get(Pull.size() - 1);
+        System.out.println("****THIS IS THE LAST ENTRY IN PULL BEFORE toARRAY:  "+dcheck+"   ****");
+
+
+        if (dcheck.equals("Date")){
+
+            size = Pull.size()-1;
+            System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY this is reallt a good line so greattttttttttttt:  "+size+"   ****");
+
+        }
+
         TextView[] Stats = new TextView[5];
+
         TextView stat1 = findViewById(R.id.Stat1);
         TextView stat2 = findViewById(R.id.Stat2);
         TextView stat3 = findViewById(R.id.Stat3);
@@ -113,6 +126,7 @@ public class ViewActivity extends AppCompatActivity {
         Stats[4] = stat5;
 
         TextView[] Types = new TextView[5];
+
         TextView T1 = findViewById(R.id.type1);
         TextView T2 = findViewById(R.id.type2);
         TextView T3 = findViewById(R.id.type3);
@@ -125,6 +139,7 @@ public class ViewActivity extends AppCompatActivity {
         Types[4] = T5;
 
         TextView[] Rs = new TextView[5];
+
         TextView R1 = findViewById(R.id.recent1);
         TextView R2 = findViewById(R.id.recent2);
         TextView R3 = findViewById(R.id.recent3);
@@ -148,10 +163,10 @@ public class ViewActivity extends AppCompatActivity {
         //int s = arr.length;
         //System.out.println("testt****************************************");
         String[] ex_array = DatabaseHelper.getsInstance(getApplicationContext()).returnLastEntry(StatNAME);
-        System.out.println(ex_array.length);
 
+        System.out.println("****THIS IS THE SIZE OF THE RETURN LAST ENTRY PULL:     "+ex_array.length+"   ****");
         for (String i:ex_array){
-            System.out.println("THIS IS THE RECENT ENTRY :"+i);
+            System.out.println("*********THIS IS THE RECENT ENTRY : "+i);
         }
         //System.out.println(DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[0]));
         if (size == 0) {
@@ -170,7 +185,7 @@ public class ViewActivity extends AppCompatActivity {
                 }
 
             }
-            for (int j =size; j < 5 ; j++){
+            for (int j = size; j < 5 ; j++){
                 Stats[j].setVisibility(View.GONE);
                 Types[j].setVisibility(View.GONE);
                 Rs[j].setVisibility(View.GONE);
