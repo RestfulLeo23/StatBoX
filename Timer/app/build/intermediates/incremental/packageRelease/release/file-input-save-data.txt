@@ -1,0 +1,7 @@
+#Internal package file, do not edit.
+#Wed Feb 28 23:53:37 CST 2018
+0.baseType=DIRECTORY
+0.base=C\:\\Users\\Andrew's Computer\\Desktop\\Timer\\app\\build\\intermediates\\transforms\\dex\\release\\0
+0.path=classes.dex
+0.set=DEX
+count=1

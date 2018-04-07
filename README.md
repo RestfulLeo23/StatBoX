@@ -1,2 +1,2 @@
 # StatBoX
-Customizable personal statistic recording app for Android
+StatBoX is an Android application designed to track and view personal statistics in a quick-to-use, highly customizable fashion. StatBoX will permit users to view trends in their data through a set of customizable graphs, charts, and statistics. The types of activities this application gathers data on will be personalizable, such that each user’s experience is crafted to their individual use.
