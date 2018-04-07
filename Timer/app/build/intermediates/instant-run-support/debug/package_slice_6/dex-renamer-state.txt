@@ -1,0 +1,4 @@
+#Thu Mar 01 00:17:24 CST 2018
+base.0=C\:\\Users\\Andrew's Computer\\Desktop\\Timer\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\159
+path.0=classes.dex
+renamed.0=classes.dex
