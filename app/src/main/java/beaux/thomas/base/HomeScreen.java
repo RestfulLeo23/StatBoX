@@ -14,6 +14,11 @@ import java.util.Set;
 
 import android.widget.Toast;
 
+//Google Drive API Dependencies
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+
+
 public class HomeScreen extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "beaux.thomas.base.MESSAGE";
     //public DatabaseHelper StatboX_Database;
@@ -21,6 +26,7 @@ public class HomeScreen extends AppCompatActivity {
     public static final int OK = 1;
     public String[] Acts = new String[20];
     public boolean clicked = false;
+    private GoogleSignInClient mGoogleSignInClient;
 
 
     @Override
@@ -30,6 +36,9 @@ public class HomeScreen extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         updateHomeScreen();
+
+        //Google Account Sign-in Credentials
+        //mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
     /** Called when the user taps the Send button */
