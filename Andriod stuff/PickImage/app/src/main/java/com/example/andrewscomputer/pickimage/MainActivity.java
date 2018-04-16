@@ -9,13 +9,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
     TextView textTargetUri;
-    ImageView targetImage;
+    ImageButton targetImage;
 
     /** Called when the activity is first created. */
     @Override
@@ -24,7 +25,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         Button buttonLoadImage = (Button)findViewById(R.id.loadimage);
         textTargetUri = (TextView)findViewById(R.id.targeturi);
-        targetImage = (ImageView)findViewById(R.id.targetimage);
+        targetImage = (ImageButton) findViewById(R.id.targetimage);
 
         buttonLoadImage.setOnClickListener(new Button.OnClickListener(){
 
