@@ -10,6 +10,7 @@ import android.widget.Toast;
 import android.content.Intent;
 import android.util.Log;
 import android.app.Activity;
+import android.widget.Button;
 
 import com.google.android.gms.auth.api.signin.*;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -31,8 +32,6 @@ public class GoogleDriveAPI extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_drive_api);
         mGoogleSignInClient = buildGoogleSignInClient();
-        signOut();
-        Toast.makeText(this.getApplicationContext(),"Google Sign-in",Toast.LENGTH_LONG).show();
         startActivityForResult(mGoogleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
     }
 
@@ -47,20 +46,16 @@ public class GoogleDriveAPI extends AppCompatActivity {
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(this.getApplicationContext(),"Step 1",Toast.LENGTH_LONG).show();
         switch (requestCode) {
             case REQUEST_CODE_SIGN_IN:
-                Toast.makeText(this.getApplicationContext(),"Step 2",Toast.LENGTH_LONG).show();
                 Log.i(TAG, "Sign in request code");
                 // Called after user is signed in.
                 if (resultCode == RESULT_OK) {
-                    Toast.makeText(this.getApplicationContext(),"Step 3",Toast.LENGTH_LONG).show();
                     Log.i(TAG, "Signed in successfully.");
                     // Use the last signed in account here since it already have a Drive scope.
                     mDriveClient = Drive.getDriveClient(this, GoogleSignIn.getLastSignedInAccount(this));
                     // Build a drive resource client.
                     mDriveResourceClient = Drive.getDriveResourceClient(this, GoogleSignIn.getLastSignedInAccount(this));
-                    Toast.makeText(this.getApplicationContext(),"Step 4",Toast.LENGTH_LONG).show();
                 }
                 break;
             case REQUEST_CODE_CAPTURE_IMAGE:
@@ -82,6 +77,16 @@ public class GoogleDriveAPI extends AppCompatActivity {
 
     private void signOut() {
         mGoogleSignInClient.signOut();
+    }
+
+    public void onClick(View v) {
+        Button button = (Button) findViewById(R.id.SignOut);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                signOut();
+                finish();
+            }
+        });
     }
 
 }
