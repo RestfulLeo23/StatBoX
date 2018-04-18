@@ -383,9 +383,12 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                 //System.out.println(activityInfo);
 
                 List<List<Object>> values = new ArrayList<>();
-                List<Object> dataRow = new ArrayList<>();
-                dataRow.add("Hello");
-                values.add(dataRow);
+                for(int i = 0; i <= activityInfo.size(); i++){
+                    List<Object> dataRow = new ArrayList<>();
+                    //System.out.println(activityInfo.get(i));
+                    dataRow.add(activityInfo.get(i));
+                    values.add(dataRow);
+                }
 
                 ValueRange vr = new ValueRange().setValues(values).setMajorDimension("ROWS");
                 mService.spreadsheets().values()
@@ -393,7 +396,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                         .setValueInputOption("RAW")
                         .execute();
             } catch (Exception e) {
-                // handle exception
+                System.out.println(e);
             }
         }
 
