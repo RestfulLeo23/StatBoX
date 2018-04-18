@@ -14,8 +14,10 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_constraintBottom_toTopOf="@+id/include2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -32,16 +34,8 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/appBarLayout"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
-        android:id="@+id/SignOut"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign out"
-        tools:layout_editor_absoluteX="280dp"
-        tools:layout_editor_absoluteY="503dp"
-        android:onClick="onClick"/>
+
 
 </android.support.constraint.ConstraintLayout>

@@ -75,18 +75,8 @@ public class GoogleDriveAPI extends AppCompatActivity {
         }
     }
 
-    private void signOut() {
+    public void signOut(View view) {
         mGoogleSignInClient.signOut();
+        finish();
     }
-
-    public void onClick(View v) {
-        Button button = (Button) findViewById(R.id.SignOut);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                signOut();
-                finish();
-            }
-        });
-    }
-
 }
