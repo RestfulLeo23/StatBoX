@@ -14,13 +14,13 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
 
+import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 
 import com.google.api.services.sheets.v4.model.*;
 
 import android.Manifest;
 import android.accounts.AccountManager;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -31,7 +31,6 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +41,9 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -52,15 +53,18 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
     private TextView mOutputText;
     private Button mCallApiButton;
     ProgressDialog mProgress;
+    private String title = "Sheet Creation Test";
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     static final int REQUEST_AUTHORIZATION = 1001;
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
 
-    private static final String BUTTON_TEXT = "Call Google Sheets API";
+    private static final String BUTTON_TEXT = "Create StatBoX Activity Spreadsheet";
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS_READONLY };
+
+    private String activityName;
 
     /**
      * Create the main activity.
@@ -112,6 +116,9 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         mCredential = GoogleAccountCredential.usingOAuth2(
                 getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
+
+        Intent intent = getIntent();
+        activityName = intent.getStringExtra("Activity");
     }
 
 
@@ -318,7 +325,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
      * An asynchronous task that handles the Google Sheets API call.
      * Placing the API calls in their own task ensures the UI stays responsive.
      */
-    private class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
+    private class MakeRequestTask extends AsyncTask<Void, Void, Spreadsheet> {
         private com.google.api.services.sheets.v4.Sheets mService = null;
         private Exception mLastError = null;
 
@@ -336,9 +343,11 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
          * @param params no parameters needed for this task.
          */
         @Override
-        protected List<String> doInBackground(Void... params) {
+        protected Spreadsheet doInBackground(Void... params) {
             try {
-                return getDataFromApi();
+                Spreadsheet sheet = createSpreadsheet();
+                generateActivitySpreadsheet(sheet);
+                return sheet;
             } catch (Exception e) {
                 mLastError = e;
                 cancel(true);
@@ -347,44 +356,67 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         }
 
         /**
-         * Fetch a list of names and majors of students in a sample spreadsheet:
-         * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-         * @return List of names and majors
+         * Create a StatBoX Activity Google Spreadsheet
+         * @return generated spreadsheet
          * @throws IOException
          */
-        private List<String> getDataFromApi() throws IOException {
-            String spreadsheetId = "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms";
-            String range = "Class Data!A2:E";
-            List<String> results = new ArrayList<String>();
-            ValueRange response = this.mService.spreadsheets().values()
-                    .get(spreadsheetId, range)
-                    .execute();
-            List<List<Object>> values = response.getValues();
-            if (values != null) {
-                results.add("Name, Major");
-                for (List row : values) {
-                    results.add(row.get(0) + ", " + row.get(4));
-                }
-            }
-            return results;
+        private Spreadsheet createSpreadsheet() throws IOException {
+            Spreadsheet requestBody = new Spreadsheet();
+            SpreadsheetProperties properties = new SpreadsheetProperties();
+            properties.setTitle(title);
+            requestBody.setProperties(properties);
+
+            Sheets.Spreadsheets.Create request = mService.spreadsheets().create(requestBody);
+            return request.execute();
         }
 
+        /**
+         * Updates newly created GoogleSpreadsheet with Activity information
+         */
+        private void generateActivitySpreadsheet(Spreadsheet sheet){
+            try {
+                String writeRange = "Sheet1!A3:E";
+                String id = sheet.getSpreadsheetId();
+                Hashtable<String, List<String>> activityEntries = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity(activityName);
+                List<String> activityInfo = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(activityName);
+                //System.out.println(sheet.getSpreadsheetId());
+                //System.out.println(activityInfo);
 
+                List<List<Object>> values = new ArrayList<>();
+                List<Object> dataRow = new ArrayList<>();
+                dataRow.add("Hello");
+                values.add(dataRow);
 
+                ValueRange vr = new ValueRange().setValues(values).setMajorDimension("ROWS");
+                mService.spreadsheets().values()
+                        .update(id, writeRange, vr)
+                        .setValueInputOption("RAW")
+                        .execute();
+            } catch (Exception e) {
+                // handle exception
+            }
+        }
+
+        /**
+         * Generate UI for background task.
+         */
         @Override
         protected void onPreExecute() {
             mOutputText.setText("");
             mProgress.show();
         }
 
+        /**
+         * Update UI with status of api call
+         * @param input Spreadsheet
+         */
         @Override
-        protected void onPostExecute(List<String> output) {
+        protected void onPostExecute(Spreadsheet input) {
             mProgress.hide();
-            if (output == null || output.size() == 0) {
-                mOutputText.setText("No results returned.");
+            if (input == null || input.size() == 0) {
+                mOutputText.setText("Spreadsheet was not generated successfully.");
             } else {
-                output.add(0, "Data retrieved using the Google Sheets API:");
-                mOutputText.setText(TextUtils.join("\n", output));
+                mOutputText.setText("Spreadsheet successfully generated");
             }
         }
 

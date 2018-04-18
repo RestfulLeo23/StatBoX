@@ -54,6 +54,8 @@ public class ViewActivity extends AppCompatActivity {
     public void GoogleDriveAPI(View view){
         System.out.println("I HAVE CLICKED ON THE Export Button");
         Intent intent = new Intent(this, GoogleDriveAPI.class);
+        intent.putExtra("Activity", StatNAME);
+
         context.startActivity(intent);
     }
     @Override
