@@ -379,6 +379,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                 String id = sheet.getSpreadsheetId();
                 Hashtable<String, List<String>> activityEntries = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity(activityName);
                 List<String> activityInfo = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(activityName);
+                //List<String> statType =  DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(activityName,activityInfo.get(i));
                 //System.out.println(sheet.getSpreadsheetId());
                 //System.out.println(activityInfo);
 
@@ -390,9 +391,12 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                 values.add(columnHeaderDataRow);
 
                 Set<String> keys = activityEntries.keySet();
-                List<Object> dataRows = new ArrayList<>();
                 for(String key : keys){
-                    dataRows.add(activityEntries.get(key).toString());
+                    List<Object> dataRows = new ArrayList<>();
+                    List<String > entryList = activityEntries.get(key);
+                    for(int i = 0; i < entryList.size(); i++){
+                        dataRows.add(entryList.get(i));
+                    }
                     values.add(dataRows);
                 }
 
