@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
@@ -144,6 +145,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
         exists.remove("android_metadata");
         exists.remove("sqlite_sequence");
         exists.remove(TABLE_METADATA);
+        Set j = new HashSet(exists.keySet());
+        for(Object x: j)
+        {
+            List<String> withDate = (List)exists.get(x);
+            List<String> removeDate = withDate.subList(0, withDate.size()-1);
+            exists.remove(x);
+            exists.put(x, removeDate);
+        }
 //System.out.println("REEEEEEEEEE exists = " + exists);
         db.close();
         c.close();
@@ -238,14 +247,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
         List<String> theRow = new ArrayList<String>();
         if (cur.moveToFirst())
         {
-            int x = 0;
-            while ( !cur.isAfterLast() )
-            {
-                theRow.add( cur.getString( cur.getColumnIndex(columns[x])) );
-                cur.moveToNext();
-                x++;
-            }
+            //int x = 0;
+            //do
+            //{
+            theRow.add(cur.getString(0));
+            theRow.add(cur.getString(1));
+            theRow.add(cur.getString(2));
+            theRow.add(cur.getString(3));
+            //theRow.add(cur.getString(cur.getColumnIndex(columns[x])));
+            //cur.moveToNext();
+            //x++;
+            //} while (!cur.isAfterLast());
         }
+
         db.close();
         cur.close();
         return theRow;
