@@ -363,7 +363,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         private Spreadsheet createSpreadsheet() throws IOException {
             Spreadsheet requestBody = new Spreadsheet();
             SpreadsheetProperties properties = new SpreadsheetProperties();
-            properties.setTitle(title);
+            properties.setTitle(activityName);
             requestBody.setProperties(properties);
 
             Sheets.Spreadsheets.Create request = mService.spreadsheets().create(requestBody);
@@ -375,7 +375,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
          */
         private void generateActivitySpreadsheet(Spreadsheet sheet){
             try {
-                String writeRange = "Sheet1!A3:E";
+                String writeRange = "Sheet1!A1:E";
                 String id = sheet.getSpreadsheetId();
                 Hashtable<String, List<String>> activityEntries = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity(activityName);
                 List<String> activityInfo = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(activityName);
@@ -383,12 +383,19 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                 //System.out.println(activityInfo);
 
                 List<List<Object>> values = new ArrayList<>();
-                for(int i = 0; i <= activityInfo.size(); i++){
-                    List<Object> dataRow = new ArrayList<>();
-                    //System.out.println(activityInfo.get(i));
-                    dataRow.add(activityInfo.get(i));
-                    values.add(dataRow);
+                List<Object> columnHeaderDataRow = new ArrayList<>();
+                for(int i = 0; i < activityInfo.size(); i++){
+                    columnHeaderDataRow.add(activityInfo.get(i));
                 }
+                values.add(columnHeaderDataRow);
+
+                Set<String> keys = activityEntries.keySet();
+                List<Object> dataRows = new ArrayList<>();
+                for(String key : keys){
+                    dataRows.add(activityEntries.get(key).toString());
+                    values.add(dataRows);
+                }
+
 
                 ValueRange vr = new ValueRange().setValues(values).setMajorDimension("ROWS");
                 mService.spreadsheets().values()
