@@ -363,7 +363,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         private Spreadsheet createSpreadsheet() throws IOException {
             Spreadsheet requestBody = new Spreadsheet();
             SpreadsheetProperties properties = new SpreadsheetProperties();
-            properties.setTitle(activityName);
+            properties.setTitle("StatBoX: "+activityName + " Activity");
             requestBody.setProperties(properties);
 
             Sheets.Spreadsheets.Create request = mService.spreadsheets().create(requestBody);
@@ -380,15 +380,13 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                 Hashtable<String, List<String>> activityEntries = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity(activityName);
                 List<String> activityInfo = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(activityName);
 
-                //System.out.println(activityInfo);
-
                 List<List<Object>> values = new ArrayList<>();
                 List<Object> columnHeaderDataRow = new ArrayList<>();
                 for(int i = 0; i < activityInfo.size(); i++){
-                    columnHeaderDataRow.add(activityInfo.get(i));
                     List<String> statType =  DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(activityName,activityInfo.get(i));
-                    System.out.println(statType);
+                    columnHeaderDataRow.add(activityInfo.get(i)+" ("+statType.get(2).toLowerCase()+")");
                 }
+                columnHeaderDataRow.add("Date (yyyy-mm-dd)");
                 values.add(columnHeaderDataRow);
 
                 Set<String> keys = activityEntries.keySet();
@@ -400,7 +398,6 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                     }
                     values.add(dataRows);
                 }
-
 
                 ValueRange vr = new ValueRange().setValues(values).setMajorDimension("ROWS");
                 mService.spreadsheets().values()
