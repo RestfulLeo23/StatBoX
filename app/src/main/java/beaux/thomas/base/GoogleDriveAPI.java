@@ -343,8 +343,8 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         @Override
         protected Spreadsheet doInBackground(Void... params) {
             try {
-                Spreadsheet sheet = createSpreadsheet();
-                generateActivitySpreadsheet(sheet);
+                Spreadsheet sheet = generateSpreadsheet();
+                updateActivitySpreadsheet(sheet);
                 return sheet;
             } catch (Exception e) {
                 mLastError = e;
@@ -354,11 +354,11 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         }
 
         /**
-         * Create a StatBoX Activity Google Spreadsheet
-         * @return generated spreadsheet
+         * Create a blank StatBoX Activity Google Spreadsheet
+         * @return Google Spreadsheet
          * @throws IOException
          */
-        private Spreadsheet createSpreadsheet() throws IOException {
+        private Spreadsheet generateSpreadsheet() throws IOException {
             Spreadsheet requestBody = new Spreadsheet();
             SpreadsheetProperties properties = new SpreadsheetProperties();
             properties.setTitle("StatBoX: "+activityName + " Activity");
@@ -369,15 +369,19 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         }
 
         /**
-         * Updates newly created GoogleSpreadsheet with Activity information
+         * Update a Google Spreadsheet with a StatBoX Activity
+         * @param sheet Google Spreadsheet object
          */
-        private void generateActivitySpreadsheet(Spreadsheet sheet){
+        private void updateActivitySpreadsheet(Spreadsheet sheet){
+            // Catching IO exception from updating spreadsheet with new information.
             try {
+                // Set the parameters of the sheet and acquire activity information from DatabaseHelper
                 String writeRange = "Sheet1!A1:E";
                 String id = sheet.getSpreadsheetId();
                 Hashtable<String, List<String>> activityEntries = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity(activityName);
                 List<String> activityInfo = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(activityName);
 
+                // Create column headers using activity stat's.
                 List<List<Object>> values = new ArrayList<>();
                 List<Object> columnHeaderDataRow = new ArrayList<>();
                 for(int i = 0; i < activityInfo.size(); i++){
@@ -387,16 +391,18 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                 columnHeaderDataRow.add("Date (yyyy-mm-dd)");
                 values.add(columnHeaderDataRow);
 
+                // Populate rows starting at row 1 with stat box entries
                 Set<String> keys = activityEntries.keySet();
                 for(String key : keys){
-                    List<Object> dataRows = new ArrayList<>();
+                    List<Object> entryRow = new ArrayList<>();
                     List<String > entryList = activityEntries.get(key);
                     for(int i = 0; i < entryList.size(); i++){
-                        dataRows.add(entryList.get(i));
+                        entryRow.add(entryList.get(i));
                     }
-                    values.add(dataRows);
+                    values.add(entryRow);
                 }
 
+                // Generate spreadsheet payload and send it off to update the spreadsheet
                 ValueRange vr = new ValueRange().setValues(values).setMajorDimension("ROWS");
                 mService.spreadsheets().values()
                         .update(id, writeRange, vr)
