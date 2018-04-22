@@ -121,8 +121,6 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         activityName = intent.getStringExtra("Activity");
     }
 
-
-
     /**
      * Attempt to call the API, after verifying that all the preconditions are
      * satisfied. The preconditions are: Google Play Services installed, an
