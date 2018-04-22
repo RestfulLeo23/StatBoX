@@ -48,6 +48,15 @@ public class HomeScreen extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void ImageMode(View view) {
+        System.out.println("IMAGE MORE CLICKED");
+        Intent intent = new Intent(this, ImagePicker.class);
+        System.out.println("IMAGE MORE CLICKED");
+        startActivity(intent);
+        System.out.println("IMAGE MORE CLICKED");
+    }
+
+
     /** Called when the user taps the Send button */
     public void ViewActivityMode(View view) {
         Button b = (Button) view;
@@ -164,7 +173,13 @@ public class HomeScreen extends AppCompatActivity {
         android.os.Process.killProcess(android.os.Process.myPid());
         finish();
     }
-
+    public void deleteSettingDB(){
+        System.out.println("DELETING DB");
+        DatabaseHelper.getsInstance(getApplicationContext()).death(this);
+        updateHomeScreen();
+        android.os.Process.killProcess(android.os.Process.myPid());
+        finish();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -174,18 +189,19 @@ public class HomeScreen extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                System.out.println("THIS IS HS ASOIAUDINIMIUIHYHJKIJUHGYHBJNKUHGYVHBJUYGTGFVBHJYGVBHJNUHYGV BNJUHGBV%%%%%%");
+                return true;
+            case R.id.deletedb:
+                deleteSettingDB();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

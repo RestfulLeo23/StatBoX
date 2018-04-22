@@ -18,6 +18,7 @@ public class InputStat extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.stat);
         Intent intent = getIntent();
         StatNAME = intent.getStringExtra(EXTRA_MESSAGE);
@@ -106,6 +107,8 @@ public class InputStat extends AppCompatActivity {
 
 
     }
+
+
 
 
 }

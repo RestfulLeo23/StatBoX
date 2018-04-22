@@ -14,4 +14,7 @@
     <string name="title_activity_graph_view">Trends</string>
     <string name="create_act">Create New Activity</string>
     <string name="title_activity_timer">Timer</string>
+    <string name="title_activity_google_drive_api">Google Drive Export</string>
+    <string name="input_stat">Input New Entry</string>
+    <string name="title_activity_export">EXPORT</string>
 </resources>

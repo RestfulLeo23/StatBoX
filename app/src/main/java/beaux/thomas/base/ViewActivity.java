@@ -40,6 +40,7 @@ public class ViewActivity extends AppCompatActivity {
     /** Called when the user taps the Send button */
     public void InputStatMode(View view) {
         Intent intent = new Intent(this, InputStat.class);
+        System.out.println("******"+StatNAME);
         intent.putExtra(EXTRA_MESSAGE, StatNAME);
         startActivityForResult(intent,GET_NEW_STAT);
     }
@@ -98,17 +99,16 @@ public class ViewActivity extends AppCompatActivity {
         arr = Pull.toArray(arr);
         int size = arr.length;
 
-        System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL:  "+n+"   ****");
-        System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY:  "+size+"   ****");
+        //System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL:  "+n+"   ****");
+        //System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY:  "+size+"   ****");
 
         String dcheck = Pull.get(Pull.size() - 1);
-        System.out.println("****THIS IS THE LAST ENTRY IN PULL BEFORE toARRAY:  "+dcheck+"   ****");
+        //System.out.println("****THIS IS THE LAST ENTRY IN PULL BEFORE toARRAY:  "+dcheck+"   ****");
 
 
         if (dcheck.equals("Date")){
-
             size = Pull.size()-1;
-            System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY this is reallt a good line so greattttttttttttt:  "+size+"   ****");
+          //  System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY this is reallt a good line so greattttttttttttt:  "+size+"   ****");
 
         }
 
@@ -139,7 +139,6 @@ public class ViewActivity extends AppCompatActivity {
         Types[4] = T5;
 
         TextView[] Rs = new TextView[5];
-
         TextView R1 = findViewById(R.id.recent1);
         TextView R2 = findViewById(R.id.recent2);
         TextView R3 = findViewById(R.id.recent3);
@@ -152,23 +151,27 @@ public class ViewActivity extends AppCompatActivity {
         Rs[4] = R5;
 
         //System.out.println(DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(StatNAME));
-        //System.out.println(arr[0]);
-        //System.out.println(StatNAME);
+
+        System.out.println(arr[0]);
+        System.out.println(StatNAME);
+
         //System.out.println("BEFORE DB PULL");
-        //List<String> TEST = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata("Thomas", "Coding");
-        //System.out.println("After DB PULL");
-        //int k = TEST.size();
-        //String testt[] = new String[k];
-        //testt = TEST.toArray(testt);
+
+        List<String> TEST = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[0]);
+
+       // System.out.println(TEST);
+        int k = TEST.size();
+        String testt[] = new String[k];
+        testt = TEST.toArray(testt);
+
+        for (String i:testt){
+            System.out.println("*********THIS IS THE pull ENTRY : "+i);
+        }
         //int s = arr.length;
         //System.out.println("testt****************************************");
         String[] ex_array = DatabaseHelper.getsInstance(getApplicationContext()).returnLastEntry(StatNAME);
 
-        System.out.println("****THIS IS THE SIZE OF THE RETURN LAST ENTRY PULL:     "+ex_array.length+"   ****");
-        for (String i:ex_array){
-            System.out.println("*********THIS IS THE RECENT ENTRY : "+i);
-        }
-        //System.out.println(DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[0]));
+        System.out.println(DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[0]));
         if (size == 0) {
             for (int i = 0; i<5 ; i++){
                 Stats[i].setVisibility(View.GONE);
