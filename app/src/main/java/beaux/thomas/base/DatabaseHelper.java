@@ -12,9 +12,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.Set;
 
 import static android.support.v4.content.ContextCompat.startActivity;
@@ -143,6 +145,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
         exists.remove("android_metadata");
         exists.remove("sqlite_sequence");
         exists.remove(TABLE_METADATA);
+        Set j = new HashSet(exists.keySet());
+        for(Object x: j)
+        {
+            List<String> withDate = (List)exists.get(x);
+            List<String> removeDate = withDate.subList(0, withDate.size()-1);
+            exists.remove(x);
+            exists.put(x, removeDate);
+        }
 //System.out.println("REEEEEEEEEE exists = " + exists);
         db.close();
         c.close();
@@ -237,14 +247,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
         List<String> theRow = new ArrayList<String>();
         if (cur.moveToFirst())
         {
-            int x = 0;
-            while ( !cur.isAfterLast() )
-            {
-                theRow.add( cur.getString( cur.getColumnIndex(columns[x])) );
-                cur.moveToNext();
-                x++;
-            }
+            //int x = 0;
+            //do
+            //{
+            theRow.add(cur.getString(0));
+            theRow.add(cur.getString(1));
+            theRow.add(cur.getString(2));
+            theRow.add(cur.getString(3));
+            //theRow.add(cur.getString(cur.getColumnIndex(columns[x])));
+            //cur.moveToNext();
+            //x++;
+            //} while (!cur.isAfterLast());
         }
+
         db.close();
         cur.close();
         return theRow;
@@ -274,18 +289,40 @@ public class DatabaseHelper extends SQLiteOpenHelper
             //System.out.println("stuff2 " + values);
         }
 
-        values.put("Date", getDateTime());
+        values.put("Date", getDateProvider());
         //System.out.println("values = " + values);
         db.insert(array[0], null, values);
         db.setTransactionSuccessful();
         db.endTransaction();
         db.close();
     }
-    private String getDateTime()
+
+    private static boolean dateThing = false;
+    private String getDateProvider()
+    {
+        if (dateThing == false)
+            return getDateTime();
+        else
+            return getDateTime2();
+    }
+
+    private String getDateTime()    //This is the default Date setter
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "yyyy-MM-dd", Locale.getDefault());
         Date date = new Date();
+        return dateFormat.format(date);
+    }
+    private String getDateTime2()   //This date setter will only be called during the createAll button for the demo.
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+        Random rand = new Random();
+
+        int year= 118;
+        int month = rand.nextInt(12)+1;
+        int day = rand.nextInt(28)+1;
+        Date date = new Date(year, month, day);
         return dateFormat.format(date);
     }
 
@@ -410,6 +447,108 @@ public class DatabaseHelper extends SQLiteOpenHelper
         List [] theArray = {theRow, theRow2};
         return theArray;
     }
+
+    //for testing purposes
+    //DatabaseHelper.getsInstance(getApplicationContext()).createALL();
+    public void createALL()
+    {
+        dateThing = true;
+        //array[0] is the table name, all proceeding indeces are the attributes
+        //Attributes MUST be ONE single string. "Pages Read" should be PagesRead or Pages_Read, etc
+        //array[0] MUST NOT be a duplicate activity name. This will crash the app.
+        //array[0] MUST follow standard java variable naming conventions, or this will crash the app. ie, Can't begin with a number or special character, etc.
+        //String [] example_array = {"Running", "Duration",
+        String [] array = {"Hiking", "Duration", "miles"};
+        String [] array2 = {"Biking", "Miles", "Red_Cars_Seen", "Time"};
+        String [] array3 = {"Swimming", "Laps", "time"};
+        String [] array4 = {"Reading", "Pages", "Chapters", "Grammatical_Errors", "Minutes", "Spelling_Mistakes"};
+        createTable(array);
+        createTable(array2);
+        createTable(array3);
+        createTable(array4);
+
+        //Activity, StatType, IsTimer, IsGPS, Unit, Description             ***TO EVERYONE ELSE, STAT TYPE IS STAT NAME AND UNIT IS STAT TYPE**
+        //example_array = {"Running", "Duration", "Yes", "No", "minutes", "The duration"}
+        //DatabaseHelper.getsInstance(getApplicationContext()).updateMeta(example_array);
+
+        String [] array11 = {"Hiking", "Duration", "true", "false", "minutes", "The Duration of swim"};
+        String [] array12 = {"Hiking", "miles", "false", "false", "integer", "The number of miles"};
+        updateMeta(array11);
+        updateMeta(array12);
+
+        String [] array21 = {"Biking", "Miles", "false", "false", "integer", "The number of minutes"};
+        String [] array22 = {"Biking", "Red_Cars_Seen", "false", "false", "integer", "The amount of red cars seen"};
+        String [] array23 = {"Biking", "Time", "true", "false", "minutes", "The Duration of a ride"};
+        updateMeta(array11);
+        updateMeta(array22);
+        updateMeta(array23);
+
+        String [] array31 = {"Swimming", "Laps", "false", "false", "number", "The laps"};
+        String [] array32 = {"Swimming", "time", "true", "false", "number", "The duration"};
+        updateMeta(array31);
+        updateMeta(array32);
+
+        String [] array41 = {"Reading", "Pages", "false", "false", "int", "The amount pages read"};
+        String [] array42 = {"Reading", "Chapters", "false", "false", "int", "The amount chapters read"};
+        String [] array43 = {"Reading", "Grammatical_Errors", "false", "false", "int", "The amount grammatical errors spotted"};
+        String [] array44 = {"Reading", "Minutes", "true", "false", "int", "The time spent reading"};
+        String [] array45 = {"Reading", "Spelling_Mistakes", "false", "false", "int", "The amount spelling errors noticed"};
+        updateMeta(array41);
+        updateMeta(array42);
+        updateMeta(array43);
+        updateMeta(array44);
+        updateMeta(array45);
+
+        //array[] is an entry that's being entered into its activity table. array[0] is the table in question. All proceeding indeces are the attributes' data.
+        //array[] must ordered the same as the table was created. It is also case sensitive.
+        //DatabaseHelper.getsInstance(getApplicationContext()).insertData(array);
+        Random randy = new Random();
+        String [] hikingarray = new String[3];
+        hikingarray[0] = "Hiking";
+        for(int x = 0; x<500; x++)
+        {
+            int miles = randy.nextInt(15)+1;
+            hikingarray[1] = Integer.toString((randy.nextInt(20) + 9) * miles);    //duration
+            hikingarray[2] = Integer.toString(miles);                                       //miles
+            insertData(hikingarray);
+        }
+
+        String [] bikingarray = new String[4];//"Biking", "Miles", "Red_Cars_Seen", "Time"};
+        bikingarray[0] = "Biking";
+        for(int x = 0; x<500; x++)
+        {
+            int miles = randy.nextInt(50)+5;
+            bikingarray[1] = Integer.toString(miles);                                   //Miles
+            bikingarray[2] = Integer.toString(randy.nextInt(10)+0);            //Red cars seen
+            bikingarray[3] = Integer.toString((randy.nextInt(12)+ 7) * miles); //Time
+            insertData(bikingarray);
+        }
+
+        String [] swimmingarray = new String[3];//"Swimming", "Laps", "time"}
+        swimmingarray[0] = "Swimming";
+        for(int x = 0; x<500; x++)
+        {
+            int laps = randy.nextInt(30)+4;
+            swimmingarray[1] = Integer.toString(laps);                                   //Laps
+            swimmingarray[2] = Integer.toString((randy.nextInt(3)+1) * laps);   //time
+            insertData(swimmingarray);
+        }
+
+        String [] readingarray = new String[6];//"Reading", "Pages", "Chapters", "Grammatical_Errors", "Minutes", "Spelling_Mistakes"};
+        readingarray[0] = "Reading";
+        for(int x = 0; x<500; x++)
+        {
+            int pages = randy.nextInt(100)+10;
+            readingarray[1] = Integer.toString(pages);//pages
+            readingarray[2] = Integer.toString(randy.nextInt(5)+1);//chapters
+            readingarray[3] = Integer.toString(randy.nextInt(15)+0);//grammar errors
+            readingarray[4] = Integer.toString((randy.nextInt(5)+ 1) * pages); //minutes
+            readingarray[5] = Integer.toString(randy.nextInt(20)+ 0); //spelling mistakes
+            insertData(readingarray);
+        }
+    dateThing = false;
+    }
+
 
     //for testing purposes
     //DatabaseHelper.getsInstance(getApplicationContext()).death();

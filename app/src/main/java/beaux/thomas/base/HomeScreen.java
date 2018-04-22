@@ -14,6 +14,8 @@ import java.util.Set;
 
 import android.widget.Toast;
 
+
+
 public class HomeScreen extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "beaux.thomas.base.MESSAGE";
     //public DatabaseHelper StatboX_Database;
@@ -29,8 +31,11 @@ public class HomeScreen extends AppCompatActivity {
         setContentView(R.layout.homescreen);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         updateHomeScreen();
     }
+
+
 
     /** Called when the user taps the Send button */
     public void InputStatMode(View view) {

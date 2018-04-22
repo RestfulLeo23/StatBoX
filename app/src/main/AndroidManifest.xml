@@ -3,6 +3,7 @@
     package="beaux.thomas.base">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <application
@@ -15,7 +16,6 @@
         <meta-data
             android:name="com.google.android.apps.drive.APP_ID"
             android:value="id=730280224137" />
-
         <activity
             android:name=".HomeScreen"
             android:label="@string/app_name"
@@ -39,12 +39,16 @@
         </activity>
         <activity
             android:name=".InputStat"
-            android:label="@string/input_stat"
-            android:parentActivityName=".ViewActivity"></activity>
+            android:parentActivityName=".HomeScreen">
+
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HomeScreen" />
+        </activity>
         <activity
             android:name=".ViewActivity"
             android:label="@string/title_activity_view"
-            android:launchMode="singleTop"
             android:parentActivityName=".HomeScreen"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -54,8 +58,12 @@
         <activity
             android:name=".DataAnalytics"
             android:label="@string/title_activity_graph_view"
-            android:parentActivityName=".ViewActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:parentActivityName=".HomeScreen"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="beaux.thomas.base.HomeScreen" />
+        </activity>
         <activity
             android:name=".Timer"
             android:label="@string/title_activity_timer"
@@ -66,22 +74,9 @@
                 android:value="beaux.thomas.base.HomeScreen" />
         </activity>
         <activity
-            android:name=".ImagePicker"
-            android:label="@string/title_activity_timer"
-            android:parentActivityName=".HomeScreen"
+            android:name=".GoogleDriveAPI"
+            android:label="@string/title_activity_google_drive_api"
             android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="beaux.thomas.base.HomeScreen" />
-        </activity>
-        <activity
-            android:name=".EXPORT"
-            android:label="@string/title_activity_export"
-            android:parentActivityName=".ViewActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="beaux.thomas.base.ViewActivity" />
         </activity>
     </application>
 
