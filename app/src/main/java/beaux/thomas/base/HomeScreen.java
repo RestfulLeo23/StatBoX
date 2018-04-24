@@ -202,6 +202,8 @@ public class HomeScreen extends AppCompatActivity {
             case R.id.deletedb:
                 deleteSettingDB();
                 return true;
+            case R.id.import_act:
+                Toast.makeText(getApplicationContext(),"Scoot is Lame",Toast.LENGTH_SHORT).show();
             default:
                 return super.onOptionsItemSelected(item);
         }

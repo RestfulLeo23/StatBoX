@@ -15,4 +15,7 @@
     <string name="create_act">Create New Activity</string>
     <string name="title_activity_timer">Timer</string>
     <string name="title_activity_google_drive_api">GoogleDriveAPI</string>
+    <string name="menu_export">Export Activity</string>
+    <string name="title_activity_export">Export</string>
+    <string name="import_act">Import</string>
 </resources>
