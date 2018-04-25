@@ -27,11 +27,11 @@ public class InputStat extends AppCompatActivity {
     }
      public void Input_Stat(View view){
         System.out.println("INPUT STAT START");
-         EditText Statv1 = (EditText) findViewById(R.id.StatVal1);
-         EditText Statv2 = (EditText) findViewById(R.id.StatVal2);
-         EditText Statv3 = (EditText) findViewById(R.id.StatVal3);
-         EditText Statv4 = (EditText) findViewById(R.id.StatVal4);
-         EditText Statv5 = (EditText) findViewById(R.id.StatVal5);
+        EditText Statv1 = (EditText) findViewById(R.id.StatVal1);
+        EditText Statv2 = (EditText) findViewById(R.id.StatVal2);
+        EditText Statv3 = (EditText) findViewById(R.id.StatVal3);
+        EditText Statv4 = (EditText) findViewById(R.id.StatVal4);
+        EditText Statv5 = (EditText) findViewById(R.id.StatVal5);
 
         String[] New_Stat = new String[1];
         New_Stat[0]= Statv1.getText().toString()+";"+
@@ -48,7 +48,8 @@ public class InputStat extends AppCompatActivity {
         finish();
 
      }
-    public void UpdateInputStat(){
+
+     public void UpdateInputStat(){
         List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(StatNAME);
         int n = Pull.size();
         String arr[] = new String[n];
@@ -104,11 +105,9 @@ public class InputStat extends AppCompatActivity {
                 Inputs[j].setVisibility(View.GONE);
             }
         }
-
-
     }
-
-
-
-
+    public void openTimer(View view){
+        Intent intent = new Intent(this, Timer.class);
+        startActivity(intent);
+    }
 }
