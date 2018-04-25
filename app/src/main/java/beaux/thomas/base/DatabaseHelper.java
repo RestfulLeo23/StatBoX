@@ -57,12 +57,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
     SQLiteDatabase db;
 
     //Singleton design pattern
-    private static DatabaseHelper sInstance;
+    private static DatabaseHelper dbInstance;
     public static synchronized DatabaseHelper getsInstance(Context context)
     {
-        if (sInstance == null)
-            sInstance = new DatabaseHelper(context.getApplicationContext());
-        return sInstance;
+        if (dbInstance == null)
+            dbInstance = new DatabaseHelper(context.getApplicationContext());
+        return dbInstance;
     }
 
     //CONSTRUCTOR
@@ -209,6 +209,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.close();
     }
 
+    //DatabaseHelper.getsInstance(getApplicationContext()).updateIcon("Running", "some_address string");
+    public void updateIcon(String activity, String address)
+    {
+        db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        db.beginTransaction();
+        values.put(COL2, address);
+        db.update(TABLE_ICONS, values, COL1 + " = " + activity, null);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
 
     //Activity, StatType, IsTimer, IsGPS, Unit, Description             ***TO EVERYONE ELSE, STAT TYPE IS STAT NAME AND UNIT IS STAT TYPE**
     //example_array = {"Running", "Duration", "Yes", "No", "minutes", "The duration"}
@@ -297,13 +310,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.close();
     }
 
-    private static boolean dateThing = false;
+    private static boolean dateVariable = false;
     private String getDateProvider()
     {
-        if (dateThing == false)
+        if (dateVariable == false)
             return getDateTime();
         else
-            return getDateTime2();
+            return getDateTime_alternate();
     }
 
     private String getDateTime()    //This is the default Date setter
@@ -313,7 +326,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         Date date = new Date();
         return dateFormat.format(date);
     }
-    private String getDateTime2()   //This date setter will only be called during the createAll button for the demo.
+    private String getDateTime_alternate()   //This date setter will only be called during the createAll button for the demo.
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
@@ -448,11 +461,33 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return theArray;
     }
 
+    //String act = "Running";
+    //String newAct = "Walking";
+    //DatabaseHelper.getsInstance(getApplicationContext()).changeTableName(act, newAct);
+    public void changeTableName(String oldName, String newName)
+    {
+        db = getWritableDatabase();
+        db.beginTransaction();
+        try
+        {
+            db.execSQL("ALTER TABLE " + oldName + " RENAME TO " + newName+";");
+            db.setTransactionSuccessful();
+        } finally
+        {
+            db.endTransaction();
+        }
+        db.close();
+
+        tablesInfo = restoreDBState();
+    }
+
+
+
     //for testing purposes
     //DatabaseHelper.getsInstance(getApplicationContext()).createALL();
     public void createALL()
     {
-        dateThing = true;
+        dateVariable = true;
         //array[0] is the table name, all proceeding indeces are the attributes
         //Attributes MUST be ONE single string. "Pages Read" should be PagesRead or Pages_Read, etc
         //array[0] MUST NOT be a duplicate activity name. This will crash the app.
@@ -546,7 +581,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             readingarray[5] = Integer.toString(randy.nextInt(20)+ 0); //spelling mistakes
             insertData(readingarray);
         }
-    dateThing = false;
+        dateVariable = false;
     }
 
 
