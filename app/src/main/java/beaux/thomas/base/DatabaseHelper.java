@@ -471,6 +471,82 @@ public class DatabaseHelper extends SQLiteOpenHelper
         try
         {
             db.execSQL("ALTER TABLE " + oldName + " RENAME TO " + newName+";");
+            db.execSQL("UPDATE StatType_Metadata SET Activity = \""+newName+"\" WHERE Activity = \""+oldName+"\";");//this updates every row in metadata
+            db.setTransactionSuccessful();                              //where the activity was the one being changed and changes them to this new name
+        } finally
+        {
+            db.endTransaction();
+        }
+        db.close();
+
+        tablesInfo = restoreDBState();
+    }
+
+
+    //String act = "Running";
+    //String oldColumn = "Duration";
+    //String newColumn = "Time";
+    //DatabaseHelper.getsInstance(getApplicationContext()).changeColumnName(act, oldColumn, newColumn);
+    public void changeColumnName(String activity, String oldColumn, String newColumn)
+    {
+        //first, rename table
+        changeTableName(activity, "tmp_table");
+
+        //2nd, replace old column name with new column name in a list of all columns
+        List<String> activityColumnList = tablesInfo.get("tmp_table");
+        int oldColumnIndex = activityColumnList.indexOf(oldColumn);
+        activityColumnList.set(oldColumnIndex, newColumn);
+
+        //3rd, create the array we want to use to create the new table
+        String [] array = new String[activityColumnList.size()];
+        activityColumnList.toArray(array);
+        String [] array2 = new String[array.length + 1];
+        array2[0] = activity;
+        for(int x=0; x < array.length; x++)
+            array2[x+1] = array[x];
+
+        //4th, create the original table again
+        createTable(array2);
+
+        //5th, prepare to update the metadata table
+        List<String> theMeta = pullStatTypeMetadata(activity, oldColumn);
+        ContentValues values = new ContentValues();
+        values.put("Activity", activity);
+        values.put(COL_StatType, newColumn);
+        values.put("IsTimer", theMeta.get(0));
+        values.put("IsGPS", theMeta.get(1));
+        values.put("Unit", theMeta.get(2));
+        values.put("Description", theMeta.get(3));
+
+        //last, repopulate the activity with "tmp_table" entries, then DROP tmp_table, and update the metadata
+        db = getWritableDatabase();
+        db.beginTransaction();
+        try
+        {
+            db.execSQL("INSERT INTO " +  activity + " SELECT * FROM tmp_table");
+            db.execSQL("DROP TABLE tmp_table;");
+            db.update(TABLE_METADATA, values, COL_Activity+ " = \""+activity + "\" AND "+ COL_StatType+" = \"" + oldColumn + "\"", null);
+            db.setTransactionSuccessful();
+        } finally
+        {
+            db.endTransaction();
+        }
+
+        db.close();
+        tablesInfo = restoreDBState();
+
+    }
+
+    ///String act = "Reading";
+    //DatabaseHelper.getsInstance(getApplicationContext()).deleteTable(act);
+    public void deleteTable(String activity)
+    {
+        db = getWritableDatabase();
+        db.beginTransaction();
+        try
+        {
+            db.execSQL("DROP TABLE " + activity+ ";");
+            db.execSQL("DELETE FROM StatType_Metadata WHERE Activity = \""+activity+"\";");//update the metadata
             db.setTransactionSuccessful();
         } finally
         {
