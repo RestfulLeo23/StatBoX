@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -19,6 +21,7 @@ public class ViewActivity extends AppCompatActivity {
     final Context context = this;
     private Button button;
     public String StatNAME;
+    public String Des;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +43,12 @@ public class ViewActivity extends AppCompatActivity {
     /** Called when the user taps the Send button */
     public void InputStatMode(View view) {
         Intent intent = new Intent(this, InputStat.class);
+        //System.out.println("******"+StatNAME);
         intent.putExtra(EXTRA_MESSAGE, StatNAME);
         startActivityForResult(intent,GET_NEW_STAT);
     }
     public void DataAnalytics(View view){
-        System.out.println("I HAVE CLICKED ON THE TABLE");
+        //System.out.println("I HAVE CLICKED ON THE TABLE");
         TextView tv = (TextView)((LinearLayout )view).getChildAt(0);
         Intent intent = new Intent(this, DataAnalytics.class);
         intent.putExtra("Activity", StatNAME);
@@ -52,7 +56,7 @@ public class ViewActivity extends AppCompatActivity {
         context.startActivity(intent);
     }
     public void GoogleDriveAPI(View view){
-        System.out.println("I HAVE CLICKED ON THE Export Button");
+        //System.out.println("I HAVE CLICKED ON THE Export Button");
         Intent intent = new Intent(this, GoogleDriveAPI.class);
         intent.putExtra("Activity", StatNAME);
 
@@ -66,7 +70,7 @@ public class ViewActivity extends AppCompatActivity {
                 if (resultCode == OK) {
                     List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(StatNAME);
                     int n = Pull.size();
-                    System.out.println("OK ACTIVITY RESULT");
+                    //System.out.println("OK ACTIVITY RESULT");
                     // TODO Extract the data returned from the child Activity.
                     String[] returnValue = ParseString(data.getStringArrayExtra("STAT")[0]);
                     System.out.println(returnValue.length);
@@ -74,20 +78,19 @@ public class ViewActivity extends AppCompatActivity {
                     int o = 1;
                     newstat[0]= StatNAME;
                     for (String i : returnValue){
-                        System.out.println("Retrun Valuses: "+i);
+                    //    System.out.println("Retrun Valuses: "+i);
                         newstat[o]= i;
-                        System.out.println("NEW STATS AT BEGINING"+newstat[o]+" INDEX:"+o);
+                      //  System.out.println("NEW STATS AT BEGINING"+newstat[o]+" INDEX:"+o);
                         o= o+1;
                     }
 
                     for (String i: newstat ){
-                        System.out.println("NEW STAT: "+i);
+                        //System.out.println("NEW STAT: "+i);
                     }
                     DatabaseHelper.getsInstance(getApplicationContext()).insertData(newstat);
                     // Ideally here is where ill add the stat to the activity and then store it in
                     // the DB.
                     //System.out.println("before stat pull");
-
                     //System.out.println(DatabaseHelper.getsInstance(getApplicationContext())
                     updateStatScreen();
                     break;
@@ -96,26 +99,25 @@ public class ViewActivity extends AppCompatActivity {
         }
     }
     public void updateStatScreen() {
-
         TextView textView = findViewById(R.id.StatName);
-
+        TextView des = findViewById(R.id.Des);
         List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(textView.getText().toString());
         int n = Pull.size();
         String arr[] = new String[n];
         arr = Pull.toArray(arr);
         int size = arr.length;
 
-        System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL:  "+n+"   ****");
-        System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY:  "+size+"   ****");
+        //System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL:  "+n+"   ****");
+        //System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY:  "+size+"   ****");
 
         String dcheck = Pull.get(Pull.size() - 1);
-        System.out.println("****THIS IS THE LAST ENTRY IN PULL BEFORE toARRAY:  "+dcheck+"   ****");
+
+        //System.out.println("****THIS IS THE LAST ENTRY IN PULL BEFORE toARRAY:  "+dcheck+"   ****");
 
 
         if (dcheck.equals("Date")){
-
             size = Pull.size()-1;
-            System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY this is reallt a good line so greattttttttttttt:  "+size+"   ****");
+          //  System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY this is reallt a good line so greattttttttttttt:  "+size+"   ****");
 
         }
 
@@ -133,7 +135,8 @@ public class ViewActivity extends AppCompatActivity {
         Stats[4] = stat5;
 
         TextView[] Types = new TextView[5];
-
+        String[] t = new String[4];
+        String[] types = new String[5];
         TextView T1 = findViewById(R.id.type1);
         TextView T2 = findViewById(R.id.type2);
         TextView T3 = findViewById(R.id.type3);
@@ -146,7 +149,6 @@ public class ViewActivity extends AppCompatActivity {
         Types[4] = T5;
 
         TextView[] Rs = new TextView[5];
-
         TextView R1 = findViewById(R.id.recent1);
         TextView R2 = findViewById(R.id.recent2);
         TextView R3 = findViewById(R.id.recent3);
@@ -162,20 +164,28 @@ public class ViewActivity extends AppCompatActivity {
         //System.out.println(arr[0]);
         //System.out.println(StatNAME);
         //System.out.println("BEFORE DB PULL");
-        //List<String> TEST = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata("Thomas", "Coding");
-        //System.out.println("After DB PULL");
-        //int k = TEST.size();
-        //String testt[] = new String[k];
-        //testt = TEST.toArray(testt);
+        for (int j=0; j<size;j++ ) {
+            t = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[j]).toArray(t);
+            types[j] = t[2];
+            Des = t[3];
+            //System.out.println("THIS IS THE TYPE"+types[j]);
+        }
+
+        // System.out.println(TEST);
+
+        //int k = Meta.size();
+        //String meta[] = new String[k];
+        //meta = Meta.toArray(meta);
+
         //int s = arr.length;
         //System.out.println("testt****************************************");
         String[] ex_array = DatabaseHelper.getsInstance(getApplicationContext()).returnLastEntry(StatNAME);
 
-        System.out.println("****THIS IS THE SIZE OF THE RETURN LAST ENTRY PULL:     "+ex_array.length+"   ****");
-        for (String i:ex_array){
-            System.out.println("*********THIS IS THE RECENT ENTRY : "+i);
-        }
         //System.out.println(DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[0]));
+
+
+
+
         if (size == 0) {
             for (int i = 0; i<5 ; i++){
                 Stats[i].setVisibility(View.GONE);
@@ -186,9 +196,14 @@ public class ViewActivity extends AppCompatActivity {
                 Stats[i].setVisibility(View.VISIBLE);
                 Stats[i].setText(arr[i]);
                 Types[i].setVisibility(View.VISIBLE);
+                Types[i].setText(types[i]);
+                des.setText(Des);
                 if (ex_array.length != 0) {
                     Rs[i].setVisibility(View.VISIBLE);
                     Rs[i].setText(ex_array[i]);
+                }
+                if (ex_array.length == 0){
+                    Rs[i].setVisibility(View.INVISIBLE);
                 }
 
             }
@@ -198,22 +213,33 @@ public class ViewActivity extends AppCompatActivity {
                 Rs[j].setVisibility(View.GONE);
             }
         }
-        for (int i = 0; i<size; i++) {
-            List<String> P = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity_Stat(StatNAME, arr[i]);
-            int c = P.size();
-            String a[] = new String[c];
-            a = P.toArray(a);
-            int l = a.length;
-            System.out.println(l);
-            for (String j : a) {
-                System.out.println("Stat Name:"+arr[i]+" Value:"+j);
-            }
-        }
-
 
     }
     public String[] ParseString(String s){
         String[] result = s.split(";+");
         return result;
     }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_activity, menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                System.out.println("THIS IS HS ASOIAUDINIMIUIHYHJKIJUHGYHBJNKUHGYVHBJUYGTGFVBHJYGVBHJNUHYGV BNJUHGBV%%%%%%");
+                return true;
+            case R.id.menu_export:
+                Intent intent = new Intent(this, Export.class);
+                intent.putExtra("Activity", StatNAME);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
 }

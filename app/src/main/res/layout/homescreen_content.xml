@@ -30,8 +30,11 @@
         android:layout_marginTop="32dp"
         android:elevation="0dp"
         android:onClick="ViewActivityMode"
-        android:text="Sample"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+        android:textSize="32sp"
+        android:textStyle="bold"
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,6 +49,9 @@
         android:elevation="0dp"
         android:onClick="ViewActivityMode"
         android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="32sp"
+        android:textStyle="bold"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -59,6 +65,9 @@
         android:elevation="0dp"
         android:onClick="ViewActivityMode"
         android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="32sp"
+        android:textStyle="bold"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/act1" />
@@ -72,6 +81,9 @@
         android:elevation="0dp"
         android:onClick="ViewActivityMode"
         android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="32sp"
+        android:textStyle="bold"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/act2" />
@@ -85,6 +97,9 @@
         android:elevation="0dp"
         android:onClick="ViewActivityMode"
         android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="32sp"
+        android:textStyle="bold"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/act4" />
@@ -98,23 +113,15 @@
         android:elevation="0dp"
         android:onClick="ViewActivityMode"
         android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="32sp"
+        android:textStyle="bold"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/act3" />
 
     <Button
-        android:id="@+id/Ddb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="32dp"
-        android:text="Delete DB"
-        android:onClick="deleteDB"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button3"
+        android:id="@+id/timerbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -124,5 +131,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/fab" />
 
+    <Button
+        android:id="@+id/imagebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="32dp"
+        android:onClick="ImageMode"
+        android:text="Image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

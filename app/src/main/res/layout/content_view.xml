@@ -9,6 +9,7 @@
     tools:showIn="@layout/activity_view">
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -24,13 +25,14 @@
             android:textAlignment="center"
             android:textSize="36sp"
             android:textStyle="bold"
+            android:typeface="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -46,6 +48,7 @@
                     android:layout_marginStart="64dp"
                     android:layout_marginTop="32dp"
                     android:text="TextView"
+                    android:textSize="24sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/StatName" />
 
@@ -55,6 +58,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_marginEnd="32dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginStart="12dp"
                     android:layout_marginTop="32dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -86,6 +91,7 @@
                     android:layout_marginStart="64dp"
                     android:layout_marginTop="32dp"
                     android:text="TextView"
+                    android:textSize="24sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/Stat1" />
 
@@ -95,6 +101,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_marginEnd="32dp"
+                    android:layout_marginStart="12dp"
                     android:layout_marginTop="32dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -126,6 +133,7 @@
                     android:layout_marginStart="64dp"
                     android:layout_marginTop="32dp"
                     android:text="TextView"
+                    android:textSize="24sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/Stat2" />
 
@@ -135,6 +143,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_marginEnd="32dp"
+                    android:layout_marginStart="12dp"
                     android:layout_marginTop="32dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -166,6 +175,7 @@
                     android:layout_marginStart="64dp"
                     android:layout_marginTop="32dp"
                     android:text="TextView"
+                    android:textSize="24sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/Stat3" />
 
@@ -175,6 +185,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_marginEnd="32dp"
+                    android:layout_marginStart="12dp"
                     android:layout_marginTop="32dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -207,6 +218,7 @@
                     android:layout_marginStart="64dp"
                     android:layout_marginTop="32dp"
                     android:text="TextView"
+                    android:textSize="24sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/Stat4" />
 
@@ -216,6 +228,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_marginEnd="32dp"
+                    android:layout_marginStart="12dp"
                     android:layout_marginTop="32dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -235,6 +248,17 @@
             </TableRow>
 
         </TableLayout>
+
+        <TextView
+            android:id="@+id/Des"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textSize="36sp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="473dp" />
+
 
     </LinearLayout>
 
