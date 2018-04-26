@@ -433,6 +433,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                 mOutputText.setText("Spreadsheet was not generated successfully.");
             } else {
                 mOutputText.setText("Spreadsheet successfully generated");
+                finish();
             }
         }
 
