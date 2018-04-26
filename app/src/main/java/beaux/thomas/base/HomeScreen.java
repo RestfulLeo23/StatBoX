@@ -61,13 +61,6 @@ public class HomeScreen extends AppCompatActivity {
         System.out.println("IMAGE MORE CLICKED");
     }
 
-    public void GoogleDriveAPI(View view){
-        //System.out.println("I HAVE CLICKED ON THE Export Button");
-        Intent intent = new Intent(this, GoogleDriveAPI.class);
-        intent.putExtra("Activity", "");
-        startActivity(intent);
-    }
-
     /** Called when the user taps the Send button */
     public void ViewActivityMode(View view) {
         Button b = (Button) view;
@@ -210,7 +203,6 @@ public class HomeScreen extends AppCompatActivity {
                 return true;
             case R.id.import_act:
                 // TODO Plugin GoogleDriveAPI Import
-                //GoogleDriveAPI(findViewById(R.id.import_act));
             default:
                 return super.onOptionsItemSelected(item);
         }
