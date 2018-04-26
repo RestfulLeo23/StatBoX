@@ -15,6 +15,7 @@ import java.util.List;
 public class Export extends AppCompatActivity {
     public String actNAME;
     public String[] Entry= new String[5];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +30,6 @@ public class Export extends AppCompatActivity {
         updateScreen();
     }
 
-
     public void updateScreen(){
         List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(actNAME);
         int n = Pull.size();
@@ -38,7 +38,6 @@ public class Export extends AppCompatActivity {
         int size = arr.length;
 
         String[] ex_array = DatabaseHelper.getsInstance(getApplicationContext()).returnLastEntry(actNAME);
-
 
         TextView[] Stats = new TextView[5];
         TextView stat1 = findViewById(R.id.statN1);
@@ -97,7 +96,13 @@ public class Export extends AppCompatActivity {
             }
         }
 
+    }
 
+    public void GoogleDriveAPI(View view){
+        //System.out.println("I HAVE CLICKED ON THE Export Button");
+        Intent intent = new Intent(this, GoogleDriveAPI.class);
+        intent.putExtra("Activity", actNAME);
+        startActivity(intent);
     }
 
 }

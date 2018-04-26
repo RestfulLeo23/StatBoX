@@ -37,6 +37,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,17 +51,13 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     GoogleAccountCredential mCredential;
-    private TextView mOutputText;
-    private Button mCallApiButton;
     ProgressDialog mProgress;
-    private String title = "Sheet Creation Test";
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     static final int REQUEST_AUTHORIZATION = 1001;
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
 
-    private static final String BUTTON_TEXT = "Create StatBoX Activity Spreadsheet";
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS_READONLY };
 
@@ -73,44 +70,9 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LinearLayout activityLayout = new LinearLayout(this);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        activityLayout.setLayoutParams(lp);
-        activityLayout.setOrientation(LinearLayout.VERTICAL);
-        activityLayout.setPadding(16, 16, 16, 16);
-
-        ViewGroup.LayoutParams tlp = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        mCallApiButton = new Button(this);
-        mCallApiButton.setText(BUTTON_TEXT);
-        mCallApiButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCallApiButton.setEnabled(false);
-                mOutputText.setText("");
-                getResultsFromApi();
-                mCallApiButton.setEnabled(true);
-            }
-        });
-        activityLayout.addView(mCallApiButton);
-
-        mOutputText = new TextView(this);
-        mOutputText.setLayoutParams(tlp);
-        mOutputText.setPadding(16, 16, 16, 16);
-        mOutputText.setVerticalScrollBarEnabled(true);
-        mOutputText.setMovementMethod(new ScrollingMovementMethod());
-        mOutputText.setText(
-                "Click the \'" + BUTTON_TEXT +"\' button to test the API.");
-        activityLayout.addView(mOutputText);
 
         mProgress = new ProgressDialog(this);
         mProgress.setMessage("Calling Google Sheets API ...");
-
-        setContentView(activityLayout);
 
         // Initialize credentials and service object.
         mCredential = GoogleAccountCredential.usingOAuth2(
@@ -134,7 +96,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         } else if (mCredential.getSelectedAccountName() == null) {
             chooseAccount();
         } else if (! isDeviceOnline()) {
-            mOutputText.setText("No network connection available.");
+            Toast.makeText(getApplicationContext(),"No network connection available.",Toast.LENGTH_LONG).show();
         } else {
             new MakeRequestTask(mCredential).execute();
         }
@@ -192,9 +154,8 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         switch(requestCode) {
             case REQUEST_GOOGLE_PLAY_SERVICES:
                 if (resultCode != RESULT_OK) {
-                    mOutputText.setText(
-                            "This app requires Google Play Services. Please install " +
-                                    "Google Play Services on your device and relaunch this app.");
+                    Toast.makeText(getApplicationContext(),"This app requires Google Play Services. Please install " +
+                            "Google Play Services on your device and relaunch this app.",Toast.LENGTH_LONG).show();
                 } else {
                     getResultsFromApi();
                 }
@@ -418,7 +379,6 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
          */
         @Override
         protected void onPreExecute() {
-            mOutputText.setText("");
             mProgress.show();
         }
 
@@ -430,9 +390,9 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         protected void onPostExecute(Spreadsheet input) {
             mProgress.hide();
             if (input == null || input.size() == 0) {
-                mOutputText.setText("Spreadsheet was not generated successfully.");
+                Toast.makeText(getApplicationContext(),"Spreadsheet was not generated successfully.",Toast.LENGTH_LONG).show();
             } else {
-                mOutputText.setText("Spreadsheet successfully generated");
+                Toast.makeText(getApplicationContext(),"Spreadsheet successfully generated",Toast.LENGTH_LONG).show();
             }
         }
 
@@ -449,11 +409,11 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                             ((UserRecoverableAuthIOException) mLastError).getIntent(),
                             GoogleDriveAPI.REQUEST_AUTHORIZATION);
                 } else {
-                    mOutputText.setText("The following error occurred:\n"
-                            + mLastError.getMessage());
+                    Toast.makeText(getApplicationContext(),"The following error occurred:\n"
+                            + mLastError.getMessage(),Toast.LENGTH_LONG).show();
                 }
             } else {
-                mOutputText.setText("Request cancelled.");
+                Toast.makeText(getApplicationContext(),"Request cancelled.",Toast.LENGTH_LONG).show();
             }
         }
     }
