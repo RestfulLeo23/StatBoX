@@ -70,7 +70,7 @@ public class Timer extends AppCompatActivity {
                 container.addView(addView);
 
 
-
+                finish();
             }
         });
 
