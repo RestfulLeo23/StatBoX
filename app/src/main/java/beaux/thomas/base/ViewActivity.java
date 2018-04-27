@@ -27,7 +27,7 @@ public class ViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Get the Intent that started this activity and extract the string
@@ -226,7 +226,7 @@ public class ViewActivity extends AppCompatActivity {
                 System.out.println("THIS IS HS ASOIAUDINIMIUIHYHJKIJUHGYHBJNKUHGYVHBJUYGTGFVBHJYGVBHJNUHYGV BNJUHGBV%%%%%%");
                 return true;
             case R.id.menu_export:
-                Intent intent = new Intent(this, Export.class);
+                Intent intent = new Intent(this, GoogleDriveAPI.class);
                 intent.putExtra("Activity", StatNAME);
                 startActivity(intent);
                 return true;

@@ -76,7 +76,7 @@
                 android:value="beaux.thomas.base.HomeScreen" />
         </activity>
         <activity
-            android:name=".Export"
+            android:name=".GoogleDriveAPI"
             android:label="@string/title_activity_export"
             android:parentActivityName=".ViewActivity"
             android:theme="@style/AppTheme.NoActionBar">

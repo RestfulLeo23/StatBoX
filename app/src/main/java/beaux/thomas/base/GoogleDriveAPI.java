@@ -3,26 +3,24 @@ package beaux.thomas.base;
 import android.Manifest;
 import android.accounts.AccountManager;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.drive.Drive;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
@@ -48,7 +46,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 
-public class Export extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
+public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     GoogleAccountCredential mCredential;
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
@@ -57,7 +55,7 @@ public class Export extends AppCompatActivity implements EasyPermissions.Permiss
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
 
     private static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS_READONLY };
+    private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS_READONLY, Drive.SCOPE_FILE.toString()};
 
     public String actNAME;
     public String[] Entry= new String[5];
@@ -65,20 +63,33 @@ public class Export extends AppCompatActivity implements EasyPermissions.Permiss
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_export);
         Intent intent = getIntent();
         actNAME = intent.getStringExtra("Activity");
-        TextView textView = findViewById(R.id.act_name);
-        textView.setText(actNAME);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        updateScreen();
+        if(actNAME != null){
+            Export();
+        }
+        else{
+            Import();
+        }
 
-        // Initialize credentials and service object.
+        // Initialize Google credentials and service object.
         mCredential = GoogleAccountCredential.usingOAuth2(
                 getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
+    }
+
+    private void Export(){
+        setContentView(R.layout.activity_export);
+        TextView textView = findViewById(R.id.act_name);
+        textView.setText(actNAME);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        updateScreen();
+    }
+
+    private void Import(){
+
     }
 
     public void updateScreen(){
@@ -149,6 +160,7 @@ public class Export extends AppCompatActivity implements EasyPermissions.Permiss
 
     }
 
+    // Start the Drive export process on export button press
     public void DriveExport(View view){
         getResultsFromApi();
     }
@@ -168,7 +180,7 @@ public class Export extends AppCompatActivity implements EasyPermissions.Permiss
         } else if (! isDeviceOnline()) {
             Toast.makeText(getApplicationContext(),"No network connection available.",Toast.LENGTH_LONG).show();
         } else {
-            new Export.MakeRequestTask(mCredential).execute();
+            new GoogleDriveAPI.MakeRequestTask(mCredential).execute();
         }
     }
 
@@ -345,7 +357,7 @@ public class Export extends AppCompatActivity implements EasyPermissions.Permiss
             final int connectionStatusCode) {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         Dialog dialog = apiAvailability.getErrorDialog(
-                Export.this,
+                GoogleDriveAPI.this,
                 connectionStatusCode,
                 REQUEST_GOOGLE_PLAY_SERVICES);
         dialog.show();
@@ -476,7 +488,7 @@ public class Export extends AppCompatActivity implements EasyPermissions.Permiss
                 } else if (mLastError instanceof UserRecoverableAuthIOException) {
                     startActivityForResult(
                             ((UserRecoverableAuthIOException) mLastError).getIntent(),
-                            Export.REQUEST_AUTHORIZATION);
+                            GoogleDriveAPI.REQUEST_AUTHORIZATION);
                 } else {
                     Toast.makeText(getApplicationContext(),"The following error occurred:\n"
                             + mLastError.getMessage(),Toast.LENGTH_LONG).show();
