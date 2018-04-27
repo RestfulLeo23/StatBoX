@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -14,13 +15,33 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.drive.CreateFileActivityOptions;
 import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveClient;
+import com.google.android.gms.drive.DriveContents;
+import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.DriveId;
+import com.google.android.gms.drive.DriveResourceClient;
+import com.google.android.gms.drive.MetadataChangeSet;
+import com.google.android.gms.drive.OpenFileActivityOptions;
+import com.google.android.gms.drive.query.Filters;
+import com.google.android.gms.drive.query.SearchableField;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
@@ -35,9 +56,14 @@ import com.google.api.services.sheets.v4.model.Spreadsheet;
 import com.google.api.services.sheets.v4.model.SpreadsheetProperties;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
@@ -47,7 +73,8 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 
 public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
-    GoogleAccountCredential mCredential;
+    private GoogleAccountCredential mCredential;
+    private static final String TAG = "drive-quickstart";
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     static final int REQUEST_AUTHORIZATION = 1001;
@@ -65,6 +92,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         actNAME = intent.getStringExtra("Activity");
+
         if(actNAME != null){
             Export();
         }
@@ -89,8 +117,11 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
     }
 
     private void Import(){
-
+        setContentView(R.layout.activity_import);
+        signIn();
+        saveFileToDrive();
     }
+
 
     public void updateScreen(){
         List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(actNAME);
@@ -180,7 +211,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         } else if (! isDeviceOnline()) {
             Toast.makeText(getApplicationContext(),"No network connection available.",Toast.LENGTH_LONG).show();
         } else {
-            new GoogleDriveAPI.MakeRequestTask(mCredential).execute();
+            new GoogleDriveAPI.MakeExportRequestTask(mCredential).execute();
         }
     }
 
@@ -256,6 +287,10 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                         editor.apply();
                         mCredential.setSelectedAccountName(accountName);
                         getResultsFromApi();
+                        mDriveClient = Drive.getDriveClient(this, GoogleSignIn.getLastSignedInAccount(this));
+                        // Build a drive resource client.
+                        mDriveResourceClient =
+                                Drive.getDriveResourceClient(this, GoogleSignIn.getLastSignedInAccount(this));
                     }
                 }
                 break;
@@ -264,6 +299,35 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                     getResultsFromApi();
                 }
                 break;
+
+            case REQUEST_CODE_SIGN_IN:
+                if (resultCode != RESULT_OK) {
+                    // Sign-in may fail or be cancelled by the user. For this sample, sign-in is
+                    // required and is fatal. For apps where sign-in is optional, handle
+                    // appropriately
+                    Log.e(TAG, "Sign-in failed.");
+                    finish();
+                    return;
+                }
+                Task<GoogleSignInAccount> getAccountTask =
+                        GoogleSignIn.getSignedInAccountFromIntent(data);
+                if (getAccountTask.isSuccessful()) {
+                    initializeDriveClient(getAccountTask.getResult());
+                } else {
+                    Log.e(TAG, "Sign-in failed.");
+                    finish();
+                }
+                break;
+
+            case REQUEST_CODE_CREATOR:
+                Log.i(TAG, "creator request code");
+                // Called after a file is saved to Drive.
+                if (resultCode == RESULT_OK) {
+                    Log.i(TAG, "Image successfully saved.");
+                    finish();
+                }
+                break;
+
         }
     }
 
@@ -367,11 +431,13 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
      * An asynchronous task that handles the Google Sheets API call.
      * Placing the API calls in their own task ensures the UI stays responsive.
      */
-    private class MakeRequestTask extends AsyncTask<Void, Void, Spreadsheet> {
-        private com.google.api.services.sheets.v4.Sheets mService = null;
+    private class MakeExportRequestTask extends AsyncTask<Void, Void, Spreadsheet> {
+        private Sheets mService = null;
+        private Drive service;
+
         private Exception mLastError = null;
 
-        MakeRequestTask(GoogleAccountCredential credential) {
+        MakeExportRequestTask(GoogleAccountCredential credential) {
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
             mService = new com.google.api.services.sheets.v4.Sheets.Builder(
@@ -379,6 +445,9 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                     .setApplicationName("Google Sheets API Android Quickstart")
                     .build();
         }
+
+
+
 
         /**
          * Background task to call Google Sheets API.
@@ -388,7 +457,6 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         protected Spreadsheet doInBackground(Void... params) {
             try {
                 Spreadsheet sheet = generateSpreadsheet();
-                updateActivitySpreadsheet(sheet);
                 return sheet;
             } catch (Exception e) {
                 mLastError = e;
@@ -412,50 +480,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
             return request.execute();
         }
 
-        /**
-         * Update a Google Spreadsheet with a StatBoX Activity
-         * @param sheet Google Spreadsheet object
-         */
-        private void updateActivitySpreadsheet(Spreadsheet sheet){
-            // Catching IO exception from updating spreadsheet with new information.
-            try {
-                // Set the parameters of the sheet and acquire activity information from DatabaseHelper
-                String writeRange = "Sheet1!A1:E";
-                String id = sheet.getSpreadsheetId();
-                Hashtable<String, List<String>> activityEntries = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity(actNAME);
-                List<String> activityInfo = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(actNAME);
 
-                // Create column headers using activity stat's.
-                List<List<Object>> values = new ArrayList<>();
-                List<Object> columnHeaderDataRow = new ArrayList<>();
-                for(int i = 0; i < activityInfo.size(); i++){
-                    List<String> statType =  DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(actNAME,activityInfo.get(i));
-                    columnHeaderDataRow.add(activityInfo.get(i)+" ("+statType.get(2).toLowerCase()+")");
-                }
-                columnHeaderDataRow.add("Date (yyyy-mm-dd)");
-                values.add(columnHeaderDataRow);
-
-                // Populate rows starting at row 1 with stat box entries
-                Set<String> keys = activityEntries.keySet();
-                for(String key : keys){
-                    List<Object> entryRow = new ArrayList<>();
-                    List<String > entryList = activityEntries.get(key);
-                    for(int i = 0; i < entryList.size(); i++){
-                        entryRow.add(entryList.get(i));
-                    }
-                    values.add(entryRow);
-                }
-
-                // Generate spreadsheet payload and send it off to update the spreadsheet
-                ValueRange vr = new ValueRange().setValues(values).setMajorDimension("ROWS");
-                mService.spreadsheets().values()
-                        .update(id, writeRange, vr)
-                        .setValueInputOption("RAW")
-                        .execute();
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        }
 
         /**
          * Generate UI for background task.
@@ -499,4 +524,121 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         }
     }
 
+    /**
+     * Request code for Google Sign-in
+     */
+    protected static final int REQUEST_CODE_SIGN_IN = 0;
+    private static final int REQUEST_CODE_CREATOR = 2;
+
+    /**
+     * Handles high-level drive functions like sync
+     */
+    private DriveClient mDriveClient;
+    /**
+     * Handle access to Drive resources/files.
+     */
+    private DriveResourceClient mDriveResourceClient;
+
+    /**
+     * Starts the sign-in process and initializes the Drive client.
+     */
+    protected void signIn() {
+        Set<Scope> requiredScopes = new HashSet<>(2);
+        requiredScopes.add(Drive.SCOPE_FILE);
+        requiredScopes.add(Drive.SCOPE_APPFOLDER);
+        GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
+        if (signInAccount != null && signInAccount.getGrantedScopes().containsAll(requiredScopes)) {
+            initializeDriveClient(signInAccount);
+        } else {
+            GoogleSignInOptions signInOptions =
+                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestScopes(Drive.SCOPE_FILE)
+                            .requestScopes(Drive.SCOPE_APPFOLDER)
+                            .build();
+            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, signInOptions);
+            startActivityForResult(googleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
+        }
+    }
+
+    /**
+     * Continues the sign-in process, initializing the Drive clients with the current
+     * user's account.
+     */
+    private void initializeDriveClient(GoogleSignInAccount signInAccount) {
+        mDriveClient = Drive.getDriveClient(getApplicationContext(), signInAccount);
+        mDriveResourceClient = Drive.getDriveResourceClient(getApplicationContext(), signInAccount);
+    }
+
+    /** Create a new file and save it to Drive. */
+    private void saveFileToDrive() {
+        // Start by creating a new contents, and setting a callback.
+        Log.i(TAG, "Creating new contents.");
+
+        mDriveResourceClient
+                .createContents()
+                .continueWithTask(
+                        new Continuation<DriveContents, Task<Void>>() {
+                            @Override
+                            public Task<Void> then(@NonNull Task<DriveContents> task) {
+                                return createFileIntentSender(task.getResult());
+                            }
+                        })
+                .addOnFailureListener(
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Failed to create new contents.", e);
+                            }
+                        });
+    }
+
+    /**
+     * Creates an {@link IntentSender} to start a dialog activity with configured {@link
+     * CreateFileActivityOptions} for user to create a new photo in Drive.
+     */
+    private Task<Void> createFileIntentSender(DriveContents driveContents) {
+        Log.i(TAG, "New contents created.");
+        // Get an output stream for the contents.
+        OutputStream outputStream = driveContents.getOutputStream();
+        // Write the bitmap data from it.
+        try (Writer writer = new OutputStreamWriter(outputStream)) {
+            writer.write("Hello World!");
+        } catch (IOException e) {
+            Log.w(TAG, "Unable to write file contents.", e);
+        }
+
+        // Create the initial metadata - MIME type and title.
+        // Note that the user will be able to change the title later.
+        MetadataChangeSet metadataChangeSet =
+                new MetadataChangeSet.Builder()
+                        .setMimeType("text/plain")
+                        .setTitle("HelloWorld")
+                        .build();
+        // Set up options to configure and display the create file activity.
+        CreateFileActivityOptions createFileActivityOptions =
+                new CreateFileActivityOptions.Builder()
+                        .setInitialMetadata(metadataChangeSet)
+                        .setInitialDriveContents(driveContents)
+                        .build();
+
+
+        OpenFileActivityOptions openFileActivityOptions =
+                new OpenFileActivityOptions.Builder().build();
+
+        return mDriveClient.newOpenFileActivityIntentSender(openFileActivityOptions).continueWith(new Continuation<IntentSender, Void>() {
+            @Override
+            public Void then(@NonNull Task<IntentSender> task) throws Exception {
+                startIntentSenderForResult(task.getResult(), REQUEST_CODE_CREATOR, null, 0, 0, 0);
+                return null;
+            }
+        });
+    }
+
+    protected DriveClient getDriveClient() {
+        return mDriveClient;
+    }
+
+    protected DriveResourceClient getDriveResourceClient() {
+        return mDriveResourceClient;
+    }
 }

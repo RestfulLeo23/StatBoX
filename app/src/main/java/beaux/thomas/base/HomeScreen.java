@@ -29,7 +29,7 @@ public class HomeScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         updateHomeScreen();
@@ -67,6 +67,11 @@ public class HomeScreen extends AppCompatActivity {
         String message = b.getText().toString();
         Intent intent = new Intent(this, ViewActivity.class);
         intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
+    public void GoogleDriveAPIImport(){
+        Intent intent = new Intent(this, GoogleDriveAPI.class);
         startActivity(intent);
     }
 
@@ -203,6 +208,7 @@ public class HomeScreen extends AppCompatActivity {
                 return true;
             case R.id.import_act:
                 // TODO Plugin GoogleDriveAPI Import
+                GoogleDriveAPIImport();
             default:
                 return super.onOptionsItemSelected(item);
         }

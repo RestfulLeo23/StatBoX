@@ -19,4 +19,5 @@
     <string name="title_activity_export">Export</string>
     <string name="import_act">Import</string>
     <string name="title_activity_google_drive">GoogleDrive</string>
+    <string name="title_activity_import">Import</string>
 </resources>
