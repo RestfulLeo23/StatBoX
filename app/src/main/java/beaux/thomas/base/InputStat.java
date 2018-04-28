@@ -15,6 +15,7 @@ import static beaux.thomas.base.HomeScreen.EXTRA_MESSAGE;
 public class InputStat extends AppCompatActivity {
 
     public String StatNAME;
+    public String timestat = "No Record";
     public static final int GET_TIMER = 3;
 
     @Override
@@ -41,6 +42,8 @@ public class InputStat extends AppCompatActivity {
                 Statv3.getText().toString()+";"+
                 Statv4.getText().toString()+";"+
                 Statv5.getText().toString();
+
+        New_Stat[0] = New_Stat[0] + ";" + timestat;
         System.out.println("INPUT STAT MIDDLE");
         //New_Stat[1]= StatV.getText().toString();
         Intent resultIntent = new Intent(this, ViewActivity.class);
@@ -74,19 +77,20 @@ public class InputStat extends AppCompatActivity {
         TextView Stat3 = (TextView) findViewById(R.id.StatName3);
         TextView Stat4 = (TextView) findViewById(R.id.StatName4);
         TextView Stat5 = (TextView) findViewById(R.id.StatName5);
-        TextView Stat6 = (TextView) findViewById(R.id.StatName6);
+
         TextView[] Stats = new TextView[5];
         Stats[0]= Stat1;
         Stats[1]= Stat2;
         Stats[2]= Stat3;
         Stats[3]= Stat4;
         Stats[4]= Stat5;
+
         EditText Statv1 = (EditText) findViewById(R.id.StatVal1);
         EditText Statv2 = (EditText) findViewById(R.id.StatVal2);
         EditText Statv3 = (EditText) findViewById(R.id.StatVal3);
         EditText Statv4 = (EditText) findViewById(R.id.StatVal4);
         EditText Statv5 = (EditText) findViewById(R.id.StatVal5);
-        EditText Statv6 = (EditText) findViewById(R.id.StatVal6);
+
         EditText[] Inputs = new EditText[5];
         Inputs[0]= Statv1;
         Inputs[1]= Statv2;
@@ -100,7 +104,15 @@ public class InputStat extends AppCompatActivity {
 
          if (t[1].equals("0")){
              button.setVisibility(View.GONE);
-
+             TextView timer = (TextView) findViewById(R.id.timerstat);
+             timer.setVisibility(View.GONE);
+             TextView recordedtime = (TextView) findViewById(R.id.time);
+             recordedtime.setVisibility(View.GONE);
+         }
+         if (t[1].equals("1")){
+             button.setVisibility(View.VISIBLE);
+             TextView timer = (TextView) findViewById(R.id.timerstat);
+             timer.setVisibility(View.VISIBLE);
 
          }
 
@@ -115,10 +127,26 @@ public class InputStat extends AppCompatActivity {
                 Stats[i].setVisibility(View.VISIBLE);
                 Stats[i].setText(arr[i]);
                 Inputs[i].setVisibility(View.VISIBLE);
+                if (t[1].equals("1")){
+                    button.setVisibility(View.VISIBLE);
+                    TextView timer = (TextView) findViewById(R.id.timerstat);
+                    timer.setVisibility(View.VISIBLE);
+
+                }
             }
-            for (int j =size; j < 5 ; j++){
-                Stats[j].setVisibility(View.GONE);
-                Inputs[j].setVisibility(View.GONE);
+            if (t[1].equals("1")) {
+                for (int j = size-1; j < 5; j++) {
+                    Stats[j].setVisibility(View.GONE);
+                    Inputs[j].setVisibility(View.GONE);
+                }
+
+
+            }
+            else{
+                for (int j = size; j < 5; j++) {
+                    Stats[j].setVisibility(View.GONE);
+                    Inputs[j].setVisibility(View.GONE);
+                }
             }
         }
     }
@@ -134,7 +162,10 @@ public class InputStat extends AppCompatActivity {
         switch (requestCode) {
             case (GET_TIMER): {
                 if (resultCode == 1) {
-                    //String timer
+                    System.out.println(data.getStringExtra("TIMER"));
+                    TextView timer = (TextView) findViewById(R.id.time);
+                    timer.setText(data.getStringExtra("TIMER"));
+                    timestat = data.getStringExtra("TIMER");
                     break;
                 }
             }

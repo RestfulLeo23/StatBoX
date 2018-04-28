@@ -128,6 +128,7 @@ public class ActivityManagement extends AppCompatActivity {
         String[] New_Act = new String[3];
 
         if (DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.containsKey(check)!=true) {
+
             New_Act[0] = ActivityName.getText().toString() + ";"
                     + StatName1.getText().toString() + ";"
                     + StatName2.getText().toString() + ";"
@@ -135,11 +136,20 @@ public class ActivityManagement extends AppCompatActivity {
                     + StatName4.getText().toString() + ";"
                     + StatName5.getText().toString();
 
+            if (istimer == 1 ){
+                New_Act[0] = New_Act[0] + ";"
+                        + "Timer";
+            }
             New_Act[1] = StatType1.getText().toString() + ";"
                     + StatType2.getText().toString() + ";"
                     + StatType3.getText().toString() + ";"
                     + StatType4.getText().toString() + ";"
                     + StatType5.getText().toString();
+
+            if (istimer == 1 ){
+                New_Act[1] = New_Act[1] + ";"
+                        + "(H:M:S:ms)";
+            }
 
             New_Act[2] = Integer.toString(istimer) + ";"
                     + Integer.toString(isGPS)+ ";"

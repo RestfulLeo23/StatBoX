@@ -115,44 +115,54 @@ public class ViewActivity extends AppCompatActivity {
 
         }
 
-        TextView[] Stats = new TextView[5];
+        TextView[] Stats = new TextView[6];
 
         TextView stat1 = findViewById(R.id.Stat1);
         TextView stat2 = findViewById(R.id.Stat2);
         TextView stat3 = findViewById(R.id.Stat3);
         TextView stat4 = findViewById(R.id.Stat4);
         TextView stat5 = findViewById(R.id.Stat5);
+        TextView stat6 = findViewById(R.id.Stat6);
         Stats[0] = stat1;
         Stats[1] = stat2;
         Stats[2] = stat3;
         Stats[3] = stat4;
         Stats[4] = stat5;
+        Stats[5] = stat6;
 
-        TextView[] Types = new TextView[5];
+        TextView[] Types = new TextView[6];
+
         String[] t = new String[4];
         String[] types = new String[5];
+
         TextView T1 = findViewById(R.id.type1);
         TextView T2 = findViewById(R.id.type2);
         TextView T3 = findViewById(R.id.type3);
         TextView T4 = findViewById(R.id.type4);
         TextView T5 = findViewById(R.id.type5);
+        TextView T6 = findViewById(R.id.type6);
+
         Types[0] = T1;
         Types[1] = T2;
         Types[2] = T3;
         Types[3] = T4;
         Types[4] = T5;
+        Types[5] = T6;
 
-        TextView[] Rs = new TextView[5];
+        TextView[] Rs = new TextView[6];
+
         TextView R1 = findViewById(R.id.recent1);
         TextView R2 = findViewById(R.id.recent2);
         TextView R3 = findViewById(R.id.recent3);
         TextView R4 = findViewById(R.id.recent4);
         TextView R5 = findViewById(R.id.recent5);
+        TextView R6 = findViewById(R.id.recent6);
         Rs[0] = R1;
         Rs[1] = R2;
         Rs[2] = R3;
         Rs[3] = R4;
         Rs[4] = R5;
+        Rs[5] = R6;
 
         //System.out.println(DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(StatNAME));
         //System.out.println(arr[0]);
@@ -181,7 +191,7 @@ public class ViewActivity extends AppCompatActivity {
 
 
         if (size == 0) {
-            for (int i = 0; i<5 ; i++){
+            for (int i = 0; i<6 ; i++){
                 Stats[i].setVisibility(View.GONE);
             }
         }
@@ -201,7 +211,7 @@ public class ViewActivity extends AppCompatActivity {
                 }
 
             }
-            for (int j = size; j < 5 ; j++){
+            for (int j = size; j < 6 ; j++){
                 Stats[j].setVisibility(View.GONE);
                 Types[j].setVisibility(View.GONE);
                 Rs[j].setVisibility(View.GONE);
