@@ -457,6 +457,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         protected Spreadsheet doInBackground(Void... params) {
             try {
                 Spreadsheet sheet = generateSpreadsheet();
+                updateActivitySpreadsheet(sheet);
                 return sheet;
             } catch (Exception e) {
                 mLastError = e;
@@ -478,6 +479,51 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
 
             Sheets.Spreadsheets.Create request = mService.spreadsheets().create(requestBody);
             return request.execute();
+        }
+
+        /**
+         * Update a GoogleSpreadsheet with a StatBoX Activity
+         * @param sheet Google Spreadsheet object
+         */
+        private void updateActivitySpreadsheet(Spreadsheet sheet){
+            // Catching IO exception from updating Spreadsheet with new information.
+            try {
+                // Set the paramteters of the sheet and acquire activity information from DatabaseHelper
+                String writeRange = "Sheet1!A1:E";
+                String id = sheet.getSpreadsheetId();
+                Hashtable<String, List<String>> activityEntries = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity(actNAME);
+                List<String> activityInfo = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(actNAME);
+
+                // Create column headers using activity stat's
+                List<List<Object>> values = new ArrayList<>();
+                List<Object> columnHeaderDataRow = new ArrayList<>();
+                for (int i = 0; i < activityInfo.size(); i++) {
+                    List<String> statType = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(actNAME, activityInfo.get(i));
+                    columnHeaderDataRow.add(activityInfo.get(i) + " (" + statType.get(2).toLowerCase() + ")");
+                }
+                columnHeaderDataRow.add("Date (yyyy-mm-dd)");
+                values.add(columnHeaderDataRow);
+
+                // Populate rows starting at row 1 with StatBoX entries
+                Set<String> keys = activityEntries.keySet();
+                for (String key : keys) {
+                    List<Object> entryRow = new ArrayList<>();
+                    List<String> entryList = activityEntries.get(key);
+                    for (int i = 0; i < entryList.size(); i++) {
+                        entryRow.add(entryList.get(i));
+                    }
+                    values.add(entryRow);
+                }
+
+                // Generate spreadsheet payload and send it off to update the spreadsheet
+                ValueRange vr = new ValueRange().setValues(values).setMajorDimension("ROWS");
+                mService.spreadsheets().values()
+                        .update(id, writeRange, vr)
+                        .setValueInputOption("RAW")
+                        .execute();
+            } catch (Exception e){
+                System.out.println(e);
+            }
         }
 
 
