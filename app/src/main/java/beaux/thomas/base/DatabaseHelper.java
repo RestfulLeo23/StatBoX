@@ -1,25 +1,26 @@
-package beaux.thomas.base;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+        package beaux.thomas.base;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
-import java.util.Set;
+        import android.content.ContentValues;
+        import android.content.Context;
+        import android.content.Intent;
+        import android.database.Cursor;
+        import android.database.DatabaseUtils;
+        import android.database.sqlite.SQLiteDatabase;
+        import android.database.sqlite.SQLiteOpenHelper;
 
-import static android.support.v4.content.ContextCompat.startActivity;
+        import java.text.SimpleDateFormat;
+        import java.util.ArrayList;
+        import java.util.Arrays;
+        import java.util.Date;
+        import java.util.HashSet;
+        import java.util.Hashtable;
+        import java.util.List;
+        import java.util.Locale;
+        import java.util.Random;
+        import java.util.Set;
+
+        import static android.support.v4.content.ContextCompat.startActivity;
 
 //import static java.lang.Math.toIntExact;
 
@@ -57,12 +58,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
     SQLiteDatabase db;
 
     //Singleton design pattern
-    private static DatabaseHelper sInstance;
+    private static DatabaseHelper dbInstance;
     public static synchronized DatabaseHelper getsInstance(Context context)
     {
-        if (sInstance == null)
-            sInstance = new DatabaseHelper(context.getApplicationContext());
-        return sInstance;
+        if (dbInstance == null)
+            dbInstance = new DatabaseHelper(context.getApplicationContext());
+        return dbInstance;
     }
 
     //CONSTRUCTOR
@@ -209,6 +210,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.close();
     }
 
+    //DatabaseHelper.getsInstance(getApplicationContext()).updateIcon("Running", "some_address string");
+    public void updateIcon(String activity, String address)
+    {
+        db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        db.beginTransaction();
+        values.put(COL2, address);
+        db.update(TABLE_ICONS, values, COL1 + " = " + activity, null);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
 
     //Activity, StatType, IsTimer, IsGPS, Unit, Description             ***TO EVERYONE ELSE, STAT TYPE IS STAT NAME AND UNIT IS STAT TYPE**
     //example_array = {"Running", "Duration", "Yes", "No", "minutes", "The duration"}
@@ -297,13 +311,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.close();
     }
 
-    private static boolean dateThing = false;
+    private static boolean dateVariable = false;
     private String getDateProvider()
     {
-        if (dateThing == false)
+        if (dateVariable == false)
             return getDateTime();
         else
-            return getDateTime2();
+            return getDateTime_alternate();
     }
 
     private String getDateTime()    //This is the default Date setter
@@ -313,7 +327,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         Date date = new Date();
         return dateFormat.format(date);
     }
-    private String getDateTime2()   //This date setter will only be called during the createAll button for the demo.
+    private String getDateTime_alternate()   //This date setter will only be called during the createAll button for the demo.
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
@@ -448,11 +462,109 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return theArray;
     }
 
+    //String act = "Running";
+    //String newAct = "Walking";
+    //DatabaseHelper.getsInstance(getApplicationContext()).changeTableName(act, newAct);
+    public void changeTableName(String oldName, String newName)
+    {
+        db = getWritableDatabase();
+        db.beginTransaction();
+        try
+        {
+            db.execSQL("ALTER TABLE " + oldName + " RENAME TO " + newName+";");
+            db.execSQL("UPDATE StatType_Metadata SET Activity = \""+newName+"\" WHERE Activity = \""+oldName+"\";");//this updates every row in metadata
+            db.setTransactionSuccessful();                              //where the activity was the one being changed and changes them to this new name
+        } finally
+        {
+            db.endTransaction();
+        }
+        db.close();
+
+        tablesInfo = restoreDBState();
+    }
+
+
+    //String act = "Running";
+    //String oldColumn = "Duration";
+    //String newColumn = "Time";
+    //DatabaseHelper.getsInstance(getApplicationContext()).changeColumnName(act, oldColumn, newColumn);
+    public void changeColumnName(String activity, String oldColumn, String newColumn)
+    {
+        //first, rename table
+        changeTableName(activity, "tmp_table");
+
+        //2nd, replace old column name with new column name in a list of all columns
+        List<String> activityColumnList = tablesInfo.get("tmp_table");
+        int oldColumnIndex = activityColumnList.indexOf(oldColumn);
+        activityColumnList.set(oldColumnIndex, newColumn);
+
+        //3rd, create the array we want to use to create the new table
+        String [] array = new String[activityColumnList.size()];
+        activityColumnList.toArray(array);
+        String [] array2 = new String[array.length + 1];
+        array2[0] = activity;
+        for(int x=0; x < array.length; x++)
+            array2[x+1] = array[x];
+
+        //4th, create the original table again
+        createTable(array2);
+
+        //5th, prepare to update the metadata table
+        List<String> theMeta = pullStatTypeMetadata(activity, oldColumn);
+        ContentValues values = new ContentValues();
+        values.put("Activity", activity);
+        values.put(COL_StatType, newColumn);
+        values.put("IsTimer", theMeta.get(0));
+        values.put("IsGPS", theMeta.get(1));
+        values.put("Unit", theMeta.get(2));
+        values.put("Description", theMeta.get(3));
+
+        //last, repopulate the activity with "tmp_table" entries, then DROP tmp_table, and update the metadata
+        db = getWritableDatabase();
+        db.beginTransaction();
+        try
+        {
+            db.execSQL("INSERT INTO " +  activity + " SELECT * FROM tmp_table");
+            db.execSQL("DROP TABLE tmp_table;");
+            db.update(TABLE_METADATA, values, COL_Activity+ " = \""+activity + "\" AND "+ COL_StatType+" = \"" + oldColumn + "\"", null);
+            db.setTransactionSuccessful();
+        } finally
+        {
+            db.endTransaction();
+        }
+
+        db.close();
+        tablesInfo = restoreDBState();
+
+    }
+
+    ///String act = "Reading";
+    //DatabaseHelper.getsInstance(getApplicationContext()).deleteTable(act);
+    public void deleteTable(String activity)
+    {
+        db = getWritableDatabase();
+        db.beginTransaction();
+        try
+        {
+            db.execSQL("DROP TABLE " + activity+ ";");
+            db.execSQL("DELETE FROM StatType_Metadata WHERE Activity = \""+activity+"\";");//update the metadata
+            db.setTransactionSuccessful();
+        } finally
+        {
+            db.endTransaction();
+        }
+        db.close();
+
+        tablesInfo = restoreDBState();
+    }
+
+
+
     //for testing purposes
     //DatabaseHelper.getsInstance(getApplicationContext()).createALL();
     public void createALL()
     {
-        dateThing = true;
+        dateVariable = true;
         //array[0] is the table name, all proceeding indeces are the attributes
         //Attributes MUST be ONE single string. "Pages Read" should be PagesRead or Pages_Read, etc
         //array[0] MUST NOT be a duplicate activity name. This will crash the app.
@@ -546,7 +658,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             readingarray[5] = Integer.toString(randy.nextInt(20)+ 0); //spelling mistakes
             insertData(readingarray);
         }
-    dateThing = false;
+        dateVariable = false;
     }
 
 

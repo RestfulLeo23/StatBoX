@@ -38,8 +38,10 @@
             android:layout_height="wrap_content">
 
             <TableRow
+                android:id = "@+id/Row1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:longClickable="false"
                 android:onClick="DataAnalytics">
 
                 <TextView
@@ -81,6 +83,7 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/Row2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:onClick="DataAnalytics">
@@ -123,6 +126,7 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/Row3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:onClick="DataAnalytics">
@@ -165,6 +169,7 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/Row4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:onClick="DataAnalytics">
@@ -208,6 +213,7 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/Row5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:onClick="DataAnalytics">

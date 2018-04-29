@@ -48,9 +48,9 @@
                 android:value=".HomeScreen" />
         </activity>
         <activity
-            android:launchMode="singleTop"
             android:name=".ViewActivity"
             android:label="@string/title_activity_view"
+            android:launchMode="singleTop"
             android:parentActivityName=".HomeScreen"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -78,8 +78,7 @@
         <activity
             android:name=".GoogleDriveAPI"
             android:label="@string/title_activity_google_drive_api"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".Export"
             android:label="@string/title_activity_export"

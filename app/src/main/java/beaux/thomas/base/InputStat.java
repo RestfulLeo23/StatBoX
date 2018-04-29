@@ -44,6 +44,7 @@ public class InputStat extends AppCompatActivity {
                 Statv5.getText().toString();
 
         New_Stat[0] = New_Stat[0] + ";" + timestat;
+
         System.out.println("INPUT STAT MIDDLE");
         //New_Stat[1]= StatV.getText().toString();
         Intent resultIntent = new Intent(this, ViewActivity.class);
