@@ -2,6 +2,7 @@ package beaux.thomas.base;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +42,7 @@ public class Timer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timer);
+        final Intent resultIntent = new Intent(this, InputStat.class);
 
         StartButton = (Button)findViewById(R.id.StartButton);
         PauseButton = (Button)findViewById(R.id.PauseButton);
@@ -68,9 +70,10 @@ public class Timer extends AppCompatActivity {
                 TextView txtValue = (TextView)addView.findViewById(R.id.txtContent);
                 txtValue.setText(txtTimer.getText());
                 container.addView(addView);
-
-
-
+                // TODO Add extras or a data URI to this intent as appropriate.
+                resultIntent.putExtra("TIMER", txtTimer.getText());
+                setResult(1, resultIntent);
+                finish();
             }
         });
 

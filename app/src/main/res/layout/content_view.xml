@@ -9,9 +9,13 @@
     tools:showIn="@layout/activity_view">
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="39dp">
 
         <TextView
             android:id="@+id/StatName"
@@ -24,13 +28,14 @@
             android:textAlignment="center"
             android:textSize="36sp"
             android:textStyle="bold"
+            android:typeface="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -41,11 +46,12 @@
                     android:id="@+id/Stat1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="0dp"
                     android:layout_marginStart="64dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="8dp"
                     android:text="TextView"
+                    android:textSize="24sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/StatName" />
 
@@ -53,9 +59,11 @@
                     android:id="@+id/type1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="32dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/type2" />
@@ -64,9 +72,9 @@
                     android:id="@+id/recent1"
                     android:layout_width="wrap_content"
                     android:layout_height="15dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="0dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="8dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/type5" />
@@ -81,11 +89,12 @@
                     android:id="@+id/Stat2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="0dp"
                     android:layout_marginStart="64dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="8dp"
                     android:text="TextView"
+                    android:textSize="24sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/Stat1" />
 
@@ -93,9 +102,10 @@
                     android:id="@+id/type2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="32dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/StatName" />
@@ -104,9 +114,9 @@
                     android:id="@+id/recent2"
                     android:layout_width="wrap_content"
                     android:layout_height="15dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="0dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="8dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/type5" />
@@ -121,11 +131,12 @@
                     android:id="@+id/Stat3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="0dp"
                     android:layout_marginStart="64dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="8dp"
                     android:text="TextView"
+                    android:textSize="24sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/Stat2" />
 
@@ -133,9 +144,10 @@
                     android:id="@+id/type3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="32dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/type1" />
@@ -144,9 +156,9 @@
                     android:id="@+id/recent3"
                     android:layout_width="wrap_content"
                     android:layout_height="15dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="0dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="8dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/type5" />
@@ -161,11 +173,12 @@
                     android:id="@+id/Stat4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="0dp"
                     android:layout_marginStart="64dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="8dp"
                     android:text="TextView"
+                    android:textSize="24sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/Stat3" />
 
@@ -173,9 +186,10 @@
                     android:id="@+id/type4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="32dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/type3" />
@@ -184,9 +198,9 @@
                     android:id="@+id/recent4"
                     android:layout_width="wrap_content"
                     android:layout_height="15dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="0dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="8dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/type5" />
@@ -202,11 +216,12 @@
                     android:id="@+id/Stat5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="0dp"
                     android:layout_marginStart="64dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="8dp"
                     android:text="TextView"
+                    android:textSize="24sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/Stat4" />
 
@@ -214,9 +229,10 @@
                     android:id="@+id/type5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="32dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/type4" />
@@ -225,30 +241,84 @@
                     android:id="@+id/recent5"
                     android:layout_width="wrap_content"
                     android:layout_height="15dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="0dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="8dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/type5" />
 
             </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:onClick="DataAnalytics">
 
+                <TextView
+                    android:id="@+id/Stat6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginStart="64dp"
+                    android:layout_marginTop="8dp"
+                    android:text="TextView"
+                    android:textSize="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/Stat4" />
+
+                <TextView
+                    android:id="@+id/type6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
+                    android:text="TextView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/type4" />
+
+                <TextView
+                    android:id="@+id/recent6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="15dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginTop="8dp"
+                    android:text="TextView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/type5" />
+
+            </TableRow>
         </TableLayout>
+
+        <TextView
+            android:id="@+id/Des"
+            android:layout_width="304dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="TextView"
+            android:textAlignment="textStart"
+            android:textSize="36sp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="473dp" />
+
 
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        android:layout_width="wrap_content"
+        android:layout_width="52dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:onClick="InputStatMode"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_menu_add" />
 
 </android.support.constraint.ConstraintLayout>

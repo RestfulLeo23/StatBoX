@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="beaux.thomas.base.HomeScreen">
+    tools:context="beaux.thomas.base.ViewActivity">
     <item
         android:id="@+id/action_settings"
 
@@ -9,16 +9,10 @@
         android:title="@string/action_settings"
         app:showAsAction="never" />
     <item
-        android:id="@+id/deletedb"
+        android:id="@+id/menu_export"
         android:checkable="false"
         android:orderInCategory="100"
-        android:title="@string/deletedb"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/import_act"
-        android:checkable="false"
-        android:orderInCategory="100"
-        android:title="@string/import_act"
+        android:title="@string/menu_export"
         app:showAsAction="never" />
 
 </menu>
