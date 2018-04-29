@@ -99,11 +99,6 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         else{
             Import();
         }
-
-        // Initialize Google credentials and service object.
-        mCredential = GoogleAccountCredential.usingOAuth2(
-                getApplicationContext(), Arrays.asList(SCOPES))
-                .setBackOff(new ExponentialBackOff());
     }
 
     private void Export(){
@@ -114,14 +109,17 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         updateScreen();
+
+        // Initialize Google credentials and service object.
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                getApplicationContext(), Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff());
     }
 
     private void Import(){
         setContentView(R.layout.activity_import);
         signIn();
-        saveFileToDrive();
     }
-
 
     public void updateScreen(){
         List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(actNAME);
@@ -193,6 +191,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
 
     // Start the Drive export process on export button press
     public void DriveExport(View view){
+
         getResultsFromApi();
     }
 
@@ -271,6 +270,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                             "Google Play Services on your device and relaunch this app.",Toast.LENGTH_LONG).show();
 
                 } else {
+                    Log.i(TAG, "REQUEST_GOOGLE_PLAY_SERVICES");
                     getResultsFromApi();
                 }
                 break;
@@ -287,36 +287,30 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                         editor.apply();
                         mCredential.setSelectedAccountName(accountName);
                         getResultsFromApi();
-                        mDriveClient = Drive.getDriveClient(this, GoogleSignIn.getLastSignedInAccount(this));
-                        // Build a drive resource client.
-                        mDriveResourceClient =
-                                Drive.getDriveResourceClient(this, GoogleSignIn.getLastSignedInAccount(this));
+                        Log.i(TAG, "REQUEST_ACCOUNT_PICKER");
                     }
                 }
                 break;
             case REQUEST_AUTHORIZATION:
                 if (resultCode == RESULT_OK) {
                     getResultsFromApi();
+                    Log.i(TAG, "REQUEST_AUTHORIZATION");
                 }
                 break;
 
             case REQUEST_CODE_SIGN_IN:
-                if (resultCode != RESULT_OK) {
-                    // Sign-in may fail or be cancelled by the user. For this sample, sign-in is
-                    // required and is fatal. For apps where sign-in is optional, handle
-                    // appropriately
-                    Log.e(TAG, "Sign-in failed.");
-                    finish();
-                    return;
+                Log.i(TAG, "Sign in request code");
+                // Called after user is signed in.
+                if (resultCode == RESULT_OK) {
+                    Log.i(TAG, "Signed in successfully.");
+                    // Use the last signed in account here since it already have a Drive scope.
+                    mDriveClient = Drive.getDriveClient(this, GoogleSignIn.getLastSignedInAccount(this));
+                    // Build a drive resource client.
+                    mDriveResourceClient =
+                            Drive.getDriveResourceClient(this, GoogleSignIn.getLastSignedInAccount(this));
+                    OpenDrivePicker();
                 }
-                Task<GoogleSignInAccount> getAccountTask =
-                        GoogleSignIn.getSignedInAccountFromIntent(data);
-                if (getAccountTask.isSuccessful()) {
-                    initializeDriveClient(getAccountTask.getResult());
-                } else {
-                    Log.e(TAG, "Sign-in failed.");
-                    finish();
-                }
+                Log.i(TAG, "REQUEST_CODE_SIGN_IN");
                 break;
 
             case REQUEST_CODE_CREATOR:
@@ -324,10 +318,11 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                 // Called after a file is saved to Drive.
                 if (resultCode == RESULT_OK) {
                     Log.i(TAG, "Image successfully saved.");
-                    finish();
+                    DriveId driveId = data.getParcelableExtra(OpenFileActivityOptions.EXTRA_RESPONSE_DRIVE_ID);
+                    // File id from selection driveId.getResourceId();
                 }
+                finish();
                 break;
-
         }
     }
 
@@ -410,7 +405,6 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         }
     }
 
-
     /**
      * Display an error dialog showing that Google Play Services is missing
      * or out of date.
@@ -445,9 +439,6 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                     .setApplicationName("Google Sheets API Android Quickstart")
                     .build();
         }
-
-
-
 
         /**
          * Background task to call Google Sheets API.
@@ -526,8 +517,6 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
             }
         }
 
-
-
         /**
          * Generate UI for background task.
          */
@@ -575,48 +564,28 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
      */
     protected static final int REQUEST_CODE_SIGN_IN = 0;
     private static final int REQUEST_CODE_CREATOR = 2;
-
-    /**
-     * Handles high-level drive functions like sync
-     */
     private DriveClient mDriveClient;
-    /**
-     * Handle access to Drive resources/files.
-     */
     private DriveResourceClient mDriveResourceClient;
+    private GoogleSignInClient mGoogleSignInClient;
 
-    /**
-     * Starts the sign-in process and initializes the Drive client.
-     */
-    protected void signIn() {
-        Set<Scope> requiredScopes = new HashSet<>(2);
-        requiredScopes.add(Drive.SCOPE_FILE);
-        requiredScopes.add(Drive.SCOPE_APPFOLDER);
-        GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
-        if (signInAccount != null && signInAccount.getGrantedScopes().containsAll(requiredScopes)) {
-            initializeDriveClient(signInAccount);
-        } else {
-            GoogleSignInOptions signInOptions =
-                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestScopes(Drive.SCOPE_FILE)
-                            .requestScopes(Drive.SCOPE_APPFOLDER)
-                            .build();
-            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, signInOptions);
-            startActivityForResult(googleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
-        }
+    /** Start sign in activity. */
+    private void signIn() {
+        Log.i(TAG, "Start sign in");
+        mGoogleSignInClient = buildGoogleSignInClient();
+        startActivityForResult(mGoogleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
     }
 
-    /**
-     * Continues the sign-in process, initializing the Drive clients with the current
-     * user's account.
-     */
-    private void initializeDriveClient(GoogleSignInAccount signInAccount) {
-        mDriveClient = Drive.getDriveClient(getApplicationContext(), signInAccount);
-        mDriveResourceClient = Drive.getDriveResourceClient(getApplicationContext(), signInAccount);
+    /** Build a Google SignIn client. */
+    private GoogleSignInClient buildGoogleSignInClient() {
+        GoogleSignInOptions signInOptions =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestScopes(Drive.SCOPE_FILE)
+                        .build();
+        return GoogleSignIn.getClient(this, signInOptions);
     }
 
     /** Create a new file and save it to Drive. */
-    private void saveFileToDrive() {
+    private void OpenDrivePicker() {
         // Start by creating a new contents, and setting a callback.
         Log.i(TAG, "Creating new contents.");
 
@@ -626,7 +595,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                         new Continuation<DriveContents, Task<Void>>() {
                             @Override
                             public Task<Void> then(@NonNull Task<DriveContents> task) {
-                                return createFileIntentSender(task.getResult());
+                                return openFileIntentPicker();
                             }
                         })
                 .addOnFailureListener(
@@ -642,31 +611,8 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
      * Creates an {@link IntentSender} to start a dialog activity with configured {@link
      * CreateFileActivityOptions} for user to create a new photo in Drive.
      */
-    private Task<Void> createFileIntentSender(DriveContents driveContents) {
+    private Task<Void> openFileIntentPicker() {
         Log.i(TAG, "New contents created.");
-        // Get an output stream for the contents.
-        OutputStream outputStream = driveContents.getOutputStream();
-        // Write the bitmap data from it.
-        try (Writer writer = new OutputStreamWriter(outputStream)) {
-            writer.write("Hello World!");
-        } catch (IOException e) {
-            Log.w(TAG, "Unable to write file contents.", e);
-        }
-
-        // Create the initial metadata - MIME type and title.
-        // Note that the user will be able to change the title later.
-        MetadataChangeSet metadataChangeSet =
-                new MetadataChangeSet.Builder()
-                        .setMimeType("text/plain")
-                        .setTitle("HelloWorld")
-                        .build();
-        // Set up options to configure and display the create file activity.
-        CreateFileActivityOptions createFileActivityOptions =
-                new CreateFileActivityOptions.Builder()
-                        .setInitialMetadata(metadataChangeSet)
-                        .setInitialDriveContents(driveContents)
-                        .build();
-
 
         OpenFileActivityOptions openFileActivityOptions =
                 new OpenFileActivityOptions.Builder().build();
@@ -680,11 +626,4 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         });
     }
 
-    protected DriveClient getDriveClient() {
-        return mDriveClient;
-    }
-
-    protected DriveResourceClient getDriveResourceClient() {
-        return mDriveResourceClient;
-    }
 }
