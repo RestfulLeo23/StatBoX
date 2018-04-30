@@ -19,7 +19,7 @@ public class InputStat extends AppCompatActivity {
     public String distance = "No Record";
     public static final int GET_TIMER = 3;
     public static final int GET_GPS = 4;
-    public static final int GET_TIMER = 3;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,24 +163,16 @@ public class InputStat extends AppCompatActivity {
                 }
             }
         }
-    }
-<<<<<<< HEAD
 
     public void openTimer(View view){
         Intent intent = new Intent(this, Timer.class);
         startActivityForResult(intent, GET_TIMER);
     }
-    public void openGPS(View view){
+    public void openGPS(View view) {
         Intent intent = new Intent(this, GPS.class);
         startActivityForResult(intent, GET_GPS);
-=======
->>>>>>> FrontEndUI
 
-    public void openTimer(View view){
-        Intent intent = new Intent(this, Timer.class);
-        startActivityForResult(intent, GET_TIMER);
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -194,7 +186,6 @@ public class InputStat extends AppCompatActivity {
                     break;
                 }
             }
-<<<<<<< HEAD
             case (GET_GPS): {
                 if (resultCode == 1) {
                     System.out.println(data.getStringExtra("GPS"));
@@ -204,9 +195,7 @@ public class InputStat extends AppCompatActivity {
                     break;
                 }
             }
-=======
->>>>>>> FrontEndUI
         }
     }
-
 }
+
