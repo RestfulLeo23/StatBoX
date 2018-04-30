@@ -28,7 +28,7 @@ public class ActivityManagement extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Switch switch1 = (Switch)findViewById(R.id.timer);
-        Switch switch2 = (Switch)findViewById(R.id.GPS);
+        Switch switch2 = (Switch)findViewById(R.id.Distance);
 
         switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

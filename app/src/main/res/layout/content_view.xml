@@ -255,7 +255,9 @@
                     app:layout_constraintTop_toBottomOf="@+id/type5" />
 
             </TableRow>
+
             <TableRow
+                android:id="@+id/Row6"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:onClick="DataAnalytics">

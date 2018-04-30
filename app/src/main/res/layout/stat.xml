@@ -201,7 +201,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/distance"
+                android:id="@+id/Gps"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -214,7 +214,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/GPS"
+                android:id="@+id/Distance"
                 android:layout_width="138dp"
                 android:layout_height="56dp"
                 android:text="Click GPS for Distance"

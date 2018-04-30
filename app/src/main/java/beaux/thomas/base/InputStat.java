@@ -58,9 +58,10 @@ public class InputStat extends AppCompatActivity {
         finish();
 
      }
-
      public void UpdateInputStat(){
+
         List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(StatNAME);
+
         String[] t = new String[4];
         int n = Pull.size();
         String arr[] = new String[n];
@@ -103,23 +104,39 @@ public class InputStat extends AppCompatActivity {
         Inputs[3]= Statv4;
         Inputs[4]= Statv5;
 
-         Button button = findViewById(R.id.timer);
+         Button TIMERbutton = findViewById(R.id.timer);
+         Button GPSbutton = findViewById(R.id.gps);
+
          t = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[0]).toArray(t);
 
-
          if (t[1].equals("0")){
-             button.setVisibility(View.GONE);
+             TIMERbutton.setVisibility(View.GONE);
              TextView timer = (TextView) findViewById(R.id.timerstat);
              timer.setVisibility(View.GONE);
              TextView recordedtime = (TextView) findViewById(R.id.time);
              recordedtime.setVisibility(View.GONE);
          }
          if (t[1].equals("1")){
-             button.setVisibility(View.VISIBLE);
+             TIMERbutton.setVisibility(View.VISIBLE);
              TextView timer = (TextView) findViewById(R.id.timerstat);
              timer.setVisibility(View.VISIBLE);
 
          }
+
+         if (t[0].equals("0")){
+             GPSbutton.setVisibility(View.GONE);
+             TextView GPS = (TextView) findViewById(R.id.Gps);
+             GPS.setVisibility(View.GONE);
+             TextView distance = (TextView) findViewById(R.id.Distance);
+             distance.setVisibility(View.GONE);
+         }
+         if (t[0].equals("1")){
+             GPSbutton.setVisibility(View.VISIBLE);
+             TextView timer = (TextView) findViewById(R.id.Gps);
+             timer.setVisibility(View.VISIBLE);
+
+         }
+
 
         if (size == 0) {
             for (int i = 0; i<5 ; i++){
@@ -133,22 +150,22 @@ public class InputStat extends AppCompatActivity {
                 Stats[i].setText(arr[i]);
                 Inputs[i].setVisibility(View.VISIBLE);
                 if (t[1].equals("1")){
-                    button.setVisibility(View.VISIBLE);
+                    TIMERbutton.setVisibility(View.VISIBLE);
                     TextView timer = (TextView) findViewById(R.id.timerstat);
                     timer.setVisibility(View.VISIBLE);
 
                 }
+
             }
-            if (t[1].equals("1")) {
-                for (int j = size-1; j < 5; j++) {
+            if (t[1].equals("1") && (t[0].equals("1"))){
+                for (int j = size-2; j < 5; j++) {
                     Stats[j].setVisibility(View.GONE);
                     Inputs[j].setVisibility(View.GONE);
                 }
 
+            }
+            else if ((t[1].equals("1") && !(t[0].equals("1"))) || !(t[1].equals("1") && (t[0].equals("1")))) {
 
-            }
-            }
-            if (t[1].equals("1")) {
                 for (int j = size-1; j < 5; j++) {
                     Stats[j].setVisibility(View.GONE);
                     Inputs[j].setVisibility(View.GONE);
@@ -161,8 +178,15 @@ public class InputStat extends AppCompatActivity {
                     Stats[j].setVisibility(View.GONE);
                     Inputs[j].setVisibility(View.GONE);
                 }
+
             }
-        }
+
+         }
+
+
+    }
+
+
 
     public void openTimer(View view){
         Intent intent = new Intent(this, Timer.class);
@@ -189,7 +213,7 @@ public class InputStat extends AppCompatActivity {
             case (GET_GPS): {
                 if (resultCode == 1) {
                     System.out.println(data.getStringExtra("GPS"));
-                    TextView gps = (TextView) findViewById(R.id.GPS);
+                    TextView gps = findViewById(R.id.Distance);
                     gps.setText(data.getStringExtra("GPS"));
                     distance = data.getStringExtra("GPS");
                     break;

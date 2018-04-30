@@ -137,12 +137,9 @@ public class ViewActivity extends AppCompatActivity {
         if (dcheck.equals("Date")) {
             size = Pull.size() - 1;
             //  System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY this is reallt a good line so greattttttttttttt:  "+size+"   ****");
-            if (dcheck.equals("Date")) {
-                size = Pull.size() - 1;
-                //  System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY this is reallt a good line so greattttttttttttt:  "+size+"   ****");
 
-            }
 
+        }
             TextView[] Stats = new TextView[6];
 
             TextView stat1 = findViewById(R.id.Stat1);
@@ -221,7 +218,8 @@ public class ViewActivity extends AppCompatActivity {
                 for (int i = 0; i < 6; i++) {
                     Stats[i].setVisibility(View.GONE);
                 }
-            } else {
+            }
+            else {
                 for (int i = 0; i < size; i++) {
                     Stats[i].setVisibility(View.VISIBLE);
                     Stats[i].setText(arr[i]);
@@ -242,10 +240,13 @@ public class ViewActivity extends AppCompatActivity {
                     Types[j].setVisibility(View.GONE);
                     Rs[j].setVisibility(View.GONE);
                 }
+
             }
 
-        }
     }
+
+
+
 
     public String[] ParseString(String s) {
         String[] result = s.split(";+");
