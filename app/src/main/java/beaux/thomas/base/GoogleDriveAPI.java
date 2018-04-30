@@ -74,12 +74,18 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     private GoogleAccountCredential mCredential;
-    private static final String TAG = "drive-quickstart";
+    private static final String TAG = "StatBoXDriveAPI";
+    private DriveId driveId;
+    private DriveClient mDriveClient;
+    private DriveResourceClient mDriveResourceClient;
+    private GoogleSignInClient mGoogleSignInClient;
 
-    static final int REQUEST_ACCOUNT_PICKER = 1000;
-    static final int REQUEST_AUTHORIZATION = 1001;
-    static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
-    static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
+    private static final int DRIVE_REQUEST_CODE_SIGN_IN = 0;
+    private static final int DRIVE_REQUEST_CODE_PICKER = 2;
+    static final int SHEETS_REQUEST_ACCOUNT_PICKER = 1000;
+    static final int SHEETS_REQUEST_AUTHORIZATION = 1001;
+    static final int SHEETS_REQUEST_GOOGLE_PLAY_SERVICES = 1002;
+    static final int SHEETS_REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
 
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS_READONLY, Drive.SCOPE_FILE.toString()};
@@ -92,6 +98,11 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         actNAME = intent.getStringExtra("Activity");
+
+        // Initialize Google credentials and service object.
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                getApplicationContext(), Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff());
 
         if(actNAME != null){
             Export();
@@ -110,88 +121,15 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         updateScreen();
 
-        // Initialize Google credentials and service object.
-        mCredential = GoogleAccountCredential.usingOAuth2(
-                getApplicationContext(), Arrays.asList(SCOPES))
-                .setBackOff(new ExponentialBackOff());
     }
 
     private void Import(){
         setContentView(R.layout.activity_import);
-        signIn();
-    }
-
-    public void updateScreen(){
-        List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(actNAME);
-        int n = Pull.size();
-        String arr[] = new String[n];
-        arr = Pull.toArray(arr);
-        int size = arr.length;
-
-        String[] ex_array = DatabaseHelper.getsInstance(getApplicationContext()).returnLastEntry(actNAME);
-
-        TextView[] Stats = new TextView[5];
-        TextView stat1 = findViewById(R.id.statN1);
-        TextView stat2 = findViewById(R.id.statN2);
-        TextView stat3 = findViewById(R.id.statN3);
-        TextView stat4 = findViewById(R.id.statN4);
-        TextView stat5 = findViewById(R.id.statN5);
-        Stats[0] = stat1;
-        Stats[1] = stat2;
-        Stats[2] = stat3;
-        Stats[3] = stat4;
-        Stats[4] = stat5;
-
-        TextView[] Entries = new TextView[5];
-        TextView R1 = findViewById(R.id.entry1);
-        TextView R2 = findViewById(R.id.entry2);
-        TextView R3 = findViewById(R.id.entry3);
-        TextView R4 = findViewById(R.id.entry4);
-        TextView R5 = findViewById(R.id.entry5);
-        Entries[0] = R1;
-        Entries[1] = R2;
-        Entries[2] = R3;
-        Entries[3] = R4;
-        Entries[4] = R5;
-        for (int i = 0; i<size; i++) {
-            List<String> P = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity_Stat(actNAME, arr[i]);
-            int c = P.size();
-            String a[] = new String[c];
-            a = P.toArray(a);
-            Entry[i] ="";
-            for (String j : a) {
-                //System.out.println("THIS IS THE ENTRY: "+j);
-                Entry[i] = j +"\n" + Entry[i];
-            }
-            //System.out.println(Entry[i]);
-        }
-        if (size == 0) {
-            for (int i = 0; i<5 ; i++){
-                Stats[i].setVisibility(View.GONE);
-            }
-        }
-        else{
-            for (int i = 0; i<size ; i++){
-                Stats[i].setVisibility(View.VISIBLE);
-                Stats[i].setText(arr[i]);
-
-                if (ex_array.length != 0) {
-                    Entries[i].setVisibility(View.VISIBLE);
-                    Entries[i].setText(Entry[i]);
-                }
-
-            }
-            for (int j = size; j < 5 ; j++){
-                Stats[j].setVisibility(View.GONE);
-                Entries[j].setVisibility(View.GONE);
-            }
-        }
-
+        driveSignIn();
     }
 
     // Start the Drive export process on export button press
     public void DriveExport(View view){
-
         getResultsFromApi();
     }
 
@@ -224,7 +162,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
      * function will be rerun automatically whenever the GET_ACCOUNTS permission
      * is granted.
      */
-    @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
+    @AfterPermissionGranted(SHEETS_REQUEST_PERMISSION_GET_ACCOUNTS)
     private void chooseAccount() {
         if (EasyPermissions.hasPermissions(
                 this, android.Manifest.permission.GET_ACCOUNTS)) {
@@ -237,93 +175,32 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                 // Start a dialog from which the user can choose an account
                 startActivityForResult(
                         mCredential.newChooseAccountIntent(),
-                        REQUEST_ACCOUNT_PICKER);
+                        SHEETS_REQUEST_ACCOUNT_PICKER);
             }
         } else {
             // Request the GET_ACCOUNTS permission via a user dialog
             EasyPermissions.requestPermissions(
                     this,
                     "This app needs to access your Google account (via Contacts).",
-                    REQUEST_PERMISSION_GET_ACCOUNTS,
+                    SHEETS_REQUEST_PERMISSION_GET_ACCOUNTS,
                     Manifest.permission.GET_ACCOUNTS);
         }
     }
 
-    /**
-     * Called when an activity launched here (specifically, AccountPicker
-     * and authorization) exits, giving you the requestCode you started it with,
-     * the resultCode it returned, and any additional data from it.
-     * @param requestCode code indicating which activity result is incoming.
-     * @param resultCode code indicating the result of the incoming
-     *     activity result.
-     * @param data Intent (containing result data) returned by incoming
-     *     activity result.
-     */
-    @Override
-    protected void onActivityResult(
-            int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
-            case REQUEST_GOOGLE_PLAY_SERVICES:
-                if (resultCode != RESULT_OK) {
-                    Toast.makeText(getApplicationContext(),"This app requires Google Play Services. Please install " +
-                            "Google Play Services on your device and relaunch this app.",Toast.LENGTH_LONG).show();
+    /** Start sign in activity. */
+    private void driveSignIn() {
+        Log.i(TAG, "Start sign in");
+        mGoogleSignInClient = buildGoogleDriveSignInClient();
+        startActivityForResult(mGoogleSignInClient.getSignInIntent(), DRIVE_REQUEST_CODE_SIGN_IN);
+    }
 
-                } else {
-                    Log.i(TAG, "REQUEST_GOOGLE_PLAY_SERVICES");
-                    getResultsFromApi();
-                }
-                break;
-            case REQUEST_ACCOUNT_PICKER:
-                if (resultCode == RESULT_OK && data != null &&
-                        data.getExtras() != null) {
-                    String accountName =
-                            data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                    if (accountName != null) {
-                        SharedPreferences settings =
-                                getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = settings.edit();
-                        editor.putString(PREF_ACCOUNT_NAME, accountName);
-                        editor.apply();
-                        mCredential.setSelectedAccountName(accountName);
-                        getResultsFromApi();
-                        Log.i(TAG, "REQUEST_ACCOUNT_PICKER");
-                    }
-                }
-                break;
-            case REQUEST_AUTHORIZATION:
-                if (resultCode == RESULT_OK) {
-                    getResultsFromApi();
-                    Log.i(TAG, "REQUEST_AUTHORIZATION");
-                }
-                break;
-
-            case REQUEST_CODE_SIGN_IN:
-                Log.i(TAG, "Sign in request code");
-                // Called after user is signed in.
-                if (resultCode == RESULT_OK) {
-                    Log.i(TAG, "Signed in successfully.");
-                    // Use the last signed in account here since it already have a Drive scope.
-                    mDriveClient = Drive.getDriveClient(this, GoogleSignIn.getLastSignedInAccount(this));
-                    // Build a drive resource client.
-                    mDriveResourceClient =
-                            Drive.getDriveResourceClient(this, GoogleSignIn.getLastSignedInAccount(this));
-                    OpenDrivePicker();
-                }
-                Log.i(TAG, "REQUEST_CODE_SIGN_IN");
-                break;
-
-            case REQUEST_CODE_CREATOR:
-                Log.i(TAG, "creator request code");
-                // Called after a file is saved to Drive.
-                if (resultCode == RESULT_OK) {
-                    Log.i(TAG, "Image successfully saved.");
-                    DriveId driveId = data.getParcelableExtra(OpenFileActivityOptions.EXTRA_RESPONSE_DRIVE_ID);
-                    // File id from selection driveId.getResourceId();
-                }
-                finish();
-                break;
-        }
+    /** Build a Google SignIn client. */
+    private GoogleSignInClient buildGoogleDriveSignInClient() {
+        GoogleSignInOptions signInOptions =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestScopes(Drive.SCOPE_FILE)
+                        .build();
+        return GoogleSignIn.getClient(this, signInOptions);
     }
 
     /**
@@ -417,7 +294,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         Dialog dialog = apiAvailability.getErrorDialog(
                 GoogleDriveAPI.this,
                 connectionStatusCode,
-                REQUEST_GOOGLE_PLAY_SERVICES);
+                SHEETS_REQUEST_GOOGLE_PLAY_SERVICES);
         dialog.show();
     }
 
@@ -447,9 +324,15 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         @Override
         protected Spreadsheet doInBackground(Void... params) {
             try {
-                Spreadsheet sheet = generateSpreadsheet();
-                updateActivitySpreadsheet(sheet);
-                return sheet;
+                if(actNAME != null) {
+                    Spreadsheet sheet = generateSpreadsheet();
+                    updateActivitySpreadsheet(sheet);
+                    return sheet;
+                }
+                else{
+                    retrieveSpreadsheetContents(driveId);
+                    return null;
+                }
             } catch (Exception e) {
                 mLastError = e;
                 cancel(true);
@@ -517,6 +400,28 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
             }
         }
 
+        private void retrieveSpreadsheetContents(DriveId driveId){
+            try{
+                String range = "Sheet1!A1:E";
+                ValueRange result = mService.spreadsheets().values().get(driveId.getResourceId(), range).execute();
+                int numRows = result.getValues() != null ? result.getValues().size() : 0;
+
+                List<String> results = new ArrayList<String>();
+                List<List<Object>> values = result.getValues();
+
+                if (values != null) {
+                    for (List row : values) {
+                        results.add(row.get(0) + ", " + row.get(numRows-1));
+                    }
+                }
+
+                System.out.println(results);
+            }catch(Exception e){
+                Log.e(TAG, "Unable to read contents", e);
+            }
+
+        }
+
         /**
          * Generate UI for background task.
          */
@@ -548,7 +453,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                 } else if (mLastError instanceof UserRecoverableAuthIOException) {
                     startActivityForResult(
                             ((UserRecoverableAuthIOException) mLastError).getIntent(),
-                            GoogleDriveAPI.REQUEST_AUTHORIZATION);
+                            GoogleDriveAPI.SHEETS_REQUEST_AUTHORIZATION);
                 } else {
                     Toast.makeText(getApplicationContext(),"The following error occurred:\n"
                             + mLastError.getMessage(),Toast.LENGTH_LONG).show();
@@ -559,33 +464,8 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         }
     }
 
-    /**
-     * Request code for Google Sign-in
-     */
-    protected static final int REQUEST_CODE_SIGN_IN = 0;
-    private static final int REQUEST_CODE_CREATOR = 2;
-    private DriveClient mDriveClient;
-    private DriveResourceClient mDriveResourceClient;
-    private GoogleSignInClient mGoogleSignInClient;
-
-    /** Start sign in activity. */
-    private void signIn() {
-        Log.i(TAG, "Start sign in");
-        mGoogleSignInClient = buildGoogleSignInClient();
-        startActivityForResult(mGoogleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
-    }
-
-    /** Build a Google SignIn client. */
-    private GoogleSignInClient buildGoogleSignInClient() {
-        GoogleSignInOptions signInOptions =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestScopes(Drive.SCOPE_FILE)
-                        .build();
-        return GoogleSignIn.getClient(this, signInOptions);
-    }
-
     /** Create a new file and save it to Drive. */
-    private void OpenDrivePicker() {
+    private void openDrivePicker() {
         // Start by creating a new contents, and setting a callback.
         Log.i(TAG, "Creating new contents.");
 
@@ -620,10 +500,155 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         return mDriveClient.newOpenFileActivityIntentSender(openFileActivityOptions).continueWith(new Continuation<IntentSender, Void>() {
             @Override
             public Void then(@NonNull Task<IntentSender> task) throws Exception {
-                startIntentSenderForResult(task.getResult(), REQUEST_CODE_CREATOR, null, 0, 0, 0);
+                startIntentSenderForResult(task.getResult(), DRIVE_REQUEST_CODE_PICKER, null, 0, 0, 0);
                 return null;
             }
         });
+    }
+
+    public void updateScreen(){
+        List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(actNAME);
+        int n = Pull.size();
+        String arr[] = new String[n];
+        arr = Pull.toArray(arr);
+        int size = arr.length;
+
+        String[] ex_array = DatabaseHelper.getsInstance(getApplicationContext()).returnLastEntry(actNAME);
+
+        TextView[] Stats = new TextView[5];
+        TextView stat1 = findViewById(R.id.statN1);
+        TextView stat2 = findViewById(R.id.statN2);
+        TextView stat3 = findViewById(R.id.statN3);
+        TextView stat4 = findViewById(R.id.statN4);
+        TextView stat5 = findViewById(R.id.statN5);
+        Stats[0] = stat1;
+        Stats[1] = stat2;
+        Stats[2] = stat3;
+        Stats[3] = stat4;
+        Stats[4] = stat5;
+
+        TextView[] Entries = new TextView[5];
+        TextView R1 = findViewById(R.id.entry1);
+        TextView R2 = findViewById(R.id.entry2);
+        TextView R3 = findViewById(R.id.entry3);
+        TextView R4 = findViewById(R.id.entry4);
+        TextView R5 = findViewById(R.id.entry5);
+        Entries[0] = R1;
+        Entries[1] = R2;
+        Entries[2] = R3;
+        Entries[3] = R4;
+        Entries[4] = R5;
+        for (int i = 0; i<size; i++) {
+            List<String> P = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity_Stat(actNAME, arr[i]);
+            int c = P.size();
+            String a[] = new String[c];
+            a = P.toArray(a);
+            Entry[i] ="";
+            for (String j : a) {
+                //System.out.println("THIS IS THE ENTRY: "+j);
+                Entry[i] = j +"\n" + Entry[i];
+            }
+            //System.out.println(Entry[i]);
+        }
+        if (size == 0) {
+            for (int i = 0; i<5 ; i++){
+                Stats[i].setVisibility(View.GONE);
+            }
+        }
+        else{
+            for (int i = 0; i<size ; i++){
+                Stats[i].setVisibility(View.VISIBLE);
+                Stats[i].setText(arr[i]);
+
+                if (ex_array.length != 0) {
+                    Entries[i].setVisibility(View.VISIBLE);
+                    Entries[i].setText(Entry[i]);
+                }
+
+            }
+            for (int j = size; j < 5 ; j++){
+                Stats[j].setVisibility(View.GONE);
+                Entries[j].setVisibility(View.GONE);
+            }
+        }
+
+    }
+
+    /**
+     * Called when an activity launched here (specifically, AccountPicker
+     * and authorization) exits, giving you the requestCode you started it with,
+     * the resultCode it returned, and any additional data from it.
+     * @param requestCode code indicating which activity result is incoming.
+     * @param resultCode code indicating the result of the incoming
+     *     activity result.
+     * @param data Intent (containing result data) returned by incoming
+     *     activity result.
+     */
+    @Override
+    protected void onActivityResult(
+            int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case SHEETS_REQUEST_GOOGLE_PLAY_SERVICES:
+                if (resultCode != RESULT_OK) {
+                    Toast.makeText(getApplicationContext(),"This app requires Google Play Services. Please install " +
+                            "Google Play Services on your device and relaunch this app.",Toast.LENGTH_LONG).show();
+
+                } else {
+                    Log.i(TAG, "REQUEST_GOOGLE_PLAY_SERVICES");
+                    getResultsFromApi();
+                }
+                break;
+            case SHEETS_REQUEST_ACCOUNT_PICKER:
+                if (resultCode == RESULT_OK && data != null &&
+                        data.getExtras() != null) {
+                    String accountName =
+                            data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                    if (accountName != null) {
+                        SharedPreferences settings =
+                                getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString(PREF_ACCOUNT_NAME, accountName);
+                        editor.apply();
+                        mCredential.setSelectedAccountName(accountName);
+                        getResultsFromApi();
+                        Log.i(TAG, "REQUEST_ACCOUNT_PICKER");
+                    }
+                }
+                break;
+            case SHEETS_REQUEST_AUTHORIZATION:
+                if (resultCode == RESULT_OK) {
+                    getResultsFromApi();
+                    Log.i(TAG, "REQUEST_AUTHORIZATION");
+                }
+                break;
+
+            case DRIVE_REQUEST_CODE_SIGN_IN:
+                Log.i(TAG, "Sign in request code");
+                // Called after user is signed in.
+                if (resultCode == RESULT_OK) {
+                    Log.i(TAG, "Signed in successfully.");
+                    // Use the last signed in account here since it already have a Drive scope.
+                    mDriveClient = Drive.getDriveClient(this, GoogleSignIn.getLastSignedInAccount(this));
+                    // Build a drive resource client.
+                    mDriveResourceClient =
+                            Drive.getDriveResourceClient(this, GoogleSignIn.getLastSignedInAccount(this));
+                    openDrivePicker();
+                }
+                Log.i(TAG, "REQUEST_CODE_SIGN_IN");
+                break;
+
+            case DRIVE_REQUEST_CODE_PICKER:
+                Log.i(TAG, "creator request code");
+                // Called after a file is saved to Drive.
+                if (resultCode == RESULT_OK) {
+                    Log.i(TAG, "Image successfully saved.");
+                    driveId = data.getParcelableExtra(OpenFileActivityOptions.EXTRA_RESPONSE_DRIVE_ID);
+                    getResultsFromApi();
+                }
+                finish();
+                break;
+        }
     }
 
 }
