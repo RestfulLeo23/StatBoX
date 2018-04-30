@@ -50,7 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     //check tablesInfo to see if the desired activity is already a thing.
     //Then reject the activity name and prompt for a new one if it is.
 
-    //DatabaseHelper_Object.tablesInfo.containsKey(String key)
+    //DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.containsKey(String key)
 
     //To get a list of all Activity names:
     //Set j =  DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.keySet();
@@ -338,6 +338,22 @@ public class DatabaseHelper extends SQLiteOpenHelper
         Date date = new Date(year, month, day);
         return dateFormat.format(date);
     }
+
+
+    //DatabaseHelper.getsInstance(getApplicationContext()).changeDate("Running", "some date", 5);
+    public void changeDate(String activity, String date, int id)
+    {
+        db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        db.beginTransaction();
+        values.put("Date", date);
+        db.update(activity, values, "ID = " + id, null);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
 
     //grabActivity queries the database and returns all entries as a Hashtable
     //activity is the activity you want to query. It is case sensitive.
