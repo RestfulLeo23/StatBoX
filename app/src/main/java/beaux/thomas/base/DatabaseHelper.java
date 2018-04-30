@@ -525,7 +525,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         createTable(array2);
 
         //5th, prepare to update the metadata table
-        List<String> theMeta = pullStatTypeMetadata(activity, oldColumn);
+        List<String> theMeta = pullStatTypeMetadata("tmp_table", oldColumn);
         ContentValues values = new ContentValues();
         values.put("Activity", activity);
         values.put(COL_StatType, newColumn);
