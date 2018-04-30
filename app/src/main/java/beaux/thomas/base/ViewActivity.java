@@ -1,15 +1,29 @@
 package beaux.thomas.base;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+<<<<<<< HEAD
 import android.view.Menu;
+=======
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
+>>>>>>> FrontEndUI
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TableRow;
 import android.widget.TextView;
 import java.util.List;
 
@@ -22,6 +36,10 @@ public class ViewActivity extends AppCompatActivity {
     private Button button;
     public String StatNAME;
     public String Des;
+<<<<<<< HEAD
+=======
+    public String editName;
+>>>>>>> FrontEndUI
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,17 +57,33 @@ public class ViewActivity extends AppCompatActivity {
         textView.setText(message);
         updateStatScreen();
 
+        registerForContextMenu(findViewById(R.id.Row1));
+        registerForContextMenu(findViewById(R.id.Row2));
+        registerForContextMenu(findViewById(R.id.Row3));
+        registerForContextMenu(findViewById(R.id.Row4));
+        registerForContextMenu(findViewById(R.id.Row5));
     }
-    /** Called when the user taps the Send button */
+
+
+    /**
+     * Called when the user taps the Send button
+     */
     public void InputStatMode(View view) {
         Intent intent = new Intent(this, InputStat.class);
         //System.out.println("******"+StatNAME);
         intent.putExtra(EXTRA_MESSAGE, StatNAME);
-        startActivityForResult(intent,GET_NEW_STAT);
+        startActivityForResult(intent, GET_NEW_STAT);
     }
+<<<<<<< HEAD
     public void DataAnalytics(View view){
         //System.out.println("I HAVE CLICKED ON THE TABLE");
         TextView tv = (TextView)((LinearLayout )view).getChildAt(0);
+=======
+
+    public void DataAnalytics(View view) {
+        //System.out.println("I HAVE CLICKED ON THE TABLE");
+        TextView tv = (TextView) ((LinearLayout) view).getChildAt(0);
+>>>>>>> FrontEndUI
         Intent intent = new Intent(this, DataAnalytics.class);
         intent.putExtra("Activity", StatNAME);
         intent.putExtra("Stat", tv.getText().toString());
@@ -68,8 +102,9 @@ public class ViewActivity extends AppCompatActivity {
                     // TODO Extract the data returned from the child Activity.
                     String[] returnValue = ParseString(data.getStringArrayExtra("STAT")[0]);
                     System.out.println(returnValue.length);
-                    String[] newstat = new String[n+1];
+                    String[] newstat = new String[n + 1];
                     int o = 1;
+<<<<<<< HEAD
                     newstat[0]= StatNAME;
                     for (String i : returnValue){
                     //    System.out.println("Retrun Valuses: "+i);
@@ -79,6 +114,17 @@ public class ViewActivity extends AppCompatActivity {
                     }
 
                     for (String i: newstat ){
+=======
+                    newstat[0] = StatNAME;
+                    for (String i : returnValue) {
+                        //    System.out.println("Retrun Valuses: "+i);
+                        newstat[o] = i;
+                        //  System.out.println("NEW STATS AT BEGINING"+newstat[o]+" INDEX:"+o);
+                        o = o + 1;
+                    }
+
+                    for (String i : newstat) {
+>>>>>>> FrontEndUI
                         //System.out.println("NEW STAT: "+i);
                     }
                     DatabaseHelper.getsInstance(getApplicationContext()).insertData(newstat);
@@ -92,6 +138,10 @@ public class ViewActivity extends AppCompatActivity {
             }
         }
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> FrontEndUI
     public void updateStatScreen() {
         TextView textView = findViewById(R.id.StatName);
         TextView des = findViewById(R.id.Des);
@@ -109,9 +159,15 @@ public class ViewActivity extends AppCompatActivity {
         //System.out.println("****THIS IS THE LAST ENTRY IN PULL BEFORE toARRAY:  "+dcheck+"   ****");
 
 
+<<<<<<< HEAD
         if (dcheck.equals("Date")){
             size = Pull.size()-1;
           //  System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY this is reallt a good line so greattttttttttttt:  "+size+"   ****");
+=======
+        if (dcheck.equals("Date")) {
+            size = Pull.size() - 1;
+            //  System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY this is reallt a good line so greattttttttttttt:  "+size+"   ****");
+>>>>>>> FrontEndUI
 
         }
 
@@ -168,7 +224,11 @@ public class ViewActivity extends AppCompatActivity {
         //System.out.println(arr[0]);
         //System.out.println(StatNAME);
         //System.out.println("BEFORE DB PULL");
+<<<<<<< HEAD
         for (int j=0; j<size;j++ ) {
+=======
+        for (int j = 0; j < size; j++) {
+>>>>>>> FrontEndUI
             t = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[j]).toArray(t);
             types[j] = t[2];
             Des = t[3];
@@ -188,15 +248,19 @@ public class ViewActivity extends AppCompatActivity {
         //System.out.println(DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[0]));
 
 
+<<<<<<< HEAD
 
 
         if (size == 0) {
             for (int i = 0; i<6 ; i++){
+=======
+        if (size == 0) {
+            for (int i = 0; i < 6; i++) {
+>>>>>>> FrontEndUI
                 Stats[i].setVisibility(View.GONE);
             }
-        }
-        else{
-            for (int i = 0; i<size ; i++){
+        } else {
+            for (int i = 0; i < size; i++) {
                 Stats[i].setVisibility(View.VISIBLE);
                 Stats[i].setText(arr[i]);
                 Types[i].setVisibility(View.VISIBLE);
@@ -206,12 +270,20 @@ public class ViewActivity extends AppCompatActivity {
                     Rs[i].setVisibility(View.VISIBLE);
                     Rs[i].setText(ex_array[i]);
                 }
+<<<<<<< HEAD
                 if (ex_array.length == 0){
+=======
+                if (ex_array.length == 0) {
+>>>>>>> FrontEndUI
                     Rs[i].setVisibility(View.INVISIBLE);
                 }
 
             }
+<<<<<<< HEAD
             for (int j = size; j < 6 ; j++){
+=======
+            for (int j = size; j < 6; j++) {
+>>>>>>> FrontEndUI
                 Stats[j].setVisibility(View.GONE);
                 Types[j].setVisibility(View.GONE);
                 Rs[j].setVisibility(View.GONE);
@@ -219,7 +291,8 @@ public class ViewActivity extends AppCompatActivity {
         }
 
     }
-    public String[] ParseString(String s){
+
+    public String[] ParseString(String s) {
         String[] result = s.split(";+");
         return result;
     }
@@ -235,15 +308,85 @@ public class ViewActivity extends AppCompatActivity {
             case R.id.action_settings:
                 System.out.println("THIS IS HS ASOIAUDINIMIUIHYHJKIJUHGYHBJNKUHGYVHBJUYGTGFVBHJYGVBHJNUHYGV BNJUHGBV%%%%%%");
                 return true;
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
             case R.id.menu_export:
                 Intent intent = new Intent(this, Export.class);
                 intent.putExtra("Activity", StatNAME);
                 startActivity(intent);
                 return true;
+<<<<<<< HEAD
+=======
+            case R.id.menu_delete:
+                DatabaseHelper.getsInstance(getApplicationContext()).deleteTable(StatNAME);
+                android.os.Process.killProcess(android.os.Process.myPid());
+                finish();
+>>>>>>> FrontEndUI
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.add(0, v.getId(), 0, "Edit");
+        TextView tv = (TextView) ((LinearLayout) v).getChildAt(0);
+        editName = tv.getText().toString();
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item)
+    {
+        try
+        {
+            if(item.getTitle()=="Edit")
+            {
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.setTitle("Edit Column");
+                alert.setMessage("Enter a New Name for "+ editName);
+                // Set an EditText view to get user input
+
+                final EditText input = new EditText(this);
+
+                alert.setView(input);
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        //System.out.println(input.getText().toString());
+                        //String newAct = editName;
+
+                        //String act = "Running";
+                        //String oldColumn = "Duration";
+                        //String newColumn = "Time";
+                        DatabaseHelper.getsInstance(getApplicationContext()).changeColumnName(StatNAME, editName, input.getText().toString());
+                        finish();
+                    }
+                });
+
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                    }
+                });
+
+                alert.show();
+            }
+            else
+            {
+                return false;
+            }
+            return true;
+        }
+        catch(Exception e)
+        {
+            return true;
+        }
+    }
+
+>>>>>>> FrontEndUI
 
 }

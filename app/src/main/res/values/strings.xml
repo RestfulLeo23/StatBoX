@@ -19,4 +19,7 @@
     <string name="title_activity_export">Export</string>
     <string name="import_act">Import</string>
     <string name="title_activity_gps">GPS</string>
+    <string name="delete_act">Delete Activity</string>
+    <string name="edit_act">Edit Activity</string>
+    <string name="title_activity_edit">EditActivity</string>
 </resources>
