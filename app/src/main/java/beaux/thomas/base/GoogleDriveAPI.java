@@ -78,6 +78,9 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 
 public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
+    /**
+     * Google Drive and Spreadsheet Credentials
+     */
     private GoogleAccountCredential mCredential;
     private static final String TAG = "StatBoXDriveAPI";
     private DriveId driveId;
@@ -85,6 +88,9 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
     private DriveResourceClient mDriveResourceClient;
     private GoogleSignInClient mGoogleSignInClient;
 
+    /**
+     * Request codes for both APIs
+     */
     private static final int DRIVE_REQUEST_CODE_SIGN_IN = 0;
     private static final int DRIVE_REQUEST_CODE_PICKER = 2;
     static final int SHEETS_REQUEST_ACCOUNT_PICKER = 1000;
@@ -92,9 +98,15 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
     static final int SHEETS_REQUEST_GOOGLE_PLAY_SERVICES = 1002;
     static final int SHEETS_REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
 
+    /**
+     * Drive and Spreadsheet API's user credential properties
+     */
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS_READONLY, Drive.SCOPE_FILE.toString()};
 
+    /**
+     * System fields
+     */
     public String actNAME;
     public String[] Entry= new String[5];
 
@@ -117,6 +129,9 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         }
     }
 
+    /**
+     * Updates the GoogleDriveAPI UI with the Spreadsheets API export_activity.xml
+     */
     private void Export(){
         setContentView(R.layout.activity_export);
         TextView textView = findViewById(R.id.act_name);
@@ -125,16 +140,23 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         updateScreen();
-
     }
 
+    /**
+     * Starts the StatBoX Import process for the Drive API and Spreadsheets API if there was not a
+     * StatBoX Activity name sent to us
+     */
     private void Import(){
         setContentView(R.layout.activity_import);
         driveSignIn();
     }
 
-    // Start the Drive export process on export button press
-    public void DriveExport(View view){
+    /**
+     * Starts the StatBoX Export process for the Spreadsheets API when the export button
+     * from the activity_export.xml file was pressed
+     * @param view View passed to us by the export button from the activity_export.xml
+     */
+    public void spreadsheetExport(View view){
         getResultsFromApi();
     }
 
@@ -192,7 +214,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         }
     }
 
-    /** Start sign in activity. */
+    /** Start the Drive sign in activity. */
     private void driveSignIn() {
         Log.i(TAG, "Start sign in");
         mGoogleSignInClient = buildGoogleDriveSignInClient();
@@ -367,7 +389,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         private void updateActivitySpreadsheet(Spreadsheet sheet){
             // Catching IO exception from updating Spreadsheet with new information.
             try {
-                // Set the paramteters of the sheet and acquire activity information from DatabaseHelper
+                // Set the parameters of the sheet and acquire activity information from DatabaseHelper
                 String writeRange = "Sheet1!A1:G";
                 String id = sheet.getSpreadsheetId();
                 Hashtable<String, List<String>> activityEntries = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity(actNAME);
@@ -415,6 +437,9 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
          */
         private void retrieveSpreadsheetContents(DriveId driveId){
             try{
+                /**
+                 * Acquire the sheet and it's properties using the Sheets API sent by the Drive API
+                 */
                 String range = "Sheet1!A1:G";
                 ValueRange result = mService.spreadsheets().values().get(driveId.getResourceId(), range).execute();
                 int numRows = result.getValues() != null ? result.getValues().size() : 0;
@@ -424,7 +449,6 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
 
                 /**
                  * Parse the Spreadsheet finding the column header row
-                 *
                  */
                 List<String> colHeaders = new ArrayList<String>();
                 List<List<Object>> values = result.getValues();
@@ -452,7 +476,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
 
                 /**
                  * Parse the column header row again looking for statTypes by capturing everything
-                 * withing parenthesis.
+                 * within parenthesis.
                  */
                 String[] statTypes = new String[numCols-1];
                 Pattern statType = Pattern.compile("(?=\\().+?(?=\\))");
@@ -468,12 +492,12 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                  */
                 for(int i = 0; i < statTypes.length; i++){
                     String[] metaDataEntry = new String[6];
-                    metaDataEntry[0] = activityName;
-                    metaDataEntry[1] = activityData[i+1].toString();
-                    metaDataEntry[2] = "No";
-                    metaDataEntry[3] = "No";
-                    metaDataEntry[4] = statTypes[i].toString();
-                    metaDataEntry[5] = activityName+" habit";
+                    metaDataEntry[0] = activityName; // Activity name
+                    metaDataEntry[1] = activityData[i+1].toString(); // Stat name
+                    metaDataEntry[2] = "No"; // GPS
+                    metaDataEntry[3] = "No"; // Timer
+                    metaDataEntry[4] = statTypes[i].toString(); // Stat type for the specified Stat name
+                    metaDataEntry[5] = activityName+" habit"; // Description of the activity
                     DatabaseHelper.getsInstance(getApplicationContext()).updateMeta(metaDataEntry);
                 }
 
