@@ -562,7 +562,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             db.execSQL("DROP TABLE tmp_table;");
             db.execSQL("UPDATE StatType_Metadata SET Activity = \""+activity+"\" WHERE Activity = \""+"tmp_table"+"\";");
             db.update(TABLE_METADATA, values, COL_Activity+ " = \""+activity + "\" AND "+ COL_StatType+" = \"" + oldColumn + "\"", null);
-            db.execSQL("UPDATE ICONS SET Activity = \""+activity+"\" WHERE Activity = \""+"tmp_table+"\";");//set icons table back
+            db.execSQL("UPDATE ICONS SET Activity = \""+activity+"\" WHERE Activity = \""+"tmp_table"+"\";");//set icons table back
             db.setTransactionSuccessful();
         } finally
         {
