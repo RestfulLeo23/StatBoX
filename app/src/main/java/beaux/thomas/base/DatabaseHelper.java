@@ -224,7 +224,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     //String act = "Running";
-    //List<String> aStatData = DatabaseHelper.getsInstance(getApplicationContext()).pullIcon(act);
+    //String icon = DatabaseHelper.getsInstance(getApplicationContext()).pullIcon(act);
     public String pullIcon(String activity)
     {
         db = getReadableDatabase();
@@ -233,7 +233,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         Cursor cur = db.query(TABLE_ICONS, columns, COL1+ " = \""+activity + "\"", null, null, null, null, null);
         String target = " ";
         if (cur.moveToFirst())
-            target = cur.getString(0); 
+            target = cur.getString(0);
 
         db.close();
         cur.close();
@@ -505,7 +505,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
         {
             db.execSQL("ALTER TABLE " + oldName + " RENAME TO " + newName+";");
             db.execSQL("UPDATE StatType_Metadata SET Activity = \""+newName+"\" WHERE Activity = \""+oldName+"\";");//this updates every row in metadata
-            db.setTransactionSuccessful();                              //where the activity was the one being changed and changes them to this new name
+                                                                        //where the activity was the one being changed and changes them to this new name
+            db.execSQL("UPDATE ICONS SET Activity = \""+newName+"\" WHERE Activity = \""+oldName+"\";");//update icons table
+            db.setTransactionSuccessful();
         } finally
         {
             db.endTransaction();
@@ -581,6 +583,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         {
             db.execSQL("DROP TABLE " + activity+ ";");
             db.execSQL("DELETE FROM StatType_Metadata WHERE Activity = \""+activity+"\";");//update the metadata
+            db.execSQL("DELETE FROM ICONS WHERE Activity = \""+activity+"\";");//update the icons
             db.setTransactionSuccessful();
         } finally
         {
