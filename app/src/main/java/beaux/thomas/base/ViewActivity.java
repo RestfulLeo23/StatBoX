@@ -86,8 +86,10 @@ public class ViewActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+
             case (GET_NEW_STAT): {
                 if (resultCode == OK) {
+
                     List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(StatNAME);
                     int n = Pull.size();
                     //System.out.println("OK ACTIVITY RESULT");
@@ -98,7 +100,7 @@ public class ViewActivity extends AppCompatActivity {
                     int o = 1;
                     newstat[0] = StatNAME;
                         for (String i : returnValue) {
-                            //    System.out.println("Retrun Valuses: "+i);
+                            System.out.println("Retrun Valuses: "+i);
                             newstat[o] = i;
                             //  System.out.println("NEW STATS AT BEGINING"+newstat[o]+" INDEX:"+o);
                             o = o + 1;
@@ -140,108 +142,102 @@ public class ViewActivity extends AppCompatActivity {
 
 
         }
-            TextView[] Stats = new TextView[6];
+        TextView[] Stats = new TextView[6];
 
-            TextView stat1 = findViewById(R.id.Stat1);
-            TextView stat2 = findViewById(R.id.Stat2);
-            TextView stat3 = findViewById(R.id.Stat3);
-            TextView stat4 = findViewById(R.id.Stat4);
-            TextView stat5 = findViewById(R.id.Stat5);
-            TextView stat6 = findViewById(R.id.Stat6);
-            Stats[0] = stat1;
-            Stats[1] = stat2;
-            Stats[2] = stat3;
-            Stats[3] = stat4;
-            Stats[4] = stat5;
-            Stats[5] = stat6;
+        TextView stat1 = findViewById(R.id.Stat1);
+        TextView stat2 = findViewById(R.id.Stat2);
+        TextView stat3 = findViewById(R.id.Stat3);
+        TextView stat4 = findViewById(R.id.Stat4);
+        TextView stat5 = findViewById(R.id.Stat5);
+        TextView stat6 = findViewById(R.id.Stat6);
+        Stats[0] = stat1;
+        Stats[1] = stat2;
+        Stats[2] = stat3;
+        Stats[3] = stat4;
+        Stats[4] = stat5;
+        Stats[5] = stat6;
 
-            TextView[] Types = new TextView[6];
+        TextView[] Types = new TextView[6];
 
-            String[] t = new String[4];
-            String[] types = new String[5];
+        String[] t = new String[4];
+        String[] types = new String[5];
 
-            TextView T1 = findViewById(R.id.type1);
-            TextView T2 = findViewById(R.id.type2);
-            TextView T3 = findViewById(R.id.type3);
-            TextView T4 = findViewById(R.id.type4);
-            TextView T5 = findViewById(R.id.type5);
-            TextView T6 = findViewById(R.id.type6);
+        TextView T1 = findViewById(R.id.type1);
+        TextView T2 = findViewById(R.id.type2);
+        TextView T3 = findViewById(R.id.type3);
+        TextView T4 = findViewById(R.id.type4);
+        TextView T5 = findViewById(R.id.type5);
+        TextView T6 = findViewById(R.id.type6);
 
-            Types[0] = T1;
-            Types[1] = T2;
-            Types[2] = T3;
-            Types[3] = T4;
-            Types[4] = T5;
-            Types[5] = T6;
+        Types[0] = T1;
+        Types[1] = T2;
+        Types[2] = T3;
+        Types[3] = T4;
+        Types[4] = T5;
+        Types[5] = T6;
 
-            TextView[] Rs = new TextView[6];
+        TextView[] Rs = new TextView[6];
 
-            TextView R1 = findViewById(R.id.recent1);
-            TextView R2 = findViewById(R.id.recent2);
-            TextView R3 = findViewById(R.id.recent3);
-            TextView R4 = findViewById(R.id.recent4);
-            TextView R5 = findViewById(R.id.recent5);
-            TextView R6 = findViewById(R.id.recent6);
-            Rs[0] = R1;
-            Rs[1] = R2;
-            Rs[2] = R3;
-            Rs[3] = R4;
-            Rs[4] = R5;
-            Rs[5] = R6;
+        TextView R1 = findViewById(R.id.recent1);
+        TextView R2 = findViewById(R.id.recent2);
+        TextView R3 = findViewById(R.id.recent3);
+        TextView R4 = findViewById(R.id.recent4);
+        TextView R5 = findViewById(R.id.recent5);
+        TextView R6 = findViewById(R.id.recent6);
+        Rs[0] = R1;
+        Rs[1] = R2;
+        Rs[2] = R3;
+        Rs[3] = R4;
+        Rs[4] = R5;
+        Rs[5] = R6;
 
-            //System.out.println(DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(StatNAME));
-            //System.out.println(arr[0]);
-            //System.out.println(StatNAME);
-            //System.out.println("BEFORE DB PULL");
+        for (int j = 0; j < size; j++) {
+            t = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[j]).toArray(t);
+            types[j] = t[2];
+            Des = t[3];
+            //System.out.println("THIS IS THE TYPE"+types[j]);
 
-            for (int j = 0; j < size; j++) {
-                t = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[j]).toArray(t);
-                types[j] = t[2];
-                Des = t[3];
-                //System.out.println("THIS IS THE TYPE"+types[j]);
+        }
+
+        String[] ex_array = DatabaseHelper.getsInstance(getApplicationContext()).returnLastEntry(StatNAME);
+
+
+        if (size == 0) {
+            for (int i = 0; i < 6; i++) {
+                Stats[i].setVisibility(View.GONE);
+
             }
 
-            // System.out.println(TEST);
+        }
 
-            //int k = Meta.size();
-            //String meta[] = new String[k];
-            //meta = Meta.toArray(meta);
+        else {
 
-            //int s = arr.length;
-            //System.out.println("testt****************************************");
-            String[] ex_array = DatabaseHelper.getsInstance(getApplicationContext()).returnLastEntry(StatNAME);
+            for (int i = 0; i < size; i++) {
 
-            //System.out.println(DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[0]));
-
-
-            if (size == 0) {
-                for (int i = 0; i < 6; i++) {
-                    Stats[i].setVisibility(View.GONE);
-                }
-            }
-            else {
-                for (int i = 0; i < size; i++) {
-                    Stats[i].setVisibility(View.VISIBLE);
-                    Stats[i].setText(arr[i]);
-                    Types[i].setVisibility(View.VISIBLE);
-                    Types[i].setText(types[i]);
-                    des.setText(Des);
-                    if (ex_array.length != 0) {
-                        Rs[i].setVisibility(View.VISIBLE);
-                        Rs[i].setText(ex_array[i]);
-                    }
-                    if (ex_array.length == 0) {
-                        Rs[i].setVisibility(View.INVISIBLE);
-                    }
+                Stats[i].setVisibility(View.VISIBLE);
+                Stats[i].setText(arr[i]);
+                Types[i].setVisibility(View.VISIBLE);
+                Types[i].setText(types[i]);
+                des.setText(Des);
+                if (ex_array.length != 0) {
+                    Rs[i].setVisibility(View.VISIBLE);
+                    Rs[i].setText(ex_array[i]);
 
                 }
-                for (int j = size; j < 6; j++) {
-                    Stats[j].setVisibility(View.GONE);
-                    Types[j].setVisibility(View.GONE);
-                    Rs[j].setVisibility(View.GONE);
+                if (ex_array.length == 0) {
+                    Rs[i].setVisibility(View.INVISIBLE);
+
                 }
 
             }
+            for (int j = size; j < 6; j++) {
+                Stats[j].setVisibility(View.GONE);
+                Types[j].setVisibility(View.GONE);
+                Rs[j].setVisibility(View.GONE);
+
+            }
+
+        }
 
     }
 
@@ -305,6 +301,8 @@ public class ViewActivity extends AppCompatActivity {
                         //String act = "Running";
                         //String oldColumn = "Duration";
                         //String newColumn = "Time";
+                        //DatabaseHelper.getsInstance(getApplicationContext()).changeTableName(StatNAME, input.getText().toString());
+
                         DatabaseHelper.getsInstance(getApplicationContext()).changeColumnName(StatNAME, editName, input.getText().toString());
                         finish();
                     }

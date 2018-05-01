@@ -3,6 +3,7 @@
     package="beaux.thomas.base">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -80,7 +81,8 @@
         <activity
             android:name=".GoogleDriveAPI"
             android:label="@string/title_activity_google_drive_api"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
             android:name=".Export"
             android:label="@string/title_activity_export"
@@ -98,6 +100,11 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="beaux.thomas.base.InputStat" />
+        </activity>
+        <activity
+            android:name=".ImagePicker"
+            android:label="Image"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

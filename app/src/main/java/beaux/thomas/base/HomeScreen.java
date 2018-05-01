@@ -1,6 +1,9 @@
 package beaux.thomas.base;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -9,9 +12,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Set;
 
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -21,9 +28,6 @@ public class HomeScreen extends AppCompatActivity {
     //public DatabaseHelper StatboX_Database;
     public static final int GET_NEW_ACT = 2;
     public static final int OK = 1;
-    public String[] Acts = new String[20];
-    public boolean clicked = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,35 +35,9 @@ public class HomeScreen extends AppCompatActivity {
         setContentView(R.layout.homescreen);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         updateHomeScreen();
     }
 
-
-
-    /** Called when the user taps the Send button */
-    public void InputStatMode(View view) {
-        Intent intent = new Intent(this, InputStat.class);
-        startActivity(intent);
-    }
-
-    public void TimerMode(View view) {
-        Intent intent = new Intent(this, Timer.class);
-        startActivity(intent);
-    }
-
-    public void GraphViewMode(View view) {
-        Intent intent = new Intent(this, DataAnalytics.class);
-        startActivity(intent);
-    }
-
-    public void ImageMode(View view) {
-        System.out.println("IMAGE MORE CLICKED");
-        Intent intent = new Intent(this, ImagePicker.class);
-        System.out.println("IMAGE MORE CLICKED");
-        startActivity(intent);
-        System.out.println("IMAGE MORE CLICKED");
-    }
 
     public void GoogleDriveAPI(View view){
         //System.out.println("I HAVE CLICKED ON THE Export Button");
@@ -70,15 +48,20 @@ public class HomeScreen extends AppCompatActivity {
 
     /** Called when the user taps the Send button */
     public void ViewActivityMode(View view) {
-        Button b = (Button) view;
-        String message = b.getText().toString();
+        TextView tv = (TextView) ((LinearLayout) view).getChildAt(1);
         Intent intent = new Intent(this, ViewActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, message);
+        System.out.println(tv.getText().toString());
+        intent.putExtra(EXTRA_MESSAGE, tv.getText().toString());
+        //String message = b.getText().toString();
+        //Intent intent = new Intent(this, ViewActivity.class);
+        //intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
 
     /** Called when the user taps the Send button */
     public void ActivityManagementMode(View view) {
+        System.out.println("################CLICKED ON FOB#########################");
+
         Set<String> act_set = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.keySet();
         int n = act_set.size();
         if (n >=6){
@@ -96,26 +79,29 @@ public class HomeScreen extends AppCompatActivity {
         switch (requestCode) {
             case (GET_NEW_ACT): {
                 if (resultCode == OK) {
-                    //System.out.println("OK RESULT CODE");
+                    System.out.println("OK RESULT CODE");
                     // TODO Extract the data returned from the child Activity.
                     String[] returnValue = data.getStringArrayExtra("ACT");
                     String[] ACTS = ParseString(returnValue[0]);
                     String[] sType = ParseString(returnValue[1]);
                     String[] meta = ParseString(returnValue[2]);
-
+                    String filepath = returnValue[3];
                     DatabaseHelper.getsInstance(getApplicationContext()).createTable(ACTS);
+
                     for (int i = 0; i<sType.length; i++){
                         String[] ACTDB = new String[6];
                         ACTDB[0]= ACTS[0];
                         ACTDB[1]= ACTS[i+1];
-                        ACTDB[2]= meta[1];
-                        ACTDB[3]= meta[0];
+                        ACTDB[2]= meta[0];
+                        ACTDB[3]= meta[1];
                         ACTDB[4]= sType[i];
                         ACTDB[5]= meta[2];
                         DatabaseHelper.getsInstance(getApplicationContext()).updateMeta(ACTDB);
                     }
+
                     List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(ACTS[0]);
-                    System.out.println(Pull.toString());
+                    System.out.println("** THESE ARE THE STATS: "+Pull.toString()+"***");
+                    DatabaseHelper.getsInstance(getApplicationContext()).addIcon(ACTS[0],filepath);
                     updateHomeScreen();
                     break;
                 }
@@ -140,41 +126,89 @@ public class HomeScreen extends AppCompatActivity {
     }
 
     public void updateHomeScreen() {
+
+        System.out.println("################UPDATE HOMESCREEN#########################");
+
         Set<String> act_set = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.keySet();
+
         int n = act_set.size();
+
         String arr[] = new String[n];
         arr = act_set.toArray(arr);
         int size = arr.length;
+        System.out.println("################SIZE n: "+size+"#########################");
+        for (String i:arr){
+            System.out.println("^^^UHS^^: DATABASE PULL: "+ i +"^^^");
+        }
 
-        Button Act1 = findViewById(R.id.act1);
-        Button Act2 = findViewById(R.id.act2);
-        Button Act3 = findViewById(R.id.act3);
-        Button Act4 = findViewById(R.id.act4);
-        Button Act5 = findViewById(R.id.act5);
-        Button Act6 = findViewById(R.id.act6);
-        Button[] BUTTS = new Button[6];
-        BUTTS[0] = Act1;
-        BUTTS[1] = Act2;
-        BUTTS[2] = Act3;
-        BUTTS[3] = Act4;
-        BUTTS[4] = Act5;
-        BUTTS[5] = Act6;
+        ImageButton icon1 = findViewById(R.id.icon1);
+        ImageButton icon2 = findViewById(R.id.icon2);
+        ImageButton icon3 = findViewById(R.id.icon3);
+        ImageButton icon4 = findViewById(R.id.icon4);
+        ImageButton icon5 = findViewById(R.id.icon5);
+        ImageButton icon6 = findViewById(R.id.icon6);
 
+        TextView name1 = findViewById(R.id.STATNAME1);
+        TextView name2 = findViewById(R.id.STATNAME2);
+        TextView name3 = findViewById(R.id.STATNAME3);
+        TextView name4 = findViewById(R.id.STATNAME4);
+        TextView name5 = findViewById(R.id.STATNAME5);
+        TextView name6 = findViewById(R.id.STATNAME6);
+
+
+        ImageButton[] IMAGES = new ImageButton[6];
+        TextView[] names = new TextView[6];
+
+        IMAGES[0] = icon1;
+        IMAGES[1] = icon2;
+        IMAGES[2] = icon3;
+        IMAGES[3] = icon4;
+        IMAGES[4] = icon5;
+        IMAGES[5] = icon6;
+
+        names[0]=name1;
+        names[1]=name2;
+        names[2]=name3;
+        names[3]=name4;
+        names[4]=name5;
+        names[5]=name6;
+
+
+        System.out.println("################SIZE n: "+size+"#########################");
         if (size == 0 || size > 6)
         {
             for (int i = 0; i<6 ; i++){
-                BUTTS[i].setVisibility(View.GONE);
+                names[i].setVisibility(View.GONE);
+                IMAGES[i].setVisibility(View.GONE);
             }
         }
+
         else {
+            System.out.println("##########$$$$$$$$$$$$$$$$$$#########################");
             for (int i = 0; i<size ; i++){
-                BUTTS[i].setVisibility(View.VISIBLE);
-                BUTTS[i].setText(arr[i]);
+                System.out.println("########((&&&         "+i);
+                names[i].setText(arr[i]);
+                String path = DatabaseHelper.getsInstance(getApplicationContext()).pullIcon(arr[i]);
+                Uri targetUri = Uri.parse(path);
+                Bitmap bitmap;
+                try {
+                    bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
+                    IMAGES[i].setImageBitmap(bitmap);
+
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                IMAGES[i].setVisibility(View.VISIBLE);
+                names[i].setVisibility(View.VISIBLE);
             }
             for (int j =size; j < 6 ; j++){
-                BUTTS[j].setVisibility(View.GONE);
+                System.out.println("########((&&&****   "+j);
+                IMAGES[j].setVisibility(View.GONE);
+                names[j].setVisibility(View.GONE);
             }
         }
+        System.out.println("@@@@@@@@@@@@@@@@UPDATE HOMESCREEN CLOSE@@@@@@@@@@@@@@@@@@");
     }
 
     public void deleteDB(View view){
@@ -222,7 +256,6 @@ public class HomeScreen extends AppCompatActivity {
         // Save UI state changes to the savedInstanceState.
         // This bundle will be passed to onCreate if the process is
         // killed and restarted.
-        outState.putStringArray("Acts", Acts);
         super.onSaveInstanceState(outState);
     }
 
@@ -231,7 +264,7 @@ public class HomeScreen extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         // Restore UI state from the savedInstanceState.
         // This bundle has also been passed to onCreate.
-        Acts = savedInstanceState.getStringArray("Acts");
+
     }
 
 }

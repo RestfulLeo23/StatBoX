@@ -15,8 +15,8 @@ import static beaux.thomas.base.HomeScreen.EXTRA_MESSAGE;
 public class InputStat extends AppCompatActivity {
 
     public String StatNAME;
-    public String timestat = "No Record";
-    public String distance = "No Record";
+    public String timestat = "";
+    public String distance = "";
     public static final int GET_TIMER = 3;
     public static final int GET_GPS = 4;
 
@@ -47,6 +47,7 @@ public class InputStat extends AppCompatActivity {
                 Statv5.getText().toString();
 
         New_Stat[0] = New_Stat[0] + ";" + timestat;
+
         New_Stat[0] = New_Stat[0] + ";" + distance;
 
         System.out.println("INPUT STAT MIDDLE");
@@ -109,32 +110,35 @@ public class InputStat extends AppCompatActivity {
 
          t = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[0]).toArray(t);
 
-         if (t[1].equals("0")){
+         if ((t[0].equals("0")) || (t[1].equals("0"))) {
+             System.out.println(t[0]+"               TIMER");
              TIMERbutton.setVisibility(View.GONE);
              TextView timer = (TextView) findViewById(R.id.timerstat);
              timer.setVisibility(View.GONE);
              TextView recordedtime = (TextView) findViewById(R.id.time);
              recordedtime.setVisibility(View.GONE);
          }
-         if (t[1].equals("1")){
+         if (t[0].equals("1")){
+             System.out.println("SHOULD NOT BE HERE"+t[0]+"               TIMER");
              TIMERbutton.setVisibility(View.VISIBLE);
              TextView timer = (TextView) findViewById(R.id.timerstat);
              timer.setVisibility(View.VISIBLE);
 
          }
 
-         if (t[0].equals("0")){
+         if (t[1].equals("0")){
+             System.out.println(t[1]+"               GPSSSS");
              GPSbutton.setVisibility(View.GONE);
              TextView GPS = (TextView) findViewById(R.id.Gps);
              GPS.setVisibility(View.GONE);
              TextView distance = (TextView) findViewById(R.id.Distance);
              distance.setVisibility(View.GONE);
          }
-         if (t[0].equals("1")){
+         if (t[1].equals("1")){
+             System.out.println(t[1]+"               GPS");
              GPSbutton.setVisibility(View.VISIBLE);
-             TextView timer = (TextView) findViewById(R.id.Gps);
-             timer.setVisibility(View.VISIBLE);
-
+             TextView gps = (TextView) findViewById(R.id.Gps);
+             gps.setVisibility(View.VISIBLE);
          }
 
 
@@ -145,36 +149,40 @@ public class InputStat extends AppCompatActivity {
             }
         }
         else{
-            for (int i = 0; i<size ; i++){
+             System.out.println(size);
+
+             for (int i = 0; i<size ; i++){
                 Stats[i].setVisibility(View.VISIBLE);
                 Stats[i].setText(arr[i]);
                 Inputs[i].setVisibility(View.VISIBLE);
-                if (t[1].equals("1")){
-                    TIMERbutton.setVisibility(View.VISIBLE);
-                    TextView timer = (TextView) findViewById(R.id.timerstat);
-                    timer.setVisibility(View.VISIBLE);
-
-                }
 
             }
             if (t[1].equals("1") && (t[0].equals("1"))){
+                System.out.println("Debugging1111111111111");
                 for (int j = size-2; j < 5; j++) {
                     Stats[j].setVisibility(View.GONE);
                     Inputs[j].setVisibility(View.GONE);
                 }
 
             }
-            else if ((t[1].equals("1") && !(t[0].equals("1"))) || !(t[1].equals("1") && (t[0].equals("1")))) {
+            if ( ( (t[1].equals("1")) && (!t[0].equals("1")) )
+                    ||
+            ( (!t[1].equals("1")) && (t[0].equals("1")) ) )
+
+            {
+                System.out.println("GPS:  "+t[1]+"TIMER: "+t[0]);
+
+                System.out.println("Debugging222222222222222222222222");
 
                 for (int j = size-1; j < 5; j++) {
                     Stats[j].setVisibility(View.GONE);
                     Inputs[j].setVisibility(View.GONE);
                 }
-
-
             }
             else{
+                System.out.println("Debugging33333333333333333333333333");
                 for (int j = size; j < 5; j++) {
+                    System.out.println("THOMAS IS COOOOOOOOOLLLLLLLLLL:     "+j);
                     Stats[j].setVisibility(View.GONE);
                     Inputs[j].setVisibility(View.GONE);
                 }

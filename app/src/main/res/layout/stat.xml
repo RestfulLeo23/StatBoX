@@ -183,7 +183,8 @@
                 android:text="Timer"
                 android:textAlignment="viewStart"
                 android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="visible" />
 
             <TextView
                 android:id="@+id/time"
@@ -191,7 +192,8 @@
                 android:layout_height="56dp"
                 android:text="Click Timer to Record"
                 android:textAlignment="center"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:visibility="visible" />
 
         </TableRow>
 
