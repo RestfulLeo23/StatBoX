@@ -223,6 +223,23 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.close();
     }
 
+    //String act = "Running";
+    //List<String> aStatData = DatabaseHelper.getsInstance(getApplicationContext()).pullIcon(act);
+    public String pullIcon(String activity)
+    {
+        db = getReadableDatabase();
+        String [] columns = {COL2}; //these are the columns to be returned. We don't need Activity or StatType
+        //because those are known (they're what's being passed into this whole function).
+        Cursor cur = db.query(TABLE_ICONS, columns, COL1+ " = \""+activity + "\"", null, null, null, null, null);
+        String target = " ";
+        if (cur.moveToFirst())
+            target = cur.getString(0); 
+
+        db.close();
+        cur.close();
+        return target;
+    }
+
     //Activity, StatType, IsTimer, IsGPS, Unit, Description             ***TO EVERYONE ELSE, STAT TYPE IS STAT NAME AND UNIT IS STAT TYPE**
     //example_array = {"Running", "Duration", "Yes", "No", "minutes", "The duration"}
     //DatabaseHelper.getsInstance(getApplicationContext()).updateMeta(example_array);
