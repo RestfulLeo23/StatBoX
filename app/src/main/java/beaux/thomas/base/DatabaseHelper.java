@@ -516,7 +516,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         //3rd, create the array we want to use to create the new table
         String [] array = new String[activityColumnList.size()];
         activityColumnList.toArray(array);
-        String [] array2 = new String[array.length + 1];
+        String [] array2 = new String[array.length + 1];//here it doesnt like the plus 1
         array2[0] = activity;
         for(int x=0; x < array.length; x++)
             array2[x+1] = array[x];
@@ -541,6 +541,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         {
             db.execSQL("INSERT INTO " +  activity + " SELECT * FROM tmp_table");
             db.execSQL("DROP TABLE tmp_table;");
+            db.execSQL("UPDATE StatType_Metadata SET Activity = \""+activity+"\" WHERE Activity = \""+"tmp_table"+"\";");
             db.update(TABLE_METADATA, values, COL_Activity+ " = \""+activity + "\" AND "+ COL_StatType+" = \"" + oldColumn + "\"", null);
             db.setTransactionSuccessful();
         } finally
