@@ -73,6 +73,7 @@ public class HomeScreen extends AppCompatActivity {
     public void GoogleDriveAPIImport(){
         Intent intent = new Intent(this, GoogleDriveAPI.class);
         startActivity(intent);
+        updateHomeScreen();
     }
 
     /** Called when the user taps the Send button */

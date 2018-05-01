@@ -31,9 +31,11 @@ import com.google.android.gms.drive.CreateFileActivityOptions;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveClient;
 import com.google.android.gms.drive.DriveContents;
+import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.drive.DriveResourceClient;
+import com.google.android.gms.drive.Metadata;
 import com.google.android.gms.drive.MetadataChangeSet;
 import com.google.android.gms.drive.OpenFileActivityOptions;
 import com.google.android.gms.drive.query.Filters;
@@ -63,10 +65,13 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -348,7 +353,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         private Spreadsheet generateSpreadsheet() throws IOException {
             Spreadsheet requestBody = new Spreadsheet();
             SpreadsheetProperties properties = new SpreadsheetProperties();
-            properties.setTitle("StatBoX: "+actNAME + " Activity");
+            properties.setTitle(actNAME);
             requestBody.setProperties(properties);
 
             Sheets.Spreadsheets.Create request = mService.spreadsheets().create(requestBody);
@@ -363,7 +368,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
             // Catching IO exception from updating Spreadsheet with new information.
             try {
                 // Set the paramteters of the sheet and acquire activity information from DatabaseHelper
-                String writeRange = "Sheet1!A1:E";
+                String writeRange = "Sheet1!A1:G";
                 String id = sheet.getSpreadsheetId();
                 Hashtable<String, List<String>> activityEntries = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity(actNAME);
                 List<String> activityInfo = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(actNAME);
@@ -380,9 +385,12 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
 
                 // Populate rows starting at row 1 with StatBoX entries
                 Set<String> keys = activityEntries.keySet();
-                for (String key : keys) {
+                List sortedKeys = new ArrayList<>(keys);
+                Collections.sort(sortedKeys);
+                for (int j = sortedKeys.size()-1; j >= 0; j--) {
                     List<Object> entryRow = new ArrayList<>();
-                    List<String> entryList = activityEntries.get(key);
+                    List<String> entryList = activityEntries.get(sortedKeys.toArray()[j]);
+                    System.out.println(entryList);
                     for (int i = 0; i < entryList.size(); i++) {
                         entryRow.add(entryList.get(i));
                     }
@@ -400,26 +408,94 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
             }
         }
 
+        /**
+         * Retrieves the contents of a user selected spreadsheet and imports it into the system
+         * as a StatBoX Activity.
+         * @param driveId DriveId of the file selected by the user.
+         */
         private void retrieveSpreadsheetContents(DriveId driveId){
             try{
-                String range = "Sheet1!A1:E";
+                String range = "Sheet1!A1:G";
                 ValueRange result = mService.spreadsheets().values().get(driveId.getResourceId(), range).execute();
                 int numRows = result.getValues() != null ? result.getValues().size() : 0;
+                String activityName = mService.spreadsheets().get(driveId.getResourceId())
+                        .execute().getProperties().getTitle();
+                activityName = activityName.replaceAll("\\s+","");
 
-                List<String> results = new ArrayList<String>();
+                /**
+                 * Parse the Spreadsheet finding the column header row
+                 *
+                 */
+                List<String> colHeaders = new ArrayList<String>();
                 List<List<Object>> values = result.getValues();
-
                 if (values != null) {
-                    for (List row : values) {
-                        results.add(row.get(0) + ", " + row.get(numRows-1));
+                    for (int i = 0; i < values.get(0).size(); i++) {
+                        colHeaders.add(values.get(0).get(i).toString());
                     }
                 }
+                int numCols = colHeaders.size();
 
-                System.out.println(results);
+                /**
+                 * Parse the column header row looking for statNames by capturing everything
+                 * that is not within parenthesis.
+                 */
+                String[] activityData = new String[numCols];
+                Pattern statName = Pattern.compile("([A-Z])\\w+");
+                activityData[0] = activityName;
+                for(int i = 0; i < numCols-1; i ++){
+                    Matcher m = statName.matcher(colHeaders.get(i).toString());
+                    if(m.find())
+                        activityData[i+1] = m.group().subSequence(0, m.group().length()).toString();
+                }
+
+                DatabaseHelper.getsInstance(getApplicationContext()).createTable(activityData);
+
+                /**
+                 * Parse the column header row again looking for statTypes by capturing everything
+                 * withing parenthesis.
+                 */
+                String[] statTypes = new String[numCols-1];
+                Pattern statType = Pattern.compile("(?=\\().+?(?=\\))");
+                for(int i = 0; i < numCols-1; i ++){
+                    Matcher m = statType.matcher(colHeaders.get(i).toString());
+                    if(m.find())
+                        statTypes[i] = m.group().subSequence(1, m.group().length()).toString();
+                }
+
+                /**
+                 * Create the metaDataEntry for each statName and update the metadata table to accurately
+                 * reflect the metaData of the activity just imported.
+                 */
+                for(int i = 0; i < statTypes.length; i++){
+                    String[] metaDataEntry = new String[6];
+                    metaDataEntry[0] = activityName;
+                    metaDataEntry[1] = activityData[i+1].toString();
+                    metaDataEntry[2] = "No";
+                    metaDataEntry[3] = "No";
+                    metaDataEntry[4] = statTypes[i].toString();
+                    metaDataEntry[5] = activityName+" habit";
+                    DatabaseHelper.getsInstance(getApplicationContext()).updateMeta(metaDataEntry);
+                }
+
+                /**
+                 * Insert entries without Dates
+                 * Change Dates after row has been entered
+                 */
+                int counter = 0;
+                for(int i = numRows-1; i >= 1; i--){
+                    String[] entry = new String[numCols+1];
+                    entry[0] = activityName;
+                    for(int j = 1; j < numCols; j++){
+                        entry[j] = values.get(i).get(j-1).toString();
+                    }
+                    counter += 1;
+                    DatabaseHelper.getsInstance(getApplicationContext()).insertData(entry);
+                    DatabaseHelper.getsInstance(getApplicationContext()).changeDate(activityName, values.get(i).get(numCols-1).toString(),counter);
+                }
+
             }catch(Exception e){
                 Log.e(TAG, "Unable to read contents", e);
             }
-
         }
 
         /**
@@ -571,7 +647,6 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                 Entries[j].setVisibility(View.GONE);
             }
         }
-
     }
 
     /**
@@ -650,5 +725,4 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                 break;
         }
     }
-
 }
