@@ -2,17 +2,20 @@ package beaux.thomas.base;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import java.util.List;
 
 import static beaux.thomas.base.HomeScreen.EXTRA_MESSAGE;
 
-public class InputStat extends AppCompatActivity {
-
+public class Input extends AppCompatActivity {
     public String StatNAME;
     public String timestat = "";
     public String distance = "";
@@ -22,15 +25,18 @@ public class InputStat extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
-        setContentView(R.layout.stat);
+        setContentView(R.layout.activity_input);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
         StatNAME = intent.getStringExtra(EXTRA_MESSAGE);
         UpdateInputStat();
 
     }
-     public void Input_Stat(View view){
+    public void Input_Stat(View view){
         System.out.println("INPUT STAT START");
         EditText Statv1 = (EditText) findViewById(R.id.StatVal1);
         EditText Statv2 = (EditText) findViewById(R.id.StatVal2);
@@ -57,8 +63,8 @@ public class InputStat extends AppCompatActivity {
         System.out.println("INPUT STAT END");
         finish();
 
-     }
-     public void UpdateInputStat(){
+    }
+    public void UpdateInputStat(){
 
         List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(StatNAME);
 
@@ -104,41 +110,41 @@ public class InputStat extends AppCompatActivity {
         Inputs[3]= Statv4;
         Inputs[4]= Statv5;
 
-         Button TIMERbutton = findViewById(R.id.timer);
-         Button GPSbutton = findViewById(R.id.gps);
+        Button TIMERbutton = findViewById(R.id.timer);
+        Button GPSbutton = findViewById(R.id.gps);
 
-         t = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[0]).toArray(t);
+        t = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[0]).toArray(t);
 
-         if ((t[0].equals("0")) || (t[1].equals("0"))) {
-             System.out.println(t[0]+"               TIMER");
-             TIMERbutton.setVisibility(View.GONE);
-             TextView timer = (TextView) findViewById(R.id.timerstat);
-             timer.setVisibility(View.GONE);
-             TextView recordedtime = (TextView) findViewById(R.id.time);
-             recordedtime.setVisibility(View.GONE);
-         }
-         if (t[0].equals("1")){
-             System.out.println("SHOULD NOT BE HERE"+t[0]+"               TIMER");
-             TIMERbutton.setVisibility(View.VISIBLE);
-             TextView timer = (TextView) findViewById(R.id.timerstat);
-             timer.setVisibility(View.VISIBLE);
+        if ((t[0].equals("0")) || (t[1].equals("0"))) {
+            System.out.println(t[0]+"               TIMER");
+            TIMERbutton.setVisibility(View.GONE);
+            TextView timer = (TextView) findViewById(R.id.timerstat);
+            timer.setVisibility(View.GONE);
+            TextView recordedtime = (TextView) findViewById(R.id.time);
+            recordedtime.setVisibility(View.GONE);
+        }
+        if (t[0].equals("1")){
+            System.out.println("SHOULD NOT BE HERE"+t[0]+"               TIMER");
+            TIMERbutton.setVisibility(View.VISIBLE);
+            TextView timer = (TextView) findViewById(R.id.timerstat);
+            timer.setVisibility(View.VISIBLE);
 
-         }
+        }
 
-         if (t[1].equals("0")){
-             System.out.println(t[1]+"               GPSSSS");
-             GPSbutton.setVisibility(View.GONE);
-             TextView GPS = (TextView) findViewById(R.id.Gps);
-             GPS.setVisibility(View.GONE);
-             TextView distance = (TextView) findViewById(R.id.Distance);
-             distance.setVisibility(View.GONE);
-         }
-         if (t[1].equals("1")){
-             System.out.println(t[1]+"               GPS");
-             GPSbutton.setVisibility(View.VISIBLE);
-             TextView gps = (TextView) findViewById(R.id.Gps);
-             gps.setVisibility(View.VISIBLE);
-         }
+        if (t[1].equals("0")){
+            System.out.println(t[1]+"               GPSSSS");
+            GPSbutton.setVisibility(View.GONE);
+            TextView GPS = (TextView) findViewById(R.id.Gps);
+            GPS.setVisibility(View.GONE);
+            TextView distance = (TextView) findViewById(R.id.Distance);
+            distance.setVisibility(View.GONE);
+        }
+        if (t[1].equals("1")){
+            System.out.println(t[1]+"               GPS");
+            GPSbutton.setVisibility(View.VISIBLE);
+            TextView gps = (TextView) findViewById(R.id.Gps);
+            gps.setVisibility(View.VISIBLE);
+        }
 
 
         if (size == 0) {
@@ -148,9 +154,9 @@ public class InputStat extends AppCompatActivity {
             }
         }
         else{
-             System.out.println(size);
+            System.out.println(size);
 
-             for (int i = 0; i<size ; i++){
+            for (int i = 0; i<size ; i++){
                 Stats[i].setVisibility(View.VISIBLE);
                 Stats[i].setText(arr[i]);
                 Inputs[i].setVisibility(View.VISIBLE);
@@ -166,7 +172,7 @@ public class InputStat extends AppCompatActivity {
             }
             if ( ( (t[1].equals("1")) && (!t[0].equals("1")) )
                     ||
-            ( (!t[1].equals("1")) && (t[0].equals("1")) ) )
+                    ( (!t[1].equals("1")) && (t[0].equals("1")) ) )
 
             {
                 System.out.println("GPS:  "+t[1]+"TIMER: "+t[0]);
@@ -188,7 +194,7 @@ public class InputStat extends AppCompatActivity {
 
             }
 
-         }
+        }
 
 
     }
@@ -228,5 +234,5 @@ public class InputStat extends AppCompatActivity {
             }
         }
     }
-}
 
+}

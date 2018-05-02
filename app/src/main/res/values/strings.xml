@@ -22,4 +22,5 @@
     <string name="delete_act">Delete Activity</string>
     <string name="edit_act">Edit Activity</string>
     <string name="title_activity_edit">EditActivity</string>
+    <string name="title_activity_input">Input</string>
 </resources>
