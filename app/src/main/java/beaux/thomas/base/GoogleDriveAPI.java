@@ -534,12 +534,15 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
          */
         @Override
         protected void onPostExecute(Spreadsheet input) {
-            if (input == null || input.size() == 0) {
+            if ((input == null || input.size() == 0) && actNAME != null) {
                 Toast.makeText(getApplicationContext(),"Spreadsheet was not generated successfully.",Toast.LENGTH_LONG).show();
-                setResult(RESULT_OK);
                 finish();
-            } else {
+            } else if (actNAME != null){
                 Toast.makeText(getApplicationContext(),"Spreadsheet successfully created",Toast.LENGTH_LONG).show();
+                finish();
+            } else if (actNAME == null){
+                Toast.makeText(getApplicationContext(),"Spreadsheet successfully imported.",Toast.LENGTH_LONG).show();
+                setResult(RESULT_OK);
                 finish();
             }
         }
