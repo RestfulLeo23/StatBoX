@@ -331,7 +331,6 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
      */
     private class MakeExportRequestTask extends AsyncTask<Void, Void, Spreadsheet> {
         private Sheets mService = null;
-        private Drive service;
 
         private Exception mLastError = null;
 
@@ -516,7 +515,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                     DatabaseHelper.getsInstance(getApplicationContext()).insertData(entry);
                     DatabaseHelper.getsInstance(getApplicationContext()).changeDate(activityName, values.get(i).get(numCols-1).toString(),counter);
                 }
-
+                System.out.println();
             }catch(Exception e){
                 Log.e(TAG, "Unable to read contents", e);
             }
@@ -537,6 +536,8 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         protected void onPostExecute(Spreadsheet input) {
             if (input == null || input.size() == 0) {
                 Toast.makeText(getApplicationContext(),"Spreadsheet was not generated successfully.",Toast.LENGTH_LONG).show();
+                setResult(RESULT_OK);
+                finish();
             } else {
                 Toast.makeText(getApplicationContext(),"Spreadsheet successfully created",Toast.LENGTH_LONG).show();
                 finish();
@@ -745,7 +746,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                     driveId = data.getParcelableExtra(OpenFileActivityOptions.EXTRA_RESPONSE_DRIVE_ID);
                     getResultsFromApi();
                 }
-                finish();
+                //finish();
                 break;
         }
     }

@@ -24,6 +24,8 @@ public class HomeScreen extends AppCompatActivity {
     public String[] Acts = new String[20];
     public boolean clicked = false;
 
+    private static final int DRIVE_IMPORT_FINISH = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +74,7 @@ public class HomeScreen extends AppCompatActivity {
 
     public void GoogleDriveAPIImport(){
         Intent intent = new Intent(this, GoogleDriveAPI.class);
-        startActivity(intent);
-        updateHomeScreen();
+        startActivityForResult(intent,DRIVE_IMPORT_FINISH);
     }
 
     /** Called when the user taps the Send button */
@@ -128,6 +129,12 @@ public class HomeScreen extends AppCompatActivity {
                         System.out.println("ERROR CODE" + W);
                     }
                     break;
+                }
+            }
+            case (DRIVE_IMPORT_FINISH): {
+                if (resultCode == RESULT_OK) {
+                    System.out.println("We made it");
+                    updateHomeScreen();
                 }
             }
         }
@@ -208,7 +215,6 @@ public class HomeScreen extends AppCompatActivity {
                 deleteSettingDB();
                 return true;
             case R.id.import_act:
-                // TODO Plugin GoogleDriveAPI Import
                 GoogleDriveAPIImport();
             default:
                 return super.onOptionsItemSelected(item);
