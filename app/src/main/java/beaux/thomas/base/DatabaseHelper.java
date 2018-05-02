@@ -223,23 +223,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.close();
     }
 
-    //String act = "Running";
-    //String icon = DatabaseHelper.getsInstance(getApplicationContext()).pullIcon(act);
-    public String pullIcon(String activity)
-    {
-        db = getReadableDatabase();
-        String [] columns = {COL2}; //these are the columns to be returned. We don't need Activity or StatType
-        //because those are known (they're what's being passed into this whole function).
-        Cursor cur = db.query(TABLE_ICONS, columns, COL1+ " = \""+activity + "\"", null, null, null, null, null);
-        String target = " ";
-        if (cur.moveToFirst())
-            target = cur.getString(0);
-
-        db.close();
-        cur.close();
-        return target;
-    }
-
     //Activity, StatType, IsTimer, IsGPS, Unit, Description             ***TO EVERYONE ELSE, STAT TYPE IS STAT NAME AND UNIT IS STAT TYPE**
     //example_array = {"Running", "Duration", "Yes", "No", "minutes", "The duration"}
     //DatabaseHelper.getsInstance(getApplicationContext()).updateMeta(example_array);
@@ -505,9 +488,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         {
             db.execSQL("ALTER TABLE " + oldName + " RENAME TO " + newName+";");
             db.execSQL("UPDATE StatType_Metadata SET Activity = \""+newName+"\" WHERE Activity = \""+oldName+"\";");//this updates every row in metadata
-            //where the activity was the one being changed and changes them to this new name
-            db.execSQL("UPDATE ICONS SET Activity = \""+newName+"\" WHERE Activity = \""+oldName+"\";");//update icons table
-            db.setTransactionSuccessful();
+            db.setTransactionSuccessful();                              //where the activity was the one being changed and changes them to this new name
         } finally
         {
             db.endTransaction();
@@ -535,7 +516,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         //3rd, create the array we want to use to create the new table
         String [] array = new String[activityColumnList.size()];
         activityColumnList.toArray(array);
-        String [] array2 = new String[array.length + 1];//here it doesnt like the plus 1
+        String [] array2 = new String[array.length + 1];
         array2[0] = activity;
         for(int x=0; x < array.length; x++)
             array2[x+1] = array[x];
@@ -560,9 +541,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         {
             db.execSQL("INSERT INTO " +  activity + " SELECT * FROM tmp_table");
             db.execSQL("DROP TABLE tmp_table;");
-            db.execSQL("UPDATE StatType_Metadata SET Activity = \""+activity+"\" WHERE Activity = \""+"tmp_table"+"\";");
             db.update(TABLE_METADATA, values, COL_Activity+ " = \""+activity + "\" AND "+ COL_StatType+" = \"" + oldColumn + "\"", null);
-            db.execSQL("UPDATE ICONS SET Activity = \""+activity+"\" WHERE Activity = \""+"tmp_table"+"\";");//set icons table back
             db.setTransactionSuccessful();
         } finally
         {
@@ -584,7 +563,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         {
             db.execSQL("DROP TABLE " + activity+ ";");
             db.execSQL("DELETE FROM StatType_Metadata WHERE Activity = \""+activity+"\";");//update the metadata
-            db.execSQL("DELETE FROM ICONS WHERE Activity = \""+activity+"\";");//update the icons
             db.setTransactionSuccessful();
         } finally
         {

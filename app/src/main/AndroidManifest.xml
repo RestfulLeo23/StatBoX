@@ -113,6 +113,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="beaux.thomas.base.ViewActivity" />
         </activity>
+            android:name=".Import"
+            android:label="@string/title_activity_import"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".Export"
+    tools:context=".GoogleDriveAPI"
     tools:showIn="@layout/activity_export">
 
     <ScrollView
@@ -145,7 +145,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
-        android:onClick="GoogleDriveAPI"
+        android:onClick="spreadsheetExport"
         android:text="Export"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

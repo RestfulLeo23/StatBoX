@@ -28,12 +28,18 @@ public class HomeScreen extends AppCompatActivity {
     //public DatabaseHelper StatboX_Database;
     public static final int GET_NEW_ACT = 2;
     public static final int OK = 1;
+    public String[] Acts = new String[20];
+    public boolean clicked = false;
+
+    private static final int DRIVE_IMPORT_FINISH = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         updateHomeScreen();
     }
@@ -44,6 +50,30 @@ public class HomeScreen extends AppCompatActivity {
         Intent intent = new Intent(this, GoogleDriveAPI.class);
         intent.putExtra("Activity", "");
         startActivity(intent);
+
+    /** Called when the user taps the Send button */
+    public void InputStatMode(View view) {
+        Intent intent = new Intent(this, InputStat.class);
+        startActivity(intent);
+    }
+
+    public void TimerMode(View view) {
+        Intent intent = new Intent(this, Timer.class);
+        startActivity(intent);
+    }
+
+    public void GraphViewMode(View view) {
+        Intent intent = new Intent(this, DataAnalytics.class);
+        startActivity(intent);
+    }
+
+    public void ImageMode(View view) {
+        System.out.println("IMAGE MORE CLICKED");
+        Intent intent = new Intent(this, ImagePicker.class);
+        System.out.println("IMAGE MORE CLICKED");
+        startActivity(intent);
+        System.out.println("IMAGE MORE CLICKED");
+>>>>>>> origin/DriveAPIMerge
     }
 
     /** Called when the user taps the Send button */
@@ -56,6 +86,11 @@ public class HomeScreen extends AppCompatActivity {
         //Intent intent = new Intent(this, ViewActivity.class);
         //intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
+    }
+
+    public void GoogleDriveAPIImport(){
+        Intent intent = new Intent(this, GoogleDriveAPI.class);
+        startActivityForResult(intent,DRIVE_IMPORT_FINISH);
     }
 
     /** Called when the user taps the Send button */
@@ -115,6 +150,12 @@ public class HomeScreen extends AppCompatActivity {
                         System.out.println("ERROR CODE" + W);
                     }
                     break;
+                }
+            }
+            case (DRIVE_IMPORT_FINISH): {
+                if (resultCode == RESULT_OK) {
+                    System.out.println("We made it");
+                    updateHomeScreen();
                 }
             }
         }
@@ -243,8 +284,7 @@ public class HomeScreen extends AppCompatActivity {
                 deleteSettingDB();
                 return true;
             case R.id.import_act:
-                // TODO Plugin GoogleDriveAPI Import
-                //GoogleDriveAPI(findViewById(R.id.import_act));
+                GoogleDriveAPIImport();
             default:
                 return super.onOptionsItemSelected(item);
         }

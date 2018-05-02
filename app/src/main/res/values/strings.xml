@@ -23,4 +23,6 @@
     <string name="edit_act">Edit Activity</string>
     <string name="title_activity_edit">EditActivity</string>
     <string name="title_activity_input">Input</string>
+    <string name="title_activity_google_drive">GoogleDrive</string>
+    <string name="title_activity_import">Import</string>
 </resources>

@@ -45,6 +45,7 @@ public class ViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Get the Intent that started this activity and extract the string
@@ -279,6 +280,20 @@ public class ViewActivity extends AppCompatActivity {
         menu.add(0, v.getId(), 0, "Edit");
         TextView tv = (TextView) ((LinearLayout) v).getChildAt(0);
         editName = tv.getText().toString();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                System.out.println("THIS IS HS ASOIAUDINIMIUIHYHJKIJUHGYHBJNKUHGYVHBJUYGTGFVBHJYGVBHJNUHYGV BNJUHGBV%%%%%%");
+                return true;
+            case R.id.menu_export:
+                Intent intent = new Intent(this, GoogleDriveAPI.class);
+                intent.putExtra("Activity", StatNAME);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
