@@ -58,6 +58,15 @@
                 android:value="beaux.thomas.base.HomeScreen" />
         </activity>
         <activity
+            android:name=".StatisticsPage"
+            android:label="@string/title_activity_statistics"
+            android:parentActivityName=".DataAnalytics"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="beaux.thomas.base.DataAnalytics" />
+        </activity>
+        <activity
             android:name=".Timer"
             android:label="@string/title_activity_timer"
             android:parentActivityName=".HomeScreen"
