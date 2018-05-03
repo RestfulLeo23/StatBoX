@@ -56,8 +56,14 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetRequest;
+import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetResponse;
+import com.google.api.services.sheets.v4.model.DeleteSheetRequest;
+import com.google.api.services.sheets.v4.model.FindReplaceResponse;
+import com.google.api.services.sheets.v4.model.Request;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
 import com.google.api.services.sheets.v4.model.SpreadsheetProperties;
+import com.google.api.services.sheets.v4.model.UpdateSpreadsheetPropertiesRequest;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 import java.io.ByteArrayOutputStream;
@@ -353,12 +359,10 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         @Override
         protected Spreadsheet doInBackground(Void... params) {
             try {
-                Credentials =  Boolean.parseBoolean( DatabaseHelper.getsInstance(getApplicationContext()).pullIcon("CredentialsCheck"));
-                if(Credentials == false && actNAME == null && driveId == null){
-                    Spreadsheet sheet = generateSpreadsheet();
-                }
+                Spreadsheet sheet = generateSpreadsheet();
+                deleteSheet(sheet);
                 if(actNAME != null) {
-                    Spreadsheet sheet = generateSpreadsheet();
+                    sheet = generateSpreadsheet();
                     updateActivitySpreadsheet(sheet);
                     return sheet;
                 }
@@ -386,6 +390,33 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
 
             Sheets.Spreadsheets.Create request = mService.spreadsheets().create(requestBody);
             return request.execute();
+        }
+
+
+        private void deleteSheet(Spreadsheet sheet){
+            try{
+                String id = sheet.getSpreadsheetId();
+                List<Request> requests = new ArrayList<>(); // TODO: Update placeholder value.
+
+                requests.add(new Request()
+                        .setDeleteSheet(new DeleteSheetRequest()
+                        ));
+                BatchUpdateSpreadsheetRequest requestBody = new BatchUpdateSpreadsheetRequest();
+                requestBody.setRequests(requests);
+
+                BatchUpdateSpreadsheetRequest body =
+                        new BatchUpdateSpreadsheetRequest().setRequests(requests);
+
+                BatchUpdateSpreadsheetResponse response =
+                        mService.spreadsheets().batchUpdate(id, body).execute();
+
+                FindReplaceResponse findReplaceResponse = response.getReplies().get(1).getFindReplace();
+                System.out.printf("%d replacements made.", findReplaceResponse.getOccurrencesChanged());
+
+            }catch(Exception e){
+                Log.e(TAG, "Unable to delete sheet", e);
+            }
+
         }
 
         /**
@@ -547,13 +578,13 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
         @Override
         protected void onPostExecute(Spreadsheet input) {
             if ((input == null || input.size() == 0) && actNAME != null) {
-                Toast.makeText(getApplicationContext(),"Spreadsheet was not generated successfully.",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"StatBoX Activity was not exported successfully.",Toast.LENGTH_LONG).show();
                 finish();
             } else if (actNAME != null){
-                Toast.makeText(getApplicationContext(),"Spreadsheet successfully created",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"StatBoX Activity successfully exported",Toast.LENGTH_LONG).show();
                 finish();
             } else if (actNAME == null && driveId != null){
-                Toast.makeText(getApplicationContext(),"Spreadsheet successfully imported.",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"StatBoX Activity successfully imported.",Toast.LENGTH_LONG).show();
                 setResult(RESULT_OK);
                 finish();
             }
@@ -588,8 +619,8 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
      * Start the Drive API file picker dialogue task
      */
     private void openDrivePicker() {
-        // Start by creating a new contents, and setting a callback.
-        Log.i(TAG, "Creating new contents.");
+        // Start by opening the drive file/folder picker, and set a callback.
+        Log.i(TAG, "Attempting to open a Drive file/folder picker");
 
         mDriveResourceClient
                 .createContents()
@@ -604,7 +635,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                         new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Failed to create new contents.", e);
+                                Log.w(TAG, "Failed to open Drive file/folder picker.", e);
                             }
                         });
     }
@@ -614,7 +645,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
      * OpenFileActivityOptions} for user to select a spreadsheet from their drive.
      */
     private Task<Void> openFileIntentPicker() {
-        Log.i(TAG, "New contents created.");
+        Log.i(TAG, "Opening Drive file/folder picker");
 
         List<String> mimeType = new ArrayList<>();
         mimeType.add("application/vnd.google-apps.spreadsheet");
@@ -675,10 +706,8 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
             a = P.toArray(a);
             Entry[i] ="";
             for (String j : a) {
-                //System.out.println("THIS IS THE ENTRY: "+j);
                 Entry[i] = j +"\n" + Entry[i];
             }
-            //System.out.println(Entry[i]);
         }
         if (size == 0) {
             for (int i = 0; i<5 ; i++){
@@ -747,8 +776,8 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                 break;
             case SHEETS_REQUEST_AUTHORIZATION:
                 if (resultCode == RESULT_OK) {
-                    Credentials = true;
-                    DatabaseHelper.getsInstance(getApplicationContext()).addIcon("CredentialsCheck", Credentials.toString());
+                    //Credentials = true;
+                    //DatabaseHelper.getsInstance(getApplicationContext()).addIcon("CredentialsCheck", Credentials.toString());
                     getResultsFromApi();
                     Log.i(TAG, "REQUEST_AUTHORIZATION");
                 }
