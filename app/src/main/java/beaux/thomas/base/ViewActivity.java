@@ -45,7 +45,7 @@ public class ViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        //Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Get the Intent that started this activity and extract the string
@@ -255,31 +255,6 @@ public class ViewActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_activity, menu);
         return true;
     }
-    public boolean onOptionsItemSelected (MenuItem item){
-                // Handle item selection
-                switch (item.getItemId()) {
-                    case R.id.menu_export:
-                        Intent intent = new Intent(this, Export.class);
-                        intent.putExtra("Activity", StatNAME);
-                        startActivity(intent);
-                        return true;
-                    case R.id.menu_delete:
-                        DatabaseHelper.getsInstance(getApplicationContext()).deleteTable(StatNAME);
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                        finish();
-
-                    default:
-                        return super.onOptionsItemSelected(item);
-                }
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View
-            v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(0, v.getId(), 0, "Edit");
-        TextView tv = (TextView) ((LinearLayout) v).getChildAt(0);
-        editName = tv.getText().toString();
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
@@ -295,6 +270,16 @@ public class ViewActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View
+            v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.add(0, v.getId(), 0, "Edit");
+        TextView tv = (TextView) ((LinearLayout) v).getChildAt(0);
+        editName = tv.getText().toString();
+    }
+
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {

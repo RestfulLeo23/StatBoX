@@ -28,7 +28,7 @@ public class HomeScreen extends AppCompatActivity {
     //public DatabaseHelper StatboX_Database;
     public static final int GET_NEW_ACT = 2;
     public static final int OK = 1;
-    public String[] Acts = new String[20];
+;
     public boolean clicked = false;
 
     private static final int DRIVE_IMPORT_FINISH = 1;
@@ -39,41 +39,16 @@ public class HomeScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+       // Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         updateHomeScreen();
     }
 
 
-    public void GoogleDriveAPI(View view){
-        //System.out.println("I HAVE CLICKED ON THE Export Button");
-        Intent intent = new Intent(this, GoogleDriveAPI.class);
-        intent.putExtra("Activity", "");
-        startActivity(intent);
-
     /** Called when the user taps the Send button */
     public void InputStatMode(View view) {
         Intent intent = new Intent(this, InputStat.class);
         startActivity(intent);
-    }
-
-    public void TimerMode(View view) {
-        Intent intent = new Intent(this, Timer.class);
-        startActivity(intent);
-    }
-
-    public void GraphViewMode(View view) {
-        Intent intent = new Intent(this, DataAnalytics.class);
-        startActivity(intent);
-    }
-
-    public void ImageMode(View view) {
-        System.out.println("IMAGE MORE CLICKED");
-        Intent intent = new Intent(this, ImagePicker.class);
-        System.out.println("IMAGE MORE CLICKED");
-        startActivity(intent);
-        System.out.println("IMAGE MORE CLICKED");
->>>>>>> origin/DriveAPIMerge
     }
 
     /** Called when the user taps the Send button */
@@ -252,13 +227,7 @@ public class HomeScreen extends AppCompatActivity {
         System.out.println("@@@@@@@@@@@@@@@@UPDATE HOMESCREEN CLOSE@@@@@@@@@@@@@@@@@@");
     }
 
-    public void deleteDB(View view){
-        System.out.println("DELETING DB");
-        DatabaseHelper.getsInstance(getApplicationContext()).death(this);
-        updateHomeScreen();
-        android.os.Process.killProcess(android.os.Process.myPid());
-        finish();
-    }
+
     public void deleteSettingDB(){
         System.out.println("DELETING DB");
         DatabaseHelper.getsInstance(getApplicationContext()).death(this);

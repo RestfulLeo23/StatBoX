@@ -78,12 +78,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="beaux.thomas.base.HomeScreen" />
         </activity>
+
         <activity
             android:name=".GoogleDriveAPI"
-            android:label="@string/title_activity_google_drive_api"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity
-            android:name=".Export"
             android:label="@string/title_activity_export"
             android:parentActivityName=".ViewActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -103,7 +100,9 @@
         <activity
             android:name=".ImagePicker"
             android:label="Image"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
         <activity
             android:name=".Input"
             android:label="@string/title_activity_input"
@@ -113,9 +112,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="beaux.thomas.base.ViewActivity" />
         </activity>
-            android:name=".Import"
-            android:label="@string/title_activity_import"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
