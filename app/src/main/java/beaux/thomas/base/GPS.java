@@ -78,6 +78,7 @@ public class GPS extends AppCompatActivity {
 
                 float distanceInMeters = loc1.distanceTo(loc2);
                 result+=distanceInMeters;
+
                 result*=3.28;
 
 
@@ -87,6 +88,7 @@ public class GPS extends AppCompatActivity {
 
 
                 t.append("\n " + location.getLongitude() + " " + location.getLatitude()+"\n"+"Distance Traveled "+"\n"+Math.round(result*100)/100+"ft");
+                result/=3.28;
                 ResultNum++;
                 lat1=lat2;
                 lon1=lon2;
