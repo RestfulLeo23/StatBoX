@@ -26,7 +26,7 @@ public class ActivityManagement extends AppCompatActivity {
     int statCount = 0;
     TextView textTargetUri;
     ImageButton targetImage;
-    String FILEPATH;
+    String FILEPATH="";
     @Override
 
 
@@ -183,6 +183,9 @@ public class ActivityManagement extends AppCompatActivity {
                     + Descript.getText().toString();
 
             Intent resultIntent = new Intent(this, HomeScreen.class);
+            if (FILEPATH.equals("")){
+                FILEPATH = "drawable/underline.xml";
+            }
             New_Act[3] = FILEPATH;
             // TODO Add extras or a data URI to this intent as appropriate.
             resultIntent.putExtra("ACT", New_Act);
@@ -218,12 +221,5 @@ public class ActivityManagement extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void TimerCheck(View v){
-        istimer = 1;
-    }
-    public void GpsCheck(View v){
-        isGPS = 1;
     }
 }

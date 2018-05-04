@@ -47,7 +47,7 @@ public class HomeScreen extends AppCompatActivity {
 
     /** Called when the user taps the Send button */
     public void InputStatMode(View view) {
-        Intent intent = new Intent(this, InputStat.class);
+        Intent intent = new Intent(this, Input.class);
         startActivity(intent);
     }
 

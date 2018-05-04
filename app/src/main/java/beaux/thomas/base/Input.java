@@ -25,7 +25,6 @@ public class Input extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -34,7 +33,6 @@ public class Input extends AppCompatActivity {
         Intent intent = getIntent();
         StatNAME = intent.getStringExtra(EXTRA_MESSAGE);
         UpdateInputStat();
-
     }
     public void Input_Stat(View view){
         System.out.println("INPUT STAT START");
@@ -65,7 +63,6 @@ public class Input extends AppCompatActivity {
 
     }
     public void UpdateInputStat(){
-
         List<String> Pull = DatabaseHelper.getsInstance(getApplicationContext()).tablesInfo.get(StatNAME);
 
         String[] t = new String[4];
@@ -73,15 +70,10 @@ public class Input extends AppCompatActivity {
         String arr[] = new String[n];
         arr = Pull.toArray(arr);
         int size = arr.length;
+
         String dcheck = Pull.get(Pull.size() - 1);
-        System.out.println("****THIS IS THE LAST ENTRY IN PULL BEFORE toARRAY:  "+dcheck+"   ****");
-
-
         if (dcheck.equals("Date")){
-
             size = Pull.size()-1;
-            System.out.println("****THIS IS THE SIZE OF THE TABLES INFO PULL AFTER toARRAY this is reallt a good line so greattttttttttttt:  "+size+"   ****");
-
         }
 
         TextView Stat1 = (TextView) findViewById(R.id.StatName1);
@@ -115,7 +107,7 @@ public class Input extends AppCompatActivity {
 
         t = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[0]).toArray(t);
 
-        if ((t[0].equals("0")) || (t[1].equals("0"))) {
+        if ((t[0].equals("0"))) {
             System.out.println(t[0]+"               TIMER");
             TIMERbutton.setVisibility(View.GONE);
             TextView timer = (TextView) findViewById(R.id.timerstat);
@@ -128,7 +120,7 @@ public class Input extends AppCompatActivity {
             TIMERbutton.setVisibility(View.VISIBLE);
             TextView timer = (TextView) findViewById(R.id.timerstat);
             timer.setVisibility(View.VISIBLE);
-
+            size -= 1;
         }
 
         if (t[1].equals("0")){
@@ -144,6 +136,7 @@ public class Input extends AppCompatActivity {
             GPSbutton.setVisibility(View.VISIBLE);
             TextView gps = (TextView) findViewById(R.id.Gps);
             gps.setVisibility(View.VISIBLE);
+            size-=1;
         }
 
 
@@ -154,8 +147,7 @@ public class Input extends AppCompatActivity {
             }
         }
         else{
-            System.out.println(size);
-
+            System.out.println("THIS IS THE SOZE PF THE thing"+size);
             for (int i = 0; i<size ; i++){
                 Stats[i].setVisibility(View.VISIBLE);
                 Stats[i].setText(arr[i]);
@@ -164,26 +156,22 @@ public class Input extends AppCompatActivity {
             }
             if (t[1].equals("1") && (t[0].equals("1"))){
                 System.out.println("Debugging1111111111111");
-                for (int j = size-2; j < 5; j++) {
+                for (int j = size; j < 5; j++) {
                     Stats[j].setVisibility(View.GONE);
                     Inputs[j].setVisibility(View.GONE);
                 }
 
             }
-            if ( ( (t[1].equals("1")) && (!t[0].equals("1")) )
-                    ||
-                    ( (!t[1].equals("1")) && (t[0].equals("1")) ) )
-
+            if ( ( (t[1].equals("1")) && (!t[0].equals("1")) ) || ( (!t[1].equals("1")) && (t[0].equals("1")) ) )
             {
                 System.out.println("GPS:  "+t[1]+"TIMER: "+t[0]);
-
                 System.out.println("Debugging222222222222222222222222");
-
-                for (int j = size-1; j < 5; j++) {
+                for (int j = size; j < 5; j++) {
                     Stats[j].setVisibility(View.GONE);
                     Inputs[j].setVisibility(View.GONE);
                 }
             }
+
             else{
                 System.out.println("Debugging33333333333333333333333333");
                 for (int j = size; j < 5; j++) {
@@ -198,9 +186,6 @@ public class Input extends AppCompatActivity {
 
 
     }
-
-
-
     public void openTimer(View view){
         Intent intent = new Intent(this, Timer.class);
         startActivityForResult(intent, GET_TIMER);
@@ -234,5 +219,4 @@ public class Input extends AppCompatActivity {
             }
         }
     }
-
 }

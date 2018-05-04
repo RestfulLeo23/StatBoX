@@ -11,7 +11,7 @@ import java.util.List;
 
 import static beaux.thomas.base.HomeScreen.EXTRA_MESSAGE;
 
-public class InputStat extends AppCompatActivity {
+public class InputStatold extends AppCompatActivity {
 
     public String StatNAME;
     public String timestat = "";
@@ -109,7 +109,7 @@ public class InputStat extends AppCompatActivity {
 
          t = DatabaseHelper.getsInstance(getApplicationContext()).pullStatTypeMetadata(StatNAME, arr[0]).toArray(t);
 
-         if ((t[0].equals("0")) || (t[1].equals("0"))) {
+         if ((t[0].equals("0"))) {
              System.out.println(t[0]+"               TIMER");
              TIMERbutton.setVisibility(View.GONE);
              TextView timer = (TextView) findViewById(R.id.timerstat);

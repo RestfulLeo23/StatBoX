@@ -29,7 +29,7 @@
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="240dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="125dp"
                     android:layout_marginBottom="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
@@ -75,7 +75,8 @@
                         android:background="@drawable/edit_text_style"
                         android:padding="4dp"
                         android:text="TextView"
-                        android:textColor="@color/colorAccent" />
+                        android:textColor="@color/colorAccent"
+                        android:textSize="8sp" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -470,11 +471,10 @@
                         android:padding="4dp">
 
                         <TextView
-                            android:id="@+id/Stat6"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="2dp"
-                            android:text="TextView"
+                            android:text="Timer"
                             android:textSize="24sp" />
 
                         <LinearLayout
@@ -488,7 +488,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_margin="2dp"
-                                android:text="TextView" />
+                                android:text="(H:M:S:ms)" />
 
                             <TextView
                                 android:id="@+id/recent6"
@@ -515,7 +515,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="2dp"
-                            android:text="TextView"
+                            android:text="GPS"
                             android:textSize="24sp" />
 
                         <LinearLayout
@@ -529,7 +529,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_margin="2dp"
-                                android:text="TextView" />
+                                android:text="Distance" />
 
                             <TextView
                                 android:id="@+id/recent7"

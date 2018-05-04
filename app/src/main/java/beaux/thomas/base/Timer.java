@@ -42,7 +42,7 @@ public class Timer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timer);
-        final Intent resultIntent = new Intent(this, InputStat.class);
+        final Intent resultIntent = new Intent(this, Input.class);
 
         StartButton = (Button)findViewById(R.id.StartButton);
         PauseButton = (Button)findViewById(R.id.PauseButton);

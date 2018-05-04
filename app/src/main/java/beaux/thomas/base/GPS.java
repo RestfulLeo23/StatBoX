@@ -42,7 +42,7 @@ public class GPS extends AppCompatActivity {
         b = (Button) findViewById(R.id.button);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        final Intent resultIntent = new Intent(this, InputStat.class);
+        final Intent resultIntent = new Intent(this, Input.class);
 
         RecordButton.setOnClickListener(new View.OnClickListener(){
             @Override

@@ -42,7 +42,7 @@
                 android:value="beaux.thomas.base.HomeScreen" />
         </activity>
         <activity
-            android:name=".InputStat"
+            android:name=".InputStatold"
             android:parentActivityName=".HomeScreen">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
@@ -100,11 +100,11 @@
         <activity
             android:name=".GPS"
             android:label="@string/title_activity_gps"
-            android:parentActivityName=".InputStat"
+            android:parentActivityName=".InputStatold"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="beaux.thomas.base.InputStat" />
+                android:value="beaux.thomas.base.InputStatold" />
         </activity>
         <activity
             android:name=".ImagePicker"

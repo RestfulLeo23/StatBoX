@@ -619,29 +619,38 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
 
         String[] ex_array = DatabaseHelper.getsInstance(getApplicationContext()).returnLastEntry(actNAME);
 
-        TextView[] Stats = new TextView[5];
+        TextView[] Stats = new TextView[7];
         TextView stat1 = findViewById(R.id.statN1);
         TextView stat2 = findViewById(R.id.statN2);
         TextView stat3 = findViewById(R.id.statN3);
         TextView stat4 = findViewById(R.id.statN4);
         TextView stat5 = findViewById(R.id.statN5);
+        TextView stat6 = findViewById(R.id.statN6);
+        TextView stat7 = findViewById(R.id.statN7);
         Stats[0] = stat1;
         Stats[1] = stat2;
         Stats[2] = stat3;
         Stats[3] = stat4;
         Stats[4] = stat5;
+        Stats[5] = stat6;
+        Stats[6] = stat7;
 
-        TextView[] Entries = new TextView[5];
+        TextView[] Entries = new TextView[7];
         TextView R1 = findViewById(R.id.entry1);
         TextView R2 = findViewById(R.id.entry2);
         TextView R3 = findViewById(R.id.entry3);
         TextView R4 = findViewById(R.id.entry4);
         TextView R5 = findViewById(R.id.entry5);
+        TextView R6 = findViewById(R.id.entry6);
+        TextView R7 = findViewById(R.id.entry7);
+
         Entries[0] = R1;
         Entries[1] = R2;
         Entries[2] = R3;
         Entries[3] = R4;
         Entries[4] = R5;
+        Entries[5] = R6;
+        Entries[6] = R7;
         for (int i = 0; i<size; i++) {
             List<String> P = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity_Stat(actNAME, arr[i]);
             int c = P.size();
@@ -655,7 +664,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
             //System.out.println(Entry[i]);
         }
         if (size == 0) {
-            for (int i = 0; i<5 ; i++){
+            for (int i = 0; i<7 ; i++){
                 Stats[i].setVisibility(View.GONE);
             }
         }
@@ -670,7 +679,7 @@ public class GoogleDriveAPI extends AppCompatActivity implements EasyPermissions
                 }
 
             }
-            for (int j = size; j < 5 ; j++){
+            for (int j = size; j < 7 ; j++){
                 Stats[j].setVisibility(View.GONE);
                 Entries[j].setVisibility(View.GONE);
             }
