@@ -308,6 +308,11 @@ public class ViewActivity extends AppCompatActivity {
                 intent.putExtra("Activity", ActivityNAME);
                 startActivity(intent);
                 return true;
+            case R.id.menu_delete:
+                DatabaseHelper.getsInstance(getApplicationContext()).deleteTable(ActivityNAME);
+                android.os.Process.killProcess(android.os.Process.myPid());
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
