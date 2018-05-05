@@ -43,42 +43,77 @@ public class StatisticsPage extends AppCompatActivity {
 
         List<String> statStrList = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity_Stat(activityName, statTypeName);
         List<Integer> statList = new ArrayList<>();
-        for(String stat: statStrList){
-            statList.add(Integer.parseInt(stat));
+        if(statStrList.size() > 0) {
+            for (String stat : statStrList) {
+                statList.add(Integer.parseInt(stat));
+            }
+
+            Map<String, String> datum1 = new HashMap<String, String>(2);
+            datum1.put("type", "Mean");
+            datum1.put("value", String.format("%.2f", mean(statList)));
+            data.add(datum1);
+
+            Map<String, String> datum2 = new HashMap<String, String>(2);
+            datum2.put("type", "Median");
+            datum2.put("value", String.format("%.2f", median(statList)));
+            data.add(datum2);
+
+            Map<String, String> datum3 = new HashMap<String, String>(2);
+            datum3.put("type", "Mode");
+            datum3.put("value", String.format("%.2f", mode(statList)));
+            data.add(datum3);
+
+            Map<String, String> datum4 = new HashMap<String, String>(2);
+            datum4.put("type", "Max");
+            datum4.put("value", Integer.toString(Collections.max(statList)));
+            data.add(datum4);
+
+            Map<String, String> datum5 = new HashMap<String, String>(2);
+            datum5.put("type", "Min");
+            datum5.put("value", Integer.toString(Collections.min(statList)));
+            data.add(datum5);
+
+            SimpleAdapter mAdapter = new SimpleAdapter(this,
+                    data,
+                    android.R.layout.simple_list_item_2,
+                    new String[]{"type", "value"},
+                    new int[]{android.R.id.text1, android.R.id.text2});
+
+            statisticsList.setAdapter(mAdapter);
+        }else{
+            Map<String, String> datum1 = new HashMap<String, String>(2);
+            datum1.put("type", "Mean");
+            datum1.put("value", "No stats recorded");
+            data.add(datum1);
+
+            Map<String, String> datum2 = new HashMap<String, String>(2);
+            datum2.put("type", "Median");
+            datum2.put("value", "No stats recorded");
+            data.add(datum2);
+
+            Map<String, String> datum3 = new HashMap<String, String>(2);
+            datum3.put("type", "Mode");
+            datum3.put("value", "No stats recorded");
+            data.add(datum3);
+
+            Map<String, String> datum4 = new HashMap<String, String>(2);
+            datum4.put("type", "Max");
+            datum4.put("value", "No stats recorded");
+            data.add(datum4);
+
+            Map<String, String> datum5 = new HashMap<String, String>(2);
+            datum5.put("type", "Min");
+            datum5.put("value", "No stats recorded");
+            data.add(datum5);
+
+            SimpleAdapter mAdapter = new SimpleAdapter(this,
+                    data,
+                    android.R.layout.simple_list_item_2,
+                    new String[]{"type", "value"},
+                    new int[]{android.R.id.text1, android.R.id.text2});
+
+            statisticsList.setAdapter(mAdapter);
         }
-
-        Map<String, String> datum1 = new HashMap<String, String>(2);
-        datum1.put("type", "Mean");
-        datum1.put("value", String.format("%.2f", mean(statList)));
-        data.add(datum1);
-
-        Map<String, String> datum2 = new HashMap<String, String>(2);
-        datum2.put("type", "Median");
-        datum2.put("value", String.format("%.2f", median(statList)));
-        data.add(datum2);
-
-        Map<String, String> datum3 = new HashMap<String, String>(2);
-        datum3.put("type", "Mode");
-        datum3.put("value", String.format("%.2f", mode(statList)));
-        data.add(datum3);
-
-        Map<String, String> datum4 = new HashMap<String, String>(2);
-        datum4.put("type", "Max");
-        datum4.put("value", Integer.toString(Collections.max(statList)));
-        data.add(datum4);
-
-        Map<String, String> datum5 = new HashMap<String, String>(2);
-        datum5.put("type", "Min");
-        datum5.put("value", Integer.toString(Collections.min(statList)));
-        data.add(datum5);
-
-        SimpleAdapter mAdapter = new SimpleAdapter(this,
-                data,
-                android.R.layout.simple_list_item_2,
-                new String[] {"type", "value"},
-                new int[] {android.R.id.text1, android.R.id.text2});
-
-        statisticsList.setAdapter(mAdapter);
     }
 
     private double mean(List<Integer> items){
