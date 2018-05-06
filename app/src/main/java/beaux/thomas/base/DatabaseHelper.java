@@ -600,7 +600,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     //for testing purposes
     //DatabaseHelper.getsInstance(getApplicationContext()).createALL();
     public void createALL()
-    {
+    { 
         dateVariable = true;
         //array[0] is the table name, all proceeding indeces are the attributes
         //Attributes MUST be ONE single string. "Pages Read" should be PagesRead or Pages_Read, etc
