@@ -14,8 +14,11 @@ import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +47,23 @@ public class StatisticsPage extends AppCompatActivity {
         List<String> statStrList = DatabaseHelper.getsInstance(getApplicationContext()).grabActivity_Stat(activityName, statTypeName);
         List<Integer> statList = new ArrayList<>();
         if(statStrList.size() > 0) {
-            for (String stat : statStrList) {
-                statList.add(Integer.parseInt(stat));
+            if("Timer".equals(statTypeName)){
+                for (String stat : statStrList) {
+                    int x;
+                    try {
+                        SimpleDateFormat timerFormat = new SimpleDateFormat("hh:mm:ss:SS");
+                        Date y_axis_time = timerFormat.parse(stat);
+                        x = (int) y_axis_time.getTime() / 1000;
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        x = 0;
+                    }
+                    statList.add(x);
+                }
+            }else {
+                for (String stat : statStrList) {
+                    statList.add(Integer.parseInt(stat));
+                }
             }
 
             Map<String, String> datum1 = new HashMap<String, String>(2);

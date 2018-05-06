@@ -27,6 +27,7 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.PointsGraphSeries;
 
 import java.lang.reflect.Array;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -158,6 +159,7 @@ public class DataAnalytics extends AppCompatActivity {
         // Get the activity and stattype passed in through the intent
         Intent intent = getIntent();
         String activityName = intent.getStringExtra("Activity");
+        SimpleDateFormat timerFormat = new SimpleDateFormat("hh:mm:ss:SS");
 
         // Special graph created given 'Date' on the x-axis
         if ("Date".equals(xAxisName)) {
@@ -169,22 +171,33 @@ public class DataAnalytics extends AppCompatActivity {
             // convert the list of data tuples into a map with key= each unique X axis element and value= sum of Y axis elements sharing X axis element
             Map<Date, Integer> map = new TreeMap<Date, Integer>();
             SimpleDateFormat dFormat = new SimpleDateFormat("yyyy-dd-MM");
-
             //this is for test purposes
             //tupList[1].set(0, "2018-03-05");
             //tupList[1].set(1, "2018-02-05");
             //tupList[1].set(2, "2018-07-05");
             for (int i = 0; i < tupList[0].size(); i++) {
                 String y_axis_el = tupList[0].get(i);
+                int y_axis_int;
+                if ("Timer".equals(yAxisName)){
+                    try {
+                        Date y_axis_time = timerFormat.parse(tupList[0].get(i));
+                        y_axis_int = (int) y_axis_time.getTime() / 1000;
+                    } catch(ParseException e){
+                        e.printStackTrace();
+                        y_axis_int = 0;
+                    }
+                }else{
+                    y_axis_int = Integer.parseInt(y_axis_el);
+                }
                 try {
                     Date x_axis_el = dFormat.parse(tupList[1].get(i));
                     // If the map already has seen this x-axis element, increase the existing value in map
                     if (map.containsKey(x_axis_el)) {
-                        map.put(x_axis_el, map.get(x_axis_el) + Integer.parseInt(y_axis_el));
+                        map.put(x_axis_el, map.get(x_axis_el) + y_axis_int);
                     }
                     // Otherwise, the x-axis element has been seen; make a new map entry
                     else {
-                        map.put(x_axis_el, Integer.parseInt(y_axis_el));
+                        map.put(x_axis_el, y_axis_int);
                     }
                 } catch (java.text.ParseException e) {
                     e.printStackTrace();
@@ -256,13 +269,36 @@ public class DataAnalytics extends AppCompatActivity {
             for (int i = 0; i < tupListx.size(); i++) {
                 String x_axis_el = tupListx.get(i);
                 String y_axis_el = tupListy.get(i);
+                int y_axis_int, x_axis_int;
+                if ("Timer".equals(yAxisName)){
+                    try {
+                        Date y_axis_time = timerFormat.parse(tupListy.get(i));
+                        y_axis_int = (int) y_axis_time.getTime() / 1000;
+                    } catch(ParseException e){
+                        e.printStackTrace();
+                        y_axis_int = 0;
+                    }
+                }else{
+                    y_axis_int = Integer.parseInt(y_axis_el);
+                }
+                if ("Timer".equals(xAxisName)){
+                    try {
+                        Date y_axis_time = timerFormat.parse(tupListx.get(i));
+                        x_axis_int = (int) y_axis_time.getTime() / 1000;
+                    } catch(ParseException e){
+                        e.printStackTrace();
+                        x_axis_int = 0;
+                    }
+                }else{
+                    x_axis_int = Integer.parseInt(x_axis_el);
+                }
                 // If the map already has seen this x-axis element, increase the existing value in map
-                if (map.containsKey(Integer.parseInt(x_axis_el))) {
-                    map.put(Integer.parseInt(x_axis_el), map.get(Integer.parseInt(x_axis_el)) + Integer.parseInt(y_axis_el));
+                if (map.containsKey(x_axis_int) ){
+                    map.put(x_axis_int, x_axis_int + y_axis_int);
                 }
                 // Otherwise, the x-axis element has been seen; make a new map entry
                 else {
-                    map.put(Integer.parseInt(x_axis_el), Integer.parseInt(y_axis_el));
+                    map.put(x_axis_int, y_axis_int);
                 }
             }
 
@@ -319,6 +355,7 @@ public class DataAnalytics extends AppCompatActivity {
         // Get the activity and stattype passed in through the intent
         Intent intent = getIntent();
         String activityName = intent.getStringExtra("Activity");
+        SimpleDateFormat timerFormat = new SimpleDateFormat("hh:mm:ss:SS");
 
         // Special graph created given 'Date' on the x-axis
         if ("Date".equals(xAxisName)) {
@@ -331,21 +368,34 @@ public class DataAnalytics extends AppCompatActivity {
             Map<Date, Integer> map = new TreeMap<Date, Integer>();
             SimpleDateFormat dFormat = new SimpleDateFormat("yyyy-dd-MM");
 
+
             //this is for test purposes
             //tupList[1].set(0, "2018-03-05");
             //tupList[1].set(1, "2018-02-05");
             //tupList[1].set(2, "2018-07-05");
             for (int i = 0; i < tupList[0].size(); i++) {
                 String y_axis_el = tupList[0].get(i);
+                int y_axis_int;
+                if ("Timer".equals(yAxisName)){
+                    try {
+                        Date y_axis_time = timerFormat.parse(tupList[0].get(i));
+                        y_axis_int = (int) y_axis_time.getTime() / 1000;
+                    } catch(ParseException e){
+                        e.printStackTrace();
+                        y_axis_int = 0;
+                    }
+                }else{
+                    y_axis_int = Integer.parseInt(y_axis_el);
+                }
                 try {
                     Date x_axis_el = dFormat.parse(tupList[1].get(i));
                     // If the map already has seen this x-axis element, increase the existing value in map
                     if (map.containsKey(x_axis_el)) {
-                        map.put(x_axis_el, map.get(x_axis_el) + Integer.parseInt(y_axis_el));
+                        map.put(x_axis_el, map.get(x_axis_el) + y_axis_int);
                     }
                     // Otherwise, the x-axis element has been seen; make a new map entry
                     else {
-                        map.put(x_axis_el, Integer.parseInt(y_axis_el));
+                        map.put(x_axis_el, y_axis_int);
                     }
                 } catch (java.text.ParseException e) {
                     e.printStackTrace();
@@ -403,13 +453,36 @@ public class DataAnalytics extends AppCompatActivity {
             for (int i = 0; i < tupListx.size(); i++) {
                 String x_axis_el = tupListx.get(i);
                 String y_axis_el = tupListy.get(i);
+                int y_axis_int, x_axis_int;
+                if ("Timer".equals(yAxisName)){
+                    try {
+                        Date y_axis_time = timerFormat.parse(tupListy.get(i));
+                        y_axis_int = (int) y_axis_time.getTime() / 1000;
+                    } catch(ParseException e){
+                        e.printStackTrace();
+                        y_axis_int = 0;
+                    }
+                }else{
+                    y_axis_int = Integer.parseInt(y_axis_el);
+                }
+                if ("Timer".equals(xAxisName)){
+                    try {
+                        Date y_axis_time = timerFormat.parse(tupListx.get(i));
+                        x_axis_int = (int) y_axis_time.getTime() / 1000;
+                    } catch(ParseException e){
+                        e.printStackTrace();
+                        x_axis_int = 0;
+                    }
+                }else{
+                    x_axis_int = Integer.parseInt(x_axis_el);
+                }
                 // If the map already has seen this x-axis element, increase the existing value in map
-                if (map.containsKey(Integer.parseInt(x_axis_el))) {
-                    map.put(Integer.parseInt(x_axis_el), map.get(Integer.parseInt(x_axis_el)) + Integer.parseInt(y_axis_el));
+                if (map.containsKey(x_axis_int)) {
+                    map.put(x_axis_int, x_axis_int + y_axis_int);
                 }
                 // Otherwise, the x-axis element has been seen; make a new map entry
                 else {
-                    map.put(Integer.parseInt(x_axis_el), Integer.parseInt(y_axis_el));
+                    map.put(x_axis_int, y_axis_int);
                 }
             }
 
