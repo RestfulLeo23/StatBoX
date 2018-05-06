@@ -1,24 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="beaux.thomas.base.HomeScreen">
-    <item
-        android:id="@+id/action_settings"
+    tools:context="beaux.thomas.base.ViewActivity">
 
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
     <item
-        android:id="@+id/deletedb"
+        android:id="@+id/menu_export"
         android:checkable="false"
         android:orderInCategory="100"
-        android:title="@string/deletedb"
+        android:title="@string/menu_export"
         app:showAsAction="never" />
     <item
-        android:id="@+id/import_act"
+        android:id="@+id/menu_delete"
         android:checkable="false"
         android:orderInCategory="100"
-        android:title="@string/import_act"
+        android:title="@string/delete_act"
         app:showAsAction="never" />
-
 </menu>

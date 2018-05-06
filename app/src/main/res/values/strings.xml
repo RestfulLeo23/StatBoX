@@ -5,7 +5,7 @@
     <string name="button_send">Send</string>
     <string name="title_activity_stat_input_fob">StatInputFOB</string>
     <string name="title_activity_fob">FOB</string>
-    <string name="activity_name">Enter Activity Name</string>
+    <string name="activity_name">Name</string>
     <string name="stat_name">Enter Stat Name</string>
     <string name="send_stat">Create</string>
     <string name="stat_type">Unit</string>
@@ -14,4 +14,16 @@
     <string name="title_activity_graph_view">Trends</string>
     <string name="create_act">Create New Activity</string>
     <string name="title_activity_timer">Timer</string>
+    <string name="title_activity_google_drive_api">GoogleDriveAPI</string>
+    <string name="menu_export">Export Activity</string>
+    <string name="title_activity_export">Export</string>
+    <string name="import_act">Import</string>
+    <string name="title_activity_gps">GPS</string>
+    <string name="delete_act">Delete Activity</string>
+    <string name="edit_act">Edit Activity</string>
+    <string name="title_activity_edit">EditActivity</string>
+    <string name="title_activity_input">Input</string>
+    <string name="title_activity_google_drive">GoogleDrive</string>
+    <string name="title_activity_import">Import</string>
+    <string name="title_activity_statistics">Statistics</string>
 </resources>

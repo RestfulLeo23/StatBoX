@@ -3,9 +3,6 @@
     package="beaux.thomas.base">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
@@ -42,7 +39,7 @@
                 android:value="beaux.thomas.base.HomeScreen" />
         </activity>
         <activity
-            android:name=".InputStatold"
+            android:name=".InputStat"
             android:parentActivityName=".HomeScreen">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
@@ -70,15 +67,6 @@
                 android:value="beaux.thomas.base.HomeScreen" />
         </activity>
         <activity
-            android:name=".StatisticsPage"
-            android:label="@string/title_activity_statistics"
-            android:parentActivityName=".DataAnalytics"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="beaux.thomas.base.DataAnalytics" />
-        </activity>
-        <activity
             android:name=".Timer"
             android:label="@string/title_activity_timer"
             android:parentActivityName=".HomeScreen"
@@ -87,34 +75,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="beaux.thomas.base.HomeScreen" />
         </activity>
-
         <activity
             android:name=".GoogleDriveAPI"
+            android:label="@string/title_activity_google_drive_api"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".Export"
             android:label="@string/title_activity_export"
-            android:parentActivityName=".ViewActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="beaux.thomas.base.ViewActivity" />
-        </activity>
-        <activity
-            android:name=".GPS"
-            android:label="@string/title_activity_gps"
-            android:parentActivityName=".InputStatold"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="beaux.thomas.base.InputStatold" />
-        </activity>
-        <activity
-            android:name=".ImagePicker"
-            android:label="Image"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-        <activity
-            android:name=".Input"
-            android:label="@string/title_activity_input"
             android:parentActivityName=".ViewActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

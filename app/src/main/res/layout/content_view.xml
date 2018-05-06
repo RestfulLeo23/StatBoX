@@ -8,247 +8,557 @@
     tools:context="beaux.thomas.base.ViewActivity"
     tools:showIn="@layout/activity_view">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        tools:layout_editor_absoluteX="325dp"
+        tools:layout_editor_absoluteY="182dp">
 
-        <TextView
-            android:id="@+id/StatName"
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="Sample Stat Name"
-            android:textAlignment="center"
-            android:textSize="36sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TableRow
+            <LinearLayout
+                android:id="@+id/ImageName"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:onClick="DataAnalytics">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="240dp"
+                    android:layout_height="125dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_text_style"
+                    android:padding="4dp"
+                    app:srcCompat="@drawable/ic_launcher_background" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/StatName"
+                        android:layout_width="273dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edit_text_style"
+                        android:padding="4dp"
+                        android:text="Activity Name"
+                        android:textAlignment="center"
+                        android:textSize="36sp"
+                        android:textStyle="bold"
+                        android:typeface="normal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/uri"
+                        android:layout_width="269dp"
+                        android:layout_height="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edit_text_style"
+                        android:padding="4dp"
+                        android:text="TextView"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="8sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/Row1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@drawable/edit_text_style"
+                android:onClick="DataAnalytics"
+                android:orientation="horizontal"
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/Stat1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginStart="64dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_width="328dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:text="TextView"
+                    android:textAlignment="center"
+                    android:textSize="24sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/StatName" />
 
-                <TextView
-                    android:id="@+id/type1"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginTop="32dp"
-                    android:text="TextView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/type2" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/recent1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="15dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginTop="32dp"
-                    android:text="TextView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/type5" />
-            </TableRow>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
 
-            <TableRow
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="190dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Unit: " />
+
+                        <TextView
+                            android:id="@+id/type1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="TextView"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/type2" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView3"
+                            android:layout_width="190dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Recent Entry: " />
+
+                        <TextView
+                            android:id="@+id/recent1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="TextView"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/type5" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/Row2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:onClick="DataAnalytics">
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@drawable/edit_text_style"
+                android:onClick="DataAnalytics"
+                android:orientation="horizontal"
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/Stat2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginStart="64dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_width="325dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:text="TextView"
+                    android:textAlignment="center"
+                    android:textSize="24sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/Stat1" />
 
-                <TextView
-                    android:id="@+id/type2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginTop="32dp"
-                    android:text="TextView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/StatName" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/recent2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="15dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginTop="32dp"
-                    android:text="TextView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/type5" />
-            </TableRow>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
 
-            <TableRow
+                        <TextView
+                            android:id="@+id/textView4"
+                            android:layout_width="191dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Unit:" />
+
+                        <TextView
+                            android:id="@+id/type2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="TextView"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/StatName" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView5"
+                            android:layout_width="190dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Recent Entry:" />
+
+                        <TextView
+                            android:id="@+id/recent2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="TextView"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/type5" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/Row3"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:onClick="DataAnalytics">
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@drawable/edit_text_style"
+                android:onClick="DataAnalytics"
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/Stat3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginStart="64dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_width="163dp"
+                    android:layout_height="match_parent"
                     android:text="TextView"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/Stat2" />
+                    android:textAlignment="center"
+                    android:textSize="24sp" />
 
-                <TextView
-                    android:id="@+id/type3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginTop="32dp"
-                    android:text="TextView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/type1" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/recent3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="15dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginTop="32dp"
-                    android:text="TextView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/type5" />
-            </TableRow>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-            <TableRow
+                        <TextView
+                            android:layout_width="190dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Unit:" />
+
+                        <TextView
+                            android:id="@+id/type3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="TextView" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView7"
+                            android:layout_width="190dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Recent Enrty: " />
+
+                        <TextView
+                            android:id="@+id/recent3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="TextView" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/Row4"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:onClick="DataAnalytics">
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@drawable/edit_text_style"
+                android:onClick="DataAnalytics"
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/Stat4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginStart="64dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_width="163dp"
+                    android:layout_height="match_parent"
                     android:text="TextView"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/Stat3" />
+                    android:textAlignment="center"
+                    android:textSize="24sp" />
 
-                <TextView
-                    android:id="@+id/type4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginTop="32dp"
-                    android:text="TextView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/type3" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/recent4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="15dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginTop="32dp"
-                    android:text="TextView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/type5" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-            </TableRow>
+                        <TextView
+                            android:id="@+id/textView9"
+                            android:layout_width="190dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Unit:" />
 
-            <TableRow
+                        <TextView
+                            android:id="@+id/type4"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="TextView" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView8"
+                            android:layout_width="190dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Recent Entry:" />
+
+                        <TextView
+                            android:id="@+id/recent4"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="TextView" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/Row5"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:onClick="DataAnalytics">
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@drawable/edit_text_style"
+                android:onClick="DataAnalytics"
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/Stat5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginStart="64dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_width="163dp"
+                    android:layout_height="match_parent"
                     android:text="TextView"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/Stat4" />
+                    android:textAlignment="center"
+                    android:textSize="24sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView11"
+                            android:layout_width="190dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Unit:" />
+
+                        <TextView
+                            android:id="@+id/recent5"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="TextView" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView10"
+                            android:layout_width="190dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Recent Entry:" />
+
+                        <TextView
+                            android:id="@+id/type5"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="TextView" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="144dp"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/type5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginTop="32dp"
+                    android:id="@+id/Des"
+                    android:layout_width="379dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_text_style"
+                    android:padding="4dp"
                     android:text="TextView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/type4" />
+                    android:textAlignment="center"
+                    android:textSize="28sp"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="473dp" />
 
-                <TextView
-                    android:id="@+id/recent5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="15dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginTop="32dp"
-                    android:text="TextView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/type5" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-            </TableRow>
+                    <LinearLayout
+                        android:id="@+id/Row6"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_margin="4dp"
+                        android:background="@drawable/edit_text_style"
+                        android:onClick="DataAnalytics"
+                        android:padding="4dp">
 
-        </TableLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="2dp"
+                            android:text="Timer"
+                            android:textSize="24sp" />
 
-    </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="2dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/type6"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="2dp"
+                                android:text="(H:M:S:ms)" />
+
+                            <TextView
+                                android:id="@+id/recent6"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="2dp"
+                                android:text="TextView" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/Row7"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_margin="4dp"
+                        android:background="@drawable/edit_text_style"
+                        android:onClick="DataAnalytics"
+                        android:padding="4dp">
+
+                        <TextView
+                            android:id="@+id/Stat7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="2dp"
+                            android:text="GPS"
+                            android:textSize="24sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="2dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/type7"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="2dp"
+                                android:text="Distance" />
+
+                            <TextView
+                                android:id="@+id/recent7"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="2dp"
+                                android:text="TextView" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        android:layout_width="wrap_content"
+        android:layout_width="52dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:onClick="InputStatMode"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_add" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
+
 
 </android.support.constraint.ConstraintLayout>
