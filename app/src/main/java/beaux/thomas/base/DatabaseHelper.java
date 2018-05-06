@@ -562,6 +562,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             db.execSQL("DROP TABLE tmp_table;");
             db.execSQL("UPDATE StatType_Metadata SET Activity = \""+activity+"\" WHERE Activity = \""+"tmp_table"+"\";");
             db.update(TABLE_METADATA, values, COL_Activity+ " = \""+activity + "\" AND "+ COL_StatType+" = \"" + oldColumn + "\"", null);
+            db.execSQL("UPDATE ICONS SET Activity = \""+activity+"\" WHERE Activity = \""+"tmp_table"+"\";");//set icons table back
             db.setTransactionSuccessful();
         } finally
         {
@@ -619,28 +620,28 @@ public class DatabaseHelper extends SQLiteOpenHelper
         //example_array = {"Running", "Duration", "Yes", "No", "minutes", "The duration"}
         //DatabaseHelper.getsInstance(getApplicationContext()).updateMeta(example_array);
 
-        String [] array11 = {"Hiking", "Duration", "true", "false", "minutes", "The Duration of swim"};
-        String [] array12 = {"Hiking", "miles", "false", "false", "integer", "The number of miles"};
+        String [] array11 = {"Hiking", "Duration", "0", "0", "minutes", "The Duration of swim"};
+        String [] array12 = {"Hiking", "miles", "0", "0", "integer", "The number of miles"};
         updateMeta(array11);
         updateMeta(array12);
 
-        String [] array21 = {"Biking", "Miles", "false", "false", "integer", "The number of minutes"};
-        String [] array22 = {"Biking", "Red_Cars_Seen", "false", "false", "integer", "The amount of red cars seen"};
-        String [] array23 = {"Biking", "Time", "true", "false", "minutes", "The Duration of a ride"};
+        String [] array21 = {"Biking", "Miles", "0", "0", "integer", "The number of minutes"};
+        String [] array22 = {"Biking", "Red_Cars_Seen", "0", "0", "integer", "The amount of red cars seen"};
+        String [] array23 = {"Biking", "Time", "0", "0", "minutes", "The Duration of a ride"};
         updateMeta(array11);
         updateMeta(array22);
         updateMeta(array23);
 
-        String [] array31 = {"Swimming", "Laps", "false", "false", "number", "The laps"};
-        String [] array32 = {"Swimming", "time", "true", "false", "number", "The duration"};
+        String [] array31 = {"Swimming", "Laps", "0", "0", "number", "The laps"};
+        String [] array32 = {"Swimming", "time", "0", "0", "number", "The duration"};
         updateMeta(array31);
         updateMeta(array32);
 
-        String [] array41 = {"Reading", "Pages", "false", "false", "int", "The amount pages read"};
-        String [] array42 = {"Reading", "Chapters", "false", "false", "int", "The amount chapters read"};
-        String [] array43 = {"Reading", "Grammatical_Errors", "false", "false", "int", "The amount grammatical errors spotted"};
-        String [] array44 = {"Reading", "Minutes", "true", "false", "int", "The time spent reading"};
-        String [] array45 = {"Reading", "Spelling_Mistakes", "false", "false", "int", "The amount spelling errors noticed"};
+        String [] array41 = {"Reading", "Pages", "0", "0", "int", "The amount pages read"};
+        String [] array42 = {"Reading", "Chapters", "0", "0", "int", "The amount chapters read"};
+        String [] array43 = {"Reading", "Grammatical_Errors", "0", "0", "int", "The amount grammatical errors spotted"};
+        String [] array44 = {"Reading", "Minutes", "0", "0", "int", "The time spent reading"};
+        String [] array45 = {"Reading", "Spelling_Mistakes", "0", "0", "int", "The amount spelling errors noticed"};
         updateMeta(array41);
         updateMeta(array42);
         updateMeta(array43);
