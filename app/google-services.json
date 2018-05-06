@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "730280224137",
+    "firebase_url": "https://sanguine-torus-200919.firebaseio.com",
+    "project_id": "sanguine-torus-200919",
+    "storage_bucket": "sanguine-torus-200919.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:730280224137:android:07ac7a26d79328c7",
+        "android_client_info": {
+          "package_name": "beaux.thomas.base"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "730280224137-3kc7q57gans789tg45an9bkpha6mglfv.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "730280224137-lquoj4v9v9dlsea3uactbonmtie2ioq4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "beaux.thomas.base",
+            "certificate_hash": "45c79472c3ff74769e6aece3666584b797aa5b92"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDED5TVnXrcDoN6xDWmbZ1ZdbcTZmbpGgQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "730280224137-3kc7q57gans789tg45an9bkpha6mglfv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
